@@ -1,61 +1,99 @@
-<p align="center"><a href="https://laravel.com" target="_blank"><img src="https://raw.githubusercontent.com/laravel/art/master/logo-lockup/5%20SVG/2%20CMYK/1%20Full%20Color/laravel-logolockup-cmyk-red.svg" width="400" alt="Laravel Logo"></a></p>
+# Jewelry Shop - Laravel Project
 
-<p align="center">
-<a href="https://github.com/laravel/framework/actions"><img src="https://github.com/laravel/framework/workflows/tests/badge.svg" alt="Build Status"></a>
-<a href="https://packagist.org/packages/laravel/framework"><img src="https://img.shields.io/packagist/dt/laravel/framework" alt="Total Downloads"></a>
-<a href="https://packagist.org/packages/laravel/framework"><img src="https://img.shields.io/packagist/v/laravel/framework" alt="Latest Stable Version"></a>
-<a href="https://packagist.org/packages/laravel/framework"><img src="https://img.shields.io/packagist/l/laravel/framework" alt="License"></a>
-</p>
+> Dự án quản lý cửa hàng trang sức, xây dựng bằng Laravel.
 
-## About Laravel
+## Mục lục
 
-Laravel is a web application framework with expressive, elegant syntax. We believe development must be an enjoyable and creative experience to be truly fulfilling. Laravel takes the pain out of development by easing common tasks used in many web projects, such as:
+-   [Giới thiệu](#giới-thiệu)
+-   [Yêu cầu hệ thống](#yêu-cầu-hệ-thống)
+-   [Cài đặt](#cài-đặt)
+-   [Cấu trúc thư mục](#cấu-trúc-thư-mục)
+-   [Sử dụng](#sử-dụng)
+-   [Đóng góp](#đóng-góp)
+-   [Thông tin liên hệ](#thông-tin-liên-hệ)
 
-- [Simple, fast routing engine](https://laravel.com/docs/routing).
-- [Powerful dependency injection container](https://laravel.com/docs/container).
-- Multiple back-ends for [session](https://laravel.com/docs/session) and [cache](https://laravel.com/docs/cache) storage.
-- Expressive, intuitive [database ORM](https://laravel.com/docs/eloquent).
-- Database agnostic [schema migrations](https://laravel.com/docs/migrations).
-- [Robust background job processing](https://laravel.com/docs/queues).
-- [Real-time event broadcasting](https://laravel.com/docs/broadcasting).
+## Giới thiệu
 
-Laravel is accessible, powerful, and provides tools required for large, robust applications.
+Dự án Jewelry Shop là một hệ thống quản lý cửa hàng trang sức, hỗ trợ các chức năng quản lý sản phẩm, đơn hàng, người dùng, đánh giá, v.v. Dự án sử dụng framework Laravel (PHP) giúp phát triển nhanh chóng, bảo mật và dễ mở rộng.
 
-## Learning Laravel
+## Yêu cầu hệ thống
 
-Laravel has the most extensive and thorough [documentation](https://laravel.com/docs) and video tutorial library of all modern web application frameworks, making it a breeze to get started with the framework.
+-   PHP >= 8.1
+-   Composer
+-   MySQL/MariaDB
+-   Node.js & npm (nếu muốn build frontend)
 
-You may also try the [Laravel Bootcamp](https://bootcamp.laravel.com), where you will be guided through building a modern Laravel application from scratch.
+## Cài đặt
 
-If you don't feel like reading, [Laracasts](https://laracasts.com) can help. Laracasts contains thousands of video tutorials on a range of topics including Laravel, modern PHP, unit testing, and JavaScript. Boost your skills by digging into our comprehensive video library.
+1. Clone dự án:
+    ```bash
+    git clone https://github.com/nguyenhoangtamm/Jewelry-Shop-Php.git
+    cd Jewelry-Shop
+    ```
+2. Cấu hình Php
+Đảm bảo các extension sau đã được bật trong file `php.ini`:
+(nêu dùng xampp thì bỏ quả bươc này)
+Chuyển từ 
 
-## Laravel Sponsors
+```ini
+;extension=mysqli
+;extension=pdo_mysql
+;extension=zip
+```
+```ini
+extension=mysqli
+extension=pdo_mysql
+extension=zip
+```
+Nếu sử dụng 7-Zip cho các chức năng nén/giải nén, hãy đảm bảo bạn đã cài đặt 7-Zip trên hệ thống và thêm đường dẫn của nó vào biến môi trường `PATH` (Windows).  
+Sau khi chỉnh sửa, hãy khởi động lại Apache hoặc PHP-FPM.
+3. Cài đặt các package PHP:
+    ```bash
+    composer install
+    ```
+4. Tạo file `.env` từ file mẫu và cấu hình thông tin database:
+    ```bash
+    cp .env.example .env
+    # Hoặc trên Windows: copy .env.example .env
+    ```
+5. Tạo key ứng dụng:
+    ```bash
+    php artisan key:generate
+    ```
+6. Chạy migration và seed dữ liệu mẫu:
+    ```bash
+    php artisan migrate
+    ```
+7. Khởi động server:
+    ```bash
+    php artisan serve
+    ```
 
-We would like to extend our thanks to the following sponsors for funding Laravel development. If you are interested in becoming a sponsor, please visit the [Laravel Partners program](https://partners.laravel.com).
+## Cấu trúc thư mục
 
-### Premium Partners
+-   `app/Models/` - Các model Eloquent (Category, Jewelry, Order, User...)
+-   `app/Http/Controllers/` - Controller xử lý logic request
+-   `database/migrations/` - Các file migration tạo bảng
+-   `database/seeders/` - Seeder dữ liệu mẫu
+-   `resources/views/` - Giao diện Blade
+-   `public/` - Thư mục public, entrypoint index.php
+-   `routes/web.php` - Định nghĩa route web
 
-- **[Vehikl](https://vehikl.com)**
-- **[Tighten Co.](https://tighten.co)**
-- **[Kirschbaum Development Group](https://kirschbaumdevelopment.com)**
-- **[64 Robots](https://64robots.com)**
-- **[Curotec](https://www.curotec.com/services/technologies/laravel)**
-- **[DevSquad](https://devsquad.com/hire-laravel-developers)**
-- **[Redberry](https://redberry.international/laravel-development)**
-- **[Active Logic](https://activelogic.com)**
+## Sử dụng
 
-## Contributing
+-   Truy cập trang chủ tại: `http://localhost:8000`
+-   Đăng nhập/đăng ký tài khoản để sử dụng các chức năng quản lý
+-   Quản lý sản phẩm, đơn hàng, người dùng, đánh giá, upload file, v.v.
 
-Thank you for considering contributing to the Laravel framework! The contribution guide can be found in the [Laravel documentation](https://laravel.com/docs/contributions).
+## Đóng góp
 
-## Code of Conduct
+Mọi đóng góp, báo lỗi hoặc đề xuất tính năng mới đều được hoan nghênh! Vui lòng tạo issue hoặc pull request.
 
-In order to ensure that the Laravel community is welcoming to all, please review and abide by the [Code of Conduct](https://laravel.com/docs/contributions#code-of-conduct).
+## Thông tin liên hệ
 
-## Security Vulnerabilities
-
-If you discover a security vulnerability within Laravel, please send an e-mail to Taylor Otwell via [taylor@laravel.com](mailto:taylor@laravel.com). All security vulnerabilities will be promptly addressed.
+-   Tác giả: Nguyễn Hoàng Tâm
+-   Email: [nguyenhoangtamm@gmail.com](mailto:nguyenhoangtamm@gmail.com)
 
 ## License
 
-The Laravel framework is open-sourced software licensed under the [MIT license](https://opensource.org/licenses/MIT).
+Dự án sử dụng giấy phép [MIT](https://opensource.org/licenses/MIT).
