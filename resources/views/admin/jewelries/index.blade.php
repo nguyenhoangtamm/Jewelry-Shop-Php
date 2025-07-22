@@ -64,19 +64,19 @@
                 @endforeach
             </tbody>
         </table>
-<div class="pagination" style="justify-content:center;">
-    @php
-        $currentPage = $jewelries->currentPage();
-        $lastPage = $jewelries->lastPage();
-        $search = request('search');
-    @endphp
-    @for ($i = 1; $i <= $lastPage; $i++)
-        <a href="{{ $jewelries->url($i) }}{{ $search ? '&search=' . urlencode($search) : '' }}"
-           class="{{ $currentPage == $i ? 'page-current' : '' }}">
-            {{ $i }}
-        </a>
-    @endfor
-</div>
+        <div class="pagination" style="justify-content:center;">
+            @php
+            $currentPage = $jewelries->currentPage();
+            $lastPage = $jewelries->lastPage();
+            $search = request('search');
+            @endphp
+            @for ($i = 1; $i <= $lastPage; $i++)
+                <a href="{{ $jewelries->url($i) }}{{ $search ? '&search=' . urlencode($search) : '' }}"
+                class="{{ $currentPage == $i ? 'page-current' : '' }}">
+                {{ $i }}
+                </a>
+                @endfor
+        </div>
     </div>
 </div>
 <!-- Modal Add Jewelry -->
