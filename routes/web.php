@@ -2,10 +2,15 @@
 
 use Illuminate\Support\Facades\Route;
 
+use App\Http\Controllers\User\ProductDetailController;
+
 Route::get('/', function () {
     return view('welcome');
 });
 Route::get('/home', [App\Http\Controllers\Home\HomeController::class, 'index'])->name('home');
+Route::get('/detail/{id}', [ProductDetailController::class, 'show'])->name('product.detail');
+
+
 Route::get('/admin/dashboard', [App\Http\Controllers\AdminDashboardController::class, 'index'])->name('admin.dashboard');
 Route::get('/admin/jewelries', [App\Http\Controllers\JewelryController::class, 'index'])->name('admin.jewelries.index');
 Route::post('/admin/jewelries', [App\Http\Controllers\JewelryController::class, 'store'])->name('admin.jewelries.store');
@@ -30,4 +35,3 @@ Route::get('/admin/orders/{id}', [App\Http\Controllers\OrderController::class, '
 Route::put('/admin/orders/{id}', [App\Http\Controllers\OrderController::class, 'update'])->name('admin.orders.update');
 Route::delete('/admin/orders/{id}', [App\Http\Controllers\OrderController::class, 'destroy'])->name('admin.orders.destroy');
 Route::post('/admin/orders', [App\Http\Controllers\OrderController::class, 'store'])->name('admin.orders.store');
-
