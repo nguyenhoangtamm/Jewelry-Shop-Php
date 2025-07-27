@@ -254,7 +254,7 @@
 <section
     class="max-w-[1200px] mx-auto px-4 py-6 grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-6 gap-6 text-center text-[#3b4a6b]">
     @foreach($categories as $row)
-    <a href=""
+    <a href="/jewelry/{{ $row->id }}"
         class="bg-white rounded-2xl shadow-lg hover:shadow-xl transition p-4 block">
         <img src="{{ $row->image_url ?? 'https://via.placeholder.com/100x100?text=No+Image' }}"
             class="w-28 h-28 mx-auto object-cover rounded-xl mb-3" />
@@ -351,7 +351,7 @@
             $sold = $p->sold ?? 100;
             $oldPrice = $p->price / (1 - $discount / 100);
             @endphp
-            <a href=""
+            <a href="/detail/{{ $p->id }}"
                 class="flex-shrink-0 w-[220px] bg-white rounded-xl shadow-md overflow-hidden relative hover:shadow-xl transition-transform duration-200 hover:scale-105 block text-black no-underline border border-[#e1c5aa]">
                 <div class="p-3 flex flex-col gap-1">
                     <div class="flex gap-2 mb-1">
