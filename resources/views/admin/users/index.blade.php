@@ -1,5 +1,5 @@
 @extends('admin.layouts.app')
-@section('title', 'Customer Management')
+@section('title', 'Quản lý khách hàng')
 @section('content')
 <style>
     .icon-change {
@@ -17,9 +17,9 @@
 </style>
 <div class="table-wrapper">
     <div class="table-header table-header-customer">
-        <h3 class="main-title">Customer Information</h3>
+        <h3 class="main-title">Thông tin khách hàng</h3>
         <form method="GET" action="" class="customer-search" style="display:inline-block;">
-            <input type="text" name="search" value="{{ request('search') }}" class="customer-text-search" placeholder="Search...">
+            <input type="text" name="search" value="{{ request('search') }}" class="customer-text-search" placeholder="Tìm kiếm...">
             <button type="submit" class="fa-solid fa-magnifying-glass" style="border:none;background:none;"></button>
         </form>
     </div>
@@ -28,12 +28,12 @@
             <thead>
                 <tr>
                     <th>ID</th>
-                    <th>Name</th>
-                    <th>Date of birth</th>
-                    <th>Address</th>
-                    <th>Phone</th>
+                    <th>Họ tên</th>
+                    <th>Ngày sinh</th>
+                    <th>Địa chỉ</th>
+                    <th>Số điện thoại</th>
                     <th>Email</th>
-                    <th>Action</th>
+                    <th>Thao tác</th>
                 </tr>
             </thead>
             <tbody>
@@ -59,11 +59,11 @@
             $lastPage = $users->lastPage();
             $search = request('search');
             @endphp
-            <a href="{{ $users->url(max($currentPage-1,1)) }}{{ $search ? '&search=' . urlencode($search) : '' }}" class="prev">Prev</a>
+            <a href="{{ $users->url(max($currentPage-1,1)) }}{{ $search ? '&search=' . urlencode($search) : '' }}" class="prev">Trước</a>
             @for ($i = 1; $i <= $lastPage; $i++)
                 <a href="{{ $users->url($i) }}{{ $search ? '&search=' . urlencode($search) : '' }}" class="{{ $currentPage == $i ? 'page-current' : '' }}">{{ $i }}</a>
                 @endfor
-                <a href="{{ $users->url(min($currentPage+1,$lastPage)) }}{{ $search ? '&search=' . urlencode($search) : '' }}" class="next">Next</a>
+                <a href="{{ $users->url(min($currentPage+1,$lastPage)) }}{{ $search ? '&search=' . urlencode($search) : '' }}" class="next">Sau</a>
         </div>
     </div>
 </div>
@@ -77,18 +77,18 @@
         </div>
         <header class="modal-header">
             <i class="modal-heading-icon fa-solid fa-user"></i>
-            Edit Customer Information
+            Chỉnh sửa thông tin khách hàng
         </header>
         <div class="modal-content">
             <input type="hidden" id="editCustomerId" name="id">
             <div class="modal-twoCol">
                 <label for="editCustomerName" class="modal-label">
-                    Name
-                    <input name="username" id="editCustomerName" type="text" class="modal-input modal-input-customer" placeholder="Name..." required>
+                    Họ tên
+                    <input name="username" id="editCustomerName" type="text" class="modal-input modal-input-customer" placeholder="Họ tên..." required>
                     <span class="name-changeCustomer-error check-error"></span>
                 </label>
                 <label for="editCustomerBirthday" class="modal-label">
-                    Date of birth
+                    Ngày sinh
                     <input name="date_of_birth" id="editCustomerBirthday" type="date" class="modal-input modal-input-customer" required>
                     <span class="birthday-changeCustomer-error check-error"></span>
                 </label>
@@ -98,21 +98,21 @@
                     <span class="email-changeCustomer-error check-error"></span>
                 </label>
                 <label for="editCustomerPhone" class="modal-label">
-                    Phone
-                    <input name="phone_number" id="editCustomerPhone" type="text" class="modal-input modal-input-customer" placeholder="Phone..." required>
+                    Số điện thoại
+                    <input name="phone_number" id="editCustomerPhone" type="text" class="modal-input modal-input-customer" placeholder="Số điện thoại..." required>
                     <span class="phone-changeCustomer-error check-error"></span>
                 </label>
             </div>
             <div class="modal-col">
                 <label for="editCustomerAddress" class="modal-label">
-                    Address
-                    <input name="address" id="editCustomerAddress" type="text" class="modal-input modal-input-customer" placeholder="Address..." required>
+                    Địa chỉ
+                    <input name="address" id="editCustomerAddress" type="text" class="modal-input modal-input-customer" placeholder="Địa chỉ..." required>
                     <span class="address-changeCustomer-error check-error"></span>
                 </label>
             </div>
             <div class="action-form">
-                <div class="cancel-book js-cancel-customer">Cancel</div>
-                <button type="submit" class="submit-book js-change-customer">Save</button>
+                <div class="cancel-book js-cancel-customer">Hủy</div>
+                <button type="submit" class="submit-book js-change-customer">Lưu</button>
             </div>
         </div>
     </form>
@@ -126,10 +126,10 @@
             <i class="fa-solid fa-xmark"></i>
         </div>
         <div class="modal-delete-body">
-            <p>Do you want to delete this customer?</p>
+            <p>Bạn có chắc chắn muốn xóa khách hàng này không?</p>
             <div class="btn-delete-choose">
-                <button type="submit" id="confirmDeleteCustomer" class="btn-yes js-customer-btn-yes">Yes</button>
-                <div class="btn-no js-customer-btn-no">No</div>
+                <button type="submit" id="confirmDeleteCustomer" class="btn-yes js-customer-btn-yes">Có</button>
+                <div class="btn-no js-customer-btn-no">Không</div>
             </div>
         </div>
     </form>

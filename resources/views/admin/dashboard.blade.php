@@ -38,8 +38,8 @@
     <div class="combobox-select-year">
         <label for="selected-year-income">Year</label>
         <select id="selected-year-income">
-            @for ($y = 2021; $y <= date('Y'); $y++)
-                <option value="{{ $y }}" @if($year==$y) selected @endif>{{ $y }}</option>
+            @for ($y = 2021; $y <= date('Y'); $y++) <option value="{{ $y }}" @if($year==$y) selected @endif>{{ $y }}
+                </option>
                 @endfor
         </select>
     </div>
@@ -53,8 +53,8 @@
     <div class="combobox-select-year">
         <label for="selected-year-numJewelry">Year</label>
         <select id="selected-year-numJewelry">
-            @for ($y = 2021; $y <= date('Y'); $y++)
-                <option value="{{ $y }}" @if($year==$y) selected @endif>{{ $y }}</option>
+            @for ($y = 2021; $y <= date('Y'); $y++) <option value="{{ $y }}" @if($year==$y) selected @endif>{{ $y }}
+                </option>
                 @endfor
         </select>
     </div>

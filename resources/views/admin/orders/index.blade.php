@@ -1,21 +1,21 @@
 @extends('admin.layouts.app')
-@section('title', 'Orders Management')
+@section('title', 'Quản lý đơn hàng')
 @section('content')
 <div class="table-wrapper">
-    <h3 class="main-title">Orders awaiting</h3>
+    <h3 class="main-title">Đơn hàng đang chờ xử lý</h3>
     <div class="table-container">
         <table>
             <thead>
                 <tr>
-                    <th>ID</th>
-                    <th>Order date</th>
-                    <th>Customer Name</th>
-                    <th>Address</th>
-                    <th>Phone_number</th>
-                    <th>Price</th>
-                    <th>Status</th>
-                    <th>Notes</th>
-                    <th>Action</th>
+                    <th>Mã đơn</th>
+                    <th>Ngày đặt</th>
+                    <th>Khách hàng</th>
+                    <th>Địa chỉ</th>
+                    <th>Số điện thoại</th>
+                    <th>Tổng tiền</th>
+                    <th>Trạng thái</th>
+                    <th>Ghi chú</th>
+                    <th>Hành động</th>
                 </tr>
             </thead>
             <tbody>
@@ -26,7 +26,7 @@
                     <td class="order-name">{{ $order->user->fullname ?? '' }}</td>
                     <td class="order-address">{{ $order->user->address ?? '' }}</td>
                     <td class="order-phone_number">{{ $order->user->phone_number ?? '' }}</td>
-                    <td class="order-price">{{ $order->total_price }} VND</td>
+                    <td class="order-price">{{ number_format($order->total_price, 0, ',', '.') }} VND</td>
                     <td class="order-status {{ $order->status }}">{{ $order->status }}</td>
                     <td class="order-notes">{{ $order->notes }}</td>
                     <td>
@@ -42,13 +42,13 @@
             $currentPage = $orders->currentPage();
             $lastPage = $orders->lastPage();
             @endphp
-            <a href="{{ $orders->url(max($currentPage-1,1)) }}" class="prev">Prev</a>
+            <a href="{{ $orders->url(max($currentPage-1,1)) }}" class="prev">Trang trước</a>
             @for ($i = 1; $i <= $lastPage; $i++)
                 <a href="{{ $orders->url($i) }}" class="{{ $currentPage == $i ? 'page-current' : '' }}">{{ $i }}</a>
-                @endfor
-                <a href="{{ $orders->url(min($currentPage+1,$lastPage)) }}" class="next">Next</a>
+            @endfor
+            <a href="{{ $orders->url(min($currentPage+1,$lastPage)) }}" class="next">Trang sau</a>
         </div>
     </div>
 </div>
-<!-- Modal Order Detail, Delete, Error... (tương tự file cũ, bạn có thể copy sang) -->
+<!-- Modal xem chi tiết, xoá, lỗi... (bạn có thể copy từ file modal cũ nếu đã có) -->
 @endsection
