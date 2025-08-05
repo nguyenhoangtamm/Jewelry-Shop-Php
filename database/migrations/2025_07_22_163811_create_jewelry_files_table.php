@@ -15,6 +15,7 @@ return new class extends Migration
             $table->id(); 
             $table->unsignedBigInteger('jewelry_id')->nullable(); 
             $table->unsignedBigInteger('file_id')->nullable(); 
+            $table->tinyInteger('is_main')->default(0); // 1: file chính, 0: phụ
             $table->timestamps(); 
             $table->tinyInteger('is_deleted')->default(0); 
             
@@ -26,6 +27,7 @@ return new class extends Migration
             $table->index('jewelry_id');
             $table->index('file_id');
             $table->index('is_deleted');
+            $table->index('is_main');
             
             // Tạo unique constraint để tránh trùng lặp jewelry_id + file_id
             $table->unique(['jewelry_id', 'file_id'], 'unique_jewelry_file');

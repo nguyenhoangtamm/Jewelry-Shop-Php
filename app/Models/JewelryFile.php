@@ -12,6 +12,7 @@ class JewelryFile extends Model
     protected $fillable = [
         'jewelry_id',
         'file_id',
+        'is_main',
         'is_deleted',
     ];
 

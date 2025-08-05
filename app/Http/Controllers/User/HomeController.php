@@ -17,7 +17,6 @@ class HomeController extends Controller
             ->limit(10)
             ->get();
 
-        // Add random discount/sold for demo (should be in DB ideally)
         foreach ($newProducts as $product) {
             $product->discount = rand(10, 30);
             $product->sold = rand(100, 500);

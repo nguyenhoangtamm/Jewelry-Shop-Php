@@ -3,6 +3,7 @@
 use App\Http\Controllers\AdminDashboardController;
 use App\Http\Controllers\Auth\AuthController;
 use App\Http\Controllers\CategoryController;
+use App\Http\Controllers\CheckoutController;
 use App\Http\Controllers\Home\HomeController;
 use App\Http\Controllers\JewelryController;
 use App\Http\Controllers\OrderController;
@@ -13,12 +14,13 @@ use App\Http\Controllers\UserController;
 Route::get('/', function () {
     return view('welcome');
 });
-Route::get('/login', [AuthController::class, 'loginView'])->name('auth.loginView');
-Route::post('/login', [AuthController::class, 'login'])->name('auth.login');
+Route::get('/login', [AuthController::class, 'loginView'])->name('login');
 Route::get('/register', [AuthController::class, 'registerView'])->name('auth.registerView');
-Route::post('/register', [AuthController::class, 'register'])->name('auth.register');
-Route::get('/home', [HomeController::class, 'index'])->name('home');
-Route::get('/detail/{id}', [ProductDetailController::class, 'show'])->name('product.detail');
+Route::middleware('auth')->group(function () {
+    Route::get('/home', [HomeController::class, 'index'])->name('home');
+    Route::get('/detail/{id}', [ProductDetailController::class, 'show'])->name('product.detail');
+    Route::get('/checkout', [CheckoutController::class, 'show'])->name('checkout');
+});
 
 
 Route::get('/admin/dashboard', [AdminDashboardController::class, 'index'])->name('admin.dashboard');

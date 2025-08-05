@@ -28,6 +28,7 @@ class User extends Authenticatable
         'phone_number',
         'role',
         'avatar',
+        'is_lock',
         'is_deleted',
     ];
 

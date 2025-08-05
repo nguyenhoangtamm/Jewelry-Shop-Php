@@ -15,9 +15,12 @@ return new class extends Migration
             $table->id(); 
             $table->string('name', 100); 
             $table->text('description')->nullable(); 
+            $table->unsignedBigInteger('file_id')->nullable();
             $table->timestamp('created_at')->useCurrent(); 
             $table->timestamp('updated_at')->useCurrent()->useCurrentOnUpdate(); 
             $table->boolean('is_deleted')->default(false); 
+
+            $table->foreign('file_id')->references('id')->on('files')->onDelete('set null');
         });
     }
 

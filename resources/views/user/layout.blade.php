@@ -1,3 +1,36 @@
+@if(Auth::check())
+<script>
+    function handleLogoutAjax() {
+        fetch("{{ route('api.auth.logout') }}", {
+                method: "POST",
+                headers: {
+                    'X-CSRF-TOKEN': '{{ csrf_token() }}',
+                    'Accept': 'application/json'
+                }
+            })
+            .then(res => res.json())
+            .then(data => {
+                // Reload page or redirect to home/login
+                window.location.reload();
+            })
+            .catch(() => {
+                alert('Đăng xuất thất bại!');
+            });
+    }
+    document.addEventListener('DOMContentLoaded', function() {
+        var logoutBtn = document.getElementById('logout-desktop-btn');
+        if (logoutBtn) logoutBtn.addEventListener('click', function(e) {
+            e.preventDefault();
+            handleLogoutAjax();
+        });
+        var logoutMobileBtn = document.getElementById('logout-mobile-btn');
+        if (logoutMobileBtn) logoutMobileBtn.addEventListener('click', function(e) {
+            e.preventDefault();
+            handleLogoutAjax();
+        });
+    });
+</script>
+@endif
 @if (session('status'))
 <div class="alert alert-success">
     {{ session('status') }}
@@ -237,8 +270,15 @@
                                         <i class="fa fa-user"></i>
                                     </button>
                                     <ul class="dropdown-menu" aria-labelledby="userMenu">
-                                        <li><a href="dang-ky.html"><i class="fa fa-sign-in"></i> Đăng ký</a></li>
-                                        <li><a href="dang-nhap.html"><i class="fa fa-key"></i> Đăng nhập</a></li>
+                                        @if(Auth::check())
+                                        <li class="px-3 py-2 text-[#7a0057] font-semibold">Xin chào, {{ Auth::user()->username ?? Auth::user()->name ?? Auth::user()->email }}</li>
+                                        <li>
+                                            <a href="#" id="logout-mobile-btn" class="text-red-600"><i class="fa fa-sign-out"></i> Đăng xuất</a>
+                                        </li>
+                                        @else
+                                        <li><a href="{{ url('dang-ky') }}"><i class="fa fa-sign-in"></i> Đăng ký</a></li>
+                                        <li><a href="{{ url('dang-nhap') }}"><i class="fa fa-key"></i> Đăng nhập</a></li>
+                                        @endif
                                     </ul>
                                 </div>
                                 <div class="dropdown">
@@ -311,9 +351,18 @@
                             </a>
                         </div>
                         <div>
-                            <a href="dang-nhap.html" style="display: inline-block; border: 2px solid #bfa46b; border-radius: 50%; width: 44px; height: 44px; text-align: center; line-height: 40px; color: #9c8656; font-size: 22px;">
+                            @if(Auth::check())
+                            <div class="flex items-center gap-2">
+                                <span class="font-semibold text-[#7a0057]" style="font-size:15px;">{{ Auth::user()->username ?? Auth::user()->name ?? Auth::user()->email }}</span>
+                                <a href="#" id="logout-desktop-btn" style="display: inline-block; border: 2px solid #d94e2a; border-radius: 50%; width: 44px; height: 44px; text-align: center; line-height: 40px; color: #d94e2a; font-size: 22px; background: #fff;" title="Đăng xuất">
+                                    <i class="fa fa-sign-out"></i>
+                                </a>
+                            </div>
+                            @else
+                            <a href="{{ url('dang-nhap') }}" style="display: inline-block; border: 2px solid #bfa46b; border-radius: 50%; width: 44px; height: 44px; text-align: center; line-height: 40px; color: #9c8656; font-size: 22px;">
                                 <i class="fa fa-user"></i>
                             </a>
+                            @endif
                         </div>
                     </div>
                 </div>

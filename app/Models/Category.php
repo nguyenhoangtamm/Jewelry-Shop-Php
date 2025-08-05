@@ -12,11 +12,16 @@ class Category extends Model
     protected $fillable = [
         'name',
         'description',
+        'file_id',
         'is_deleted',
     ];
 
     public function jewelries()
     {
         return $this->hasMany(Jewelry::class);
+    }
+    public function file()
+    {
+        return $this->belongsTo(File::class, 'file_id');
     }
 }
