@@ -28,6 +28,12 @@ class CategoryController extends Controller
         return redirect()->route('admin.categories.index')->with('success', 'Category created successfully.');
     }
 
+    public function edit($id)
+    {
+        $category = Category::with('file')->findOrFail($id);
+        return view('admin.categories.edit', compact('category'));
+    }
+
     public function update(Request $request, $id)
     {
         $validated = $request->validate([
@@ -42,8 +48,7 @@ class CategoryController extends Controller
     public function destroy($id)
     {
         $category = Category::findOrFail($id);
-        $category->is_deleted = 1;
-        $category->save();
+        $category->softDelete();
         return redirect()->route('admin.categories.index')->with('success', 'Category deleted successfully.');
     }
 }

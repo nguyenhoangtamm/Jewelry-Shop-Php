@@ -16,8 +16,9 @@ return new class extends Migration
             $table->foreignId('user_id')->constrained('users')->onDelete('cascade');
             $table->decimal('total_amount', 10, 2);
             $table->string('status', 50)->default('pending');
+            $table->string('notes')->nullable();
+            $table->boolean('is_deleted')->default(false);
             $table->timestamps();
-            $table->tinyInteger('is_deleted')->default(0);
         });
     }
 

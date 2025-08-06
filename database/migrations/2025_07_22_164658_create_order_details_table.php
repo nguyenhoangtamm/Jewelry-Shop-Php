@@ -14,11 +14,11 @@ return new class extends Migration
         Schema::create('order_details', function (Blueprint $table) {
             $table->id();
             $table->foreignId('order_id')->constrained('orders')->onDelete('cascade');
-            $table->foreignId('jewelries_id')->constrained('jewelries')->onDelete('cascade');
+            $table->foreignId('jewelry_id')->constrained('jewelries')->onDelete('cascade');
             $table->integer('quantity');
             $table->decimal('unit_price', 10, 2);
+            $table->boolean('is_deleted')->default(false);
             $table->timestamps();
-            $table->tinyInteger('is_deleted')->default(0);
         });
     }
 

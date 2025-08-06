@@ -4,32 +4,29 @@ namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
 use App\Models\Jewelry;
-use App\Models\Category; // 👉 Thêm dòng này để dùng model Category
+use App\Models\Category;
+use App\Helpers\ImageHelper;
 
 class JewelryController extends Controller
 {
     public function index(Request $request)
     {
         $search = $request->input('search');
-        $query = Jewelry::query();
+        $query = Jewelry::with(['category', 'jewelryFiles.file']);
 
         if ($search) {
             $query->where('name', 'like', "%$search%");
         }
 
         $jewelries = $query->paginate(5);
-        $categories = Category::all(); // Danh mục
+        $categories = Category::where('is_deleted', 0)->get();
 
-        // Lấy image là đường dẫn file có is_main=1 cho từng jewelry
+        // Thêm ảnh chính cho từng jewelry
         foreach ($jewelries as $jewelry) {
-            $mainFile = \App\Models\JewelryFile::where('jewelry_id', $jewelry->id)
-                ->where('is_main', 1)
-                ->with('file')
-                ->first();
-            $jewelry->image = $mainFile && $mainFile->file ? $mainFile->file->path : null;
+            $jewelry->main_image = ImageHelper::getMainImage($jewelry);
         }
 
-        // ✅ Lấy danh sách đá chính duy nhất, chuẩn hóa hoa/thường
+        // Lấy danh sách đá chính duy nhất
         $mainStones = Jewelry::select('main_stone')
             ->whereNotNull('main_stone')
             ->distinct()
@@ -41,7 +38,6 @@ class JewelryController extends Controller
             ->sort()
             ->values();
 
-        // ✅ Truyền vào view
         return view('admin.jewelries.index', compact('jewelries', 'search', 'categories', 'mainStones'));
     }
 
@@ -62,40 +58,25 @@ class JewelryController extends Controller
             'brand' => 'nullable|string',
         ]);
 
-        // Xử lý ảnh nếu có
-        if ($request->hasFile('image')) {
-            $image = $request->file('image');
-            // Lưu vào public/img/uploads/images
-            $destinationPath = public_path('img/uploads/images');
-            if (!file_exists($destinationPath)) {
-                mkdir($destinationPath, 0777, true);
-            }
-            $fileName = time() . '_' . $image->getClientOriginalName();
-            $image->move($destinationPath, $fileName);
-            $relativePath = $fileName;
-            $validated['image'] = $relativePath;
-
-            // Lưu vào bảng files
-            $fileModel = new \App\Models\File();
-            $fileModel->name = $image->getClientOriginalName();
-            $fileModel->path = $relativePath;
-            $fileModel->type = $image->getClientMimeType();
-            $fileModel->size = filesize($destinationPath . DIRECTORY_SEPARATOR . $fileName);
-            $fileModel->extension = $image->getClientOriginalExtension();
-            $fileModel->is_deleted = false;
-            $fileModel->save();
-        }
-
+        // Tạo jewelry trước
         $jewelry = Jewelry::create($validated);
 
-        // Nếu có file, lưu vào jewelry_files
-        if (isset($fileModel) && isset($jewelry)) {
-            $hasImage = \App\Models\JewelryFile::where('jewelry_id', $jewelry->id)->exists();
-            $jewelryFile = new \App\Models\JewelryFile();
-            $jewelryFile->jewelry_id = $jewelry->id;
-            $jewelryFile->file_id = $fileModel->id;
-            $jewelryFile->is_main = $hasImage ? 0 : 1;
-            $jewelryFile->save();
+        // Xử lý ảnh nếu có
+        if ($request->hasFile('image')) {
+            $fileModel = ImageHelper::uploadFile($request->file('image'));
+
+            if ($fileModel) {
+                // Kiểm tra xem đã có ảnh chính chưa
+                $hasMainImage = \App\Models\JewelryFile::where('jewelry_id', $jewelry->id)
+                    ->where('is_main', 1)
+                    ->exists();
+
+                $jewelryFile = new \App\Models\JewelryFile();
+                $jewelryFile->jewelry_id = $jewelry->id;
+                $jewelryFile->file_id = $fileModel->id;
+                $jewelryFile->is_main = !$hasMainImage ? 1 : 0; // Ảnh đầu tiên sẽ là ảnh chính
+                $jewelryFile->save();
+            }
         }
 
         return redirect()->route('admin.jewelries.index')
@@ -104,8 +85,13 @@ class JewelryController extends Controller
 
     public function edit($id)
     {
-        $jewelry = Jewelry::findOrFail($id);
-        return view('admin.jewelries.edit', compact('jewelry'));
+        $jewelry = Jewelry::with(['category', 'jewelryFiles.file'])->findOrFail($id);
+        $categories = Category::where('is_deleted', 0)->get();
+
+        // Lấy ảnh chính của jewelry
+        $jewelry->current_image = ImageHelper::getMainImage($jewelry);
+
+        return view('admin.jewelries.edit', compact('jewelry', 'categories'));
     }
 
     public function update(Request $request, $id)
@@ -127,37 +113,22 @@ class JewelryController extends Controller
 
         $jewelry = Jewelry::findOrFail($id);
 
-
         // Xử lý ảnh nếu có upload mới
         if ($request->hasFile('image')) {
-            $image = $request->file('image');
-            // Lưu vào public/img/uploads/images
-            $destinationPath = public_path('img/uploads/images');
-            if (!file_exists($destinationPath)) {
-                mkdir($destinationPath, 0777, true);
+            $fileModel = ImageHelper::uploadFile($request->file('image'));
+
+            if ($fileModel) {
+                // Lưu vào bảng jewelry_files
+                $hasMainImage = \App\Models\JewelryFile::where('jewelry_id', $jewelry->id)
+                    ->where('is_main', 1)
+                    ->exists();
+
+                $jewelryFile = new \App\Models\JewelryFile();
+                $jewelryFile->jewelry_id = $jewelry->id;
+                $jewelryFile->file_id = $fileModel->id;
+                $jewelryFile->is_main = !$hasMainImage ? 1 : 0;
+                $jewelryFile->save();
             }
-            $fileName = time() . '_' . $image->getClientOriginalName();
-            $image->move($destinationPath, $fileName);
-            $relativePath = $fileName;
-            $validated['image'] = $relativePath;
-
-            // Lưu vào bảng files
-            $fileModel = new \App\Models\File();
-            $fileModel->name = $image->getClientOriginalName();
-            $fileModel->path = $relativePath;
-            $fileModel->type = $image->getClientMimeType();
-            $fileModel->size = filesize($destinationPath . DIRECTORY_SEPARATOR . $fileName);
-            $fileModel->extension = $image->getClientOriginalExtension();
-            $fileModel->is_deleted = false;
-            $fileModel->save();
-
-            // Lưu vào bảng jewelry_files (giả sử jewelry_id, file_id)
-            $hasImage = \App\Models\JewelryFile::where('jewelry_id', $jewelry->id)->exists();
-            $jewelryFile = new \App\Models\JewelryFile();
-            $jewelryFile->jewelry_id = $jewelry->id;
-            $jewelryFile->file_id = $fileModel->id;
-            $jewelryFile->is_main = $hasImage ? 0 : 1;
-            $jewelryFile->save();
         }
 
         $jewelry->update($validated);
@@ -169,7 +140,7 @@ class JewelryController extends Controller
     public function destroy($id)
     {
         $jewelry = Jewelry::findOrFail($id);
-        $jewelry->delete();
+        $jewelry->softDelete();
 
         return redirect()->route('admin.jewelries.index')->with('success', 'Xóa trang sức thành công!');
     }

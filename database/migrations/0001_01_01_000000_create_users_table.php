@@ -12,7 +12,7 @@ return new class extends Migration
     public function up(): void
     {
         Schema::create('users', function (Blueprint $table) {
-            $table->increments('id');
+            $table->bigIncrements('id');
             $table->string('username', 100)->nullable(false);
             $table->string('password', 255)->nullable(false);
             $table->string('fullname', 255)->nullable();
@@ -23,9 +23,9 @@ return new class extends Migration
             $table->string('role', 50)->nullable();
             $table->string('avatar', 255)->nullable();
             $table->boolean('is_lock')->default(false);
+            $table->boolean('is_deleted')->default(false);
             $table->dateTime('created_at')->nullable();
             $table->dateTime('updated_at')->nullable();
-            $table->tinyInteger('is_deleted')->default(0);
         });
 
         Schema::create('password_reset_tokens', function (Blueprint $table) {

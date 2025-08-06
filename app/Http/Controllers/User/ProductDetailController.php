@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers\User;
 
+use App\Helpers\ImageHelper;
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
 use App\Models\Jewelry;
@@ -21,9 +22,12 @@ class ProductDetailController extends Controller
         }
         $images = [];
         foreach ($jewelry->jewelryFiles as $jewelryFile) {
-            $file = $jewelryFile->file;
-            if ($file) {
-                $images[] = $file->path;
+            if ($jewelryFile->file) {
+                $images[] = [
+                    'id' => $jewelryFile->file->id,
+                    'path' => ImageHelper::getImageUrl($jewelryFile->file->path),
+                    'is_main' => $jewelryFile->is_main,
+                ];
             }
         }
     

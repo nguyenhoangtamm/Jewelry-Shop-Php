@@ -17,15 +17,15 @@
             <div class="product-gallery">
                 <div class="gallery-container">
                     @if($images)
-                    <img id="mainImage" src="{{ $images[0] }}" alt="{{ $jewelry->name }}">
+                    <img id="mainImage" src="{{ $images[0]['path'] }}" alt="{{ $jewelry->name }}">
                     <div class="new-badge">NEW</div>
                 </div>
                 <div class="thumbnail-list">
-                    @foreach($images as $index => $image)
-                    <img src="{{ $image }}" alt="{{ $image->name ?? 'Thumbnail ' . ($index + 1) }}" class="thumbnail {{ $index === 0 ? 'active' : '' }}" data-main="{{ $image }}">
+                    @foreach($images as $img)
+                    <img src="{{ $img['path'] }}" alt="Ảnh sản phẩm" />
                     @endforeach
                     @for($i = count($images); $i < 4; $i++)
-                        <img src="{{ $images[0] }}" alt="{{ $jewelry->name }}" class="thumbnail" data-main="{{ $images[0] }}">
+                        <img src="{{ $images[0]['path'] }}" alt="{{ $jewelry->name }}" class="thumbnail" data-main="{{ $images[0]['path'] }}">
                         @endfor
                         @else
                         <img src="../images/default-product.jpg" alt="{{ $jewelry->name }}" class="main-image" id="mainImage">
@@ -291,7 +291,13 @@
                                 </div>
                                 <div class="reviewer-info">
                                     <div class="reviewer-name">{{ $review->user->username ?? 'Ẩn danh' }}</div>
-                                    <div class="review-date">{{ $review->created_at->format('d/m/Y H:i') }}</div>
+                                    <div class="review-date">
+                                        @if($review->created_at)
+                                        {{ $review->created_at->format('d/m/Y H:i') }}
+                                        @else
+                                        N/A
+                                        @endif
+                                    </div>
                                 </div>
                                 <div class="review-rating">
                                     @for($i = 1; $i <= 5; $i++)
@@ -456,6 +462,6 @@
         });
     });
 </script>
-    
+
 
 @endsection

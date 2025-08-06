@@ -12,15 +12,15 @@ return new class extends Migration
     public function up(): void
     {
         Schema::create('files', function (Blueprint $table) {
-            $table->id(); 
-            $table->string('name', 255); 
+            $table->id();
+            $table->string('name', 255);
             $table->text('path')->nullable();
             $table->string('type', 50)->nullable();
             $table->integer('size')->nullable();
-            $table->string('extension', 10)->nullable(); 
-            $table->timestamps(); 
-            $table->tinyInteger('is_deleted')->default(0); 
-            
+            $table->string('extension', 10)->nullable();
+            $table->boolean('is_deleted')->default(false);
+            $table->timestamps();
+
             // Tạo index cho các cột thường được query
             $table->index('type');
             $table->index('extension');

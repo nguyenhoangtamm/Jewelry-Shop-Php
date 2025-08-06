@@ -773,8 +773,8 @@
 
                     <td class="jewelry-stock">{{ $jewelry->stock ?? '0' }}</td>
                     <td>
-                        @if ($jewelry->image)
-                        <img src="{{ asset('img/uploads/images/' . $jewelry->image) }}" alt="jewelry" width="80">
+                        @if ($jewelry->main_image)
+                        <img src="{{ asset($jewelry->main_image) }}" alt="jewelry" width="80">
                         @else
                         Không có ảnh
                         @endif
@@ -782,8 +782,17 @@
                     <td class="jewelry-description">{{ $jewelry->description ?? '' }}</td>
                     <td>
                         <button type="button" class="fa-solid fa-pen icon-change js-changeJewelry"
-                            data-id="{{ $jewelry->id }}" data-name="{{ $jewelry->name }}"
-                            data-price="{{ $jewelry->price }}"></button>
+                            data-id="{{ $jewelry->id }}"
+                            data-name="{{ $jewelry->name }}"
+                            data-price="{{ $jewelry->price }}"
+                            data-category="{{ $jewelry->category_id }}"
+                            data-main_stone="{{ $jewelry->main_stone }}"
+                            data-stock="{{ $jewelry->stock }}"
+                            data-description="{{ $jewelry->description }}"
+                            data-weight="{{ $jewelry->weight }}"
+                            data-policy="{{ $jewelry->after_sales_policy }}">
+                        </button>
+
                         <a href="?delete={{ $jewelry->id }}" class="fas fa-trash icon-delete js-delete-jewelry"></a>
                     </td>
                 </tr>
@@ -1123,13 +1132,15 @@
         editBtns.forEach(btn => {
             btn.addEventListener('click', () => {
                 const id = btn.getAttribute('data-id');
-                const name = btn.getAttribute('data-name');
-                const price = btn.getAttribute('data-price');
-
                 editForm.action = `/admin/jewelries/${id}`;
-                document.getElementById('edit-jewelry-name').value = name;
-                document.getElementById('edit-jewelry-price').value = price;
-
+                document.getElementById('edit-jewelry-name').value = btn.getAttribute('data-name') || '';
+                document.getElementById('edit-jewelry-price').value = btn.getAttribute('data-price') || '';
+                document.getElementById('edit-jewelry-category').value = btn.getAttribute('data-category') || '';
+                document.getElementById('edit-jewelry-main-stone').value = btn.getAttribute('data-main_stone') || '';
+                document.getElementById('edit-jewelry-stock').value = btn.getAttribute('data-stock') || '';
+                document.getElementById('edit-jewelry-description').value = btn.getAttribute('data-description') || '';
+                document.getElementById('edit-jewelry-weight').value = btn.getAttribute('data-weight') || '';
+                document.getElementById('edit-jewelry-policy').value = btn.getAttribute('data-policy') || '';
                 editModal.style.display = 'flex';
                 document.body.style.overflow = 'hidden';
             });

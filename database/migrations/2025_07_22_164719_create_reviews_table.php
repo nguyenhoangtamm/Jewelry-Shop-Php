@@ -17,8 +17,8 @@ return new class extends Migration
             $table->foreignId('jewelries_id')->constrained('jewelries')->onDelete('cascade');
             $table->text('content');
             $table->integer('rating');
+            $table->boolean('is_deleted')->default(false);
             $table->timestamps();
-            $table->tinyInteger('is_deleted')->default(0);
         });
     }
 

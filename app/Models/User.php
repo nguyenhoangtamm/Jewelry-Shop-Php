@@ -6,6 +6,7 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
+use Illuminate\Database\Eloquent\Builder;
 
 class User extends Authenticatable
 {
@@ -54,7 +55,50 @@ class User extends Authenticatable
             'created_at' => 'datetime',
             'updated_at' => 'datetime',
             'is_deleted' => 'boolean',
+            'is_lock' => 'boolean',
             'password' => 'hashed',
         ];
+    }
+
+    // Global scope để loại bỏ các record đã xóa
+    protected static function booted()
+    {
+        static::addGlobalScope('not_deleted', function (Builder $builder) {
+            $builder->where('is_deleted', false);
+        });
+    }
+
+    public function orders()
+    {
+        return $this->hasMany(Order::class);
+    }
+
+    public function reviews()
+    {
+        return $this->hasMany(Review::class);
+    }
+
+    // Phương thức để lấy cả record đã xóa
+    public static function withDeleted()
+    {
+        return (new static)->newQueryWithoutScope('not_deleted');
+    }
+
+    // Phương thức để chỉ lấy record đã xóa
+    public static function onlyDeleted()
+    {
+        return (new static)->newQueryWithoutScope('not_deleted')->where('is_deleted', true);
+    }
+
+    // Soft delete
+    public function softDelete()
+    {
+        return $this->update(['is_deleted' => true]);
+    }
+
+    // Restore
+    public function restore()
+    {
+        return $this->update(['is_deleted' => false]);
     }
 }

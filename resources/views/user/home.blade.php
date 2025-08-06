@@ -346,7 +346,7 @@
             <div class="flex overflow-x-auto gap-6 scrollbar-hide">
                 @foreach($newProducts as $p)
                 @php
-                $imgUrl = !empty($p->path) ? asset('img/uploads/' . $p->path) : 'https://via.placeholder.com/160';
+                $imgUrl = !empty($p->main_image) ? asset($p->main_image) : 'https://via.placeholder.com/160';
                 $discount = $p->discount ?? 10;
                 $sold = $p->sold ?? 100;
                 $oldPrice = $p->price / (1 - $discount / 100);
