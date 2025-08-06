@@ -1,7 +1,9 @@
 <?php
 
-namespace App\Http\Controllers;
+namespace App\Http\Controllers\User;
 
+use App\Helpers\ImageHelper;
+use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
 use App\Models\Jewelry;
 use Illuminate\Support\Facades\Auth;
@@ -22,10 +24,10 @@ class CheckoutController extends Controller
             return redirect()->route('home');
         }
 
-        $image = $jewelry->jewelryFiles()->orderBy('id')->first();
+        $image = ImageHelper::getMainImage($jewelry);
         $total_amount = $jewelry->price * $quantity;
         $user = Auth::user();
 
-        return view('checkout', compact('jewelry', 'image', 'quantity', 'total_amount', 'user', 'jewelry_id'));
+        return view('user.checkout', compact('jewelry', 'image', 'quantity', 'total_amount', 'user', 'jewelry_id'));
     }
 }

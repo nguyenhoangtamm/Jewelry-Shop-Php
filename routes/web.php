@@ -3,10 +3,10 @@
 use App\Http\Controllers\AdminDashboardController;
 use App\Http\Controllers\Auth\AuthController;
 use App\Http\Controllers\CategoryController;
-use App\Http\Controllers\CheckoutController;
 use App\Http\Controllers\Home\HomeController;
 use App\Http\Controllers\JewelryController;
 use App\Http\Controllers\OrderController;
+use App\Http\Controllers\User\CheckoutController;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\User\ProductDetailController;
 use App\Http\Controllers\UserController;

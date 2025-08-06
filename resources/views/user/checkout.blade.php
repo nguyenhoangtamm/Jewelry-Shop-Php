@@ -386,7 +386,7 @@
             <h3 class="section-title">Tóm tắt đơn hàng</h3>
             <!-- Sản phẩm -->
             <div class="product-item">
-                <img src="{{ $image ? asset($image->path) : asset('images/default-product.jpg') }}"
+                <img src="{{ $image ? asset($image) : asset('images/default-product.jpg') }}"
                     alt="{{ $jewelry->name }}" class="product-image">
                 <div class="product-info">
                     <h4>{{ $jewelry->name }}</h4>
