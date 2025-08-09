@@ -87,17 +87,23 @@ class CategoryController extends Controller
         ]);
 
         $page = $request->input('page');
+        $redirect = redirect()->route('admin.categories.index');
         if ($page) {
             $redirect = redirect()->route('admin.categories.index', ['page' => $page]);
         }
-        $redirect = redirect()->route('admin.categories.index');
         return $redirect->with('success', 'Category updated successfully.');
     }
 
-    public function destroy($id)
+    public function destroy(Request $request, $id)
     {
         $category = Category::findOrFail($id);
         $category->softDelete();
-        return redirect()->route('admin.categories.index')->with('success', 'Category deleted successfully.');
+
+        $page = $request->input('page');
+        $redirect = redirect()->route('admin.categories.index');
+        if ($page) {
+            $redirect = redirect()->route('admin.categories.index', ['page' => $page]);
+        }
+        return $redirect->with('success', 'Category deleted successfully.');
     }
 }

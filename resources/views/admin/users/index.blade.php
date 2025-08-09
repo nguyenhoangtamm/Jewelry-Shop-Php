@@ -205,16 +205,22 @@
     }
 
     @keyframes fadeIn {
-        from { opacity: 0; }
-        to { opacity: 1; }
+        from {
+            opacity: 0;
+        }
+
+        to {
+            opacity: 1;
+        }
     }
 
     @keyframes slideUp {
-        from { 
+        from {
             opacity: 0;
             transform: translateY(30px) scale(0.95);
         }
-        to { 
+
+        to {
             opacity: 1;
             transform: translateY(0) scale(1);
         }
@@ -270,7 +276,7 @@
         left: -100%;
         width: 100%;
         height: 100%;
-        background: linear-gradient(90deg, transparent, rgba(255,255,255,0.4), transparent);
+        background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.4), transparent);
         transition: left 0.5s ease;
     }
 
@@ -302,51 +308,52 @@
         box-shadow: 0 8px 25px rgba(239, 68, 68, 0.3);
     }
 
-   /* Toast messages */
-.toast-message {
-    position: fixed;
-    top: 50%;
-    left: 50%;
-    transform: translate(-50%, -50%);
-    display: none;
-    padding: 10px 16px;
-    border-radius: 8px;
-    color: white;
-    z-index: 3000;
-    box-shadow: var(--shadow-lg);
-    animation: slideInFade 0.3s ease;
-    backdrop-filter: blur(10px);
-    max-width: 200px;
-    width: max-content;
-    font-size: 14px;
-    text-align: center;
-    word-wrap: break-word;
-    white-space: normal;
-}
-
-/* Hiệu ứng xuất hiện */
-@keyframes slideInFade {
-    from {
-        opacity: 0;
-        transform: translate(-50%, -60%);
-    }
-    to {
-        opacity: 1;
+    /* Toast messages */
+    .toast-message {
+        position: fixed;
+        top: 50%;
+        left: 50%;
         transform: translate(-50%, -50%);
+        display: none;
+        padding: 10px 16px;
+        border-radius: 8px;
+        color: white;
+        z-index: 3000;
+        box-shadow: var(--shadow-lg);
+        animation: slideInFade 0.3s ease;
+        backdrop-filter: blur(10px);
+        max-width: 200px;
+        width: max-content;
+        font-size: 14px;
+        text-align: center;
+        word-wrap: break-word;
+        white-space: normal;
     }
-}
 
-/* Thành công */
-.toast-success {
-    background: linear-gradient(135deg, #16a34a 0%, #15803d 100%);
-    border: 1px solid rgba(255, 255, 255, 0.2);
-}
+    /* Hiệu ứng xuất hiện */
+    @keyframes slideInFade {
+        from {
+            opacity: 0;
+            transform: translate(-50%, -60%);
+        }
 
-/* Lỗi */
-.toast-error {
-    background: linear-gradient(135deg, #dc2626 0%, #b91c1c 100%);
-    border: 1px solid rgba(255, 255, 255, 0.2);
-}
+        to {
+            opacity: 1;
+            transform: translate(-50%, -50%);
+        }
+    }
+
+    /* Thành công */
+    .toast-success {
+        background: linear-gradient(135deg, #16a34a 0%, #15803d 100%);
+        border: 1px solid rgba(255, 255, 255, 0.2);
+    }
+
+    /* Lỗi */
+    .toast-error {
+        background: linear-gradient(135deg, #dc2626 0%, #b91c1c 100%);
+        border: 1px solid rgba(255, 255, 255, 0.2);
+    }
 
     /* Pagination modern styling */
     .pagination {
@@ -362,7 +369,8 @@
         box-shadow: var(--shadow-md);
     }
 
-    .pagination a, .pagination span {
+    .pagination a,
+    .pagination span {
         padding: 10px 16px;
         border: 2px solid var(--galaxy-light);
         border-radius: 10px;
@@ -484,7 +492,13 @@
         <table>
             <thead>
                 <tr>
-                    <th>ID</th><th>Họ tên</th><th>Ngày sinh</th><th>Địa chỉ</th><th>Số điện thoại</th><th>Email</th><th>Thao tác</th>
+                    <th>ID</th>
+                    <th>Họ tên</th>
+                    <th>Ngày sinh</th>
+                    <th>Địa chỉ</th>
+                    <th>Số điện thoại</th>
+                    <th>Email</th>
+                    <th>Thao tác</th>
                 </tr>
             </thead>
             <tbody>
@@ -498,17 +512,17 @@
                     <td>{{ $user->email }}</td>
                     <td>
                         @php $locked = (isset($user->is_locked) && $user->is_locked); @endphp
-                       <button type="button"
-        class="icon-change lock-customer-btn"
-        data-customer-id="{{ $user->id }}"
-        data-username="{{ $user->username }}"
-        data-locked="{{ $locked ? '1' : '0' }}"
-        title="{{ $locked ? 'Mở khóa tài khoản' : 'Khóa tài khoản' }}">
-    {{ $locked ? '🔓' : '🔒' }}
-</button>
+                        <button type="button"
+                            class="icon-change lock-customer-btn"
+                            data-customer-id="{{ $user->id }}"
+                            data-username="{{ $user->username }}"
+                            data-locked="{{ $locked ? '1' : '0' }}"
+                            title="{{ $locked ? 'Mở khóa tài khoản' : 'Khóa tài khoản' }}">
+                            {{ $locked ? '🔓' : '🔒' }}
+                        </button>
 
                         @if($locked)
-                            <span class="status-locked">Đã khóa</span>
+                        <span class="status-locked">Đã khóa</span>
                         @endif
                     </td>
                 </tr>
@@ -518,85 +532,85 @@
 
         <!-- pagination custom -->
         @php
-            $currentPage = $users->currentPage();
-            $lastPage = $users->lastPage();
-            $baseUrl = url()->current();
-            // preserve all existing query params except 'page'
-            $preserve = request()->except('page');
+        $currentPage = $users->currentPage();
+        $lastPage = $users->lastPage();
+        $baseUrl = url()->current();
+        // preserve all existing query params except 'page'
+        $preserve = request()->except('page');
         @endphp
 
         @if ($lastPage > 1)
         <div class="pagination" aria-label="Pagination">
             {{-- Prev --}}
             @if ($users->onFirstPage())
-                <span>&laquo; Trang trước</span>
+            <span>&laquo; Trang trước</span>
             @else
-                @php
-                    $prevPage = $currentPage - 1;
-                    $params = $preserve;
-                    if ($prevPage > 1) $params['page'] = $prevPage;
-                    $prevUrl = $baseUrl . (count($params) ? '?' . http_build_query($params) : '');
-                @endphp
-                <a href="{{ $prevUrl }}">&laquo; Trang trước</a>
+            @php
+            $prevPage = $currentPage - 1;
+            $params = $preserve;
+            if ($prevPage > 1) $params['page'] = $prevPage;
+            $prevUrl = $baseUrl . (count($params) ? '?' . http_build_query($params) : '');
+            @endphp
+            <a href="{{ $prevUrl }}">&laquo; Trang trước</a>
             @endif
 
             {{-- If first page not in window, show 1 --}}
             @php
-                $start = max(1, $currentPage - 2);
-                $end = min($lastPage, $currentPage + 2);
+            $start = max(1, $currentPage - 2);
+            $end = min($lastPage, $currentPage + 2);
             @endphp
 
             @if ($start > 1)
-                @php
-                    $paramsFirst = $preserve;
-                    // page 1 -> don't add 'page'
-                    $firstUrl = $baseUrl . (count($paramsFirst) ? '?' . http_build_query($paramsFirst) : '');
-                @endphp
-                <a href="{{ $firstUrl }}">1</a>
-                @if ($start > 2)
-                    <span>…</span>
-                @endif
+            @php
+            $paramsFirst = $preserve;
+            // page 1 -> don't add 'page'
+            $firstUrl = $baseUrl . (count($paramsFirst) ? '?' . http_build_query($paramsFirst) : '');
+            @endphp
+            <a href="{{ $firstUrl }}">1</a>
+            @if ($start > 2)
+            <span>…</span>
+            @endif
             @endif
 
             {{-- Page numbers --}}
             @for ($i = $start; $i <= $end; $i++)
                 @php
-                    $paramsI = $preserve;
-                    if ($i > 1) $paramsI['page'] = $i;
-                    $urlI = $baseUrl . (count($paramsI) ? '?' . http_build_query($paramsI) : '');
+                $paramsI=$preserve;
+                if ($i> 1) $paramsI['page'] = $i;
+                $urlI = $baseUrl . (count($paramsI) ? '?' . http_build_query($paramsI) : '');
                 @endphp
 
                 @if ($i == $currentPage)
-                    <span aria-current="page">{{ $i }}</span>
+                <span aria-current="page">{{ $i }}</span>
                 @else
-                    <a href="{{ $urlI }}">{{ $i }}</a>
+                <a href="{{ $urlI }}">{{ $i }}</a>
                 @endif
-            @endfor
+                @endfor
 
-            @if ($end < $lastPage)
-                @if ($end < $lastPage - 1)
+                @if ($end < $lastPage)
+                    @if ($end < $lastPage - 1)
                     <span>…</span>
-                @endif
-                @php
+                    @endif
+                    @php
                     $paramsLast = $preserve;
                     $paramsLast['page'] = $lastPage;
                     $lastUrl = $baseUrl . (count($paramsLast) ? '?' . http_build_query($paramsLast) : '');
-                @endphp
-                <a href="{{ $lastUrl }}">{{ $lastPage }}</a>
-            @endif
+                    @endphp
+                    <a href="{{ $lastUrl }}">{{ $lastPage }}</a>
+                    @endif
 
-            {{-- Next --}}
-            @if ($users->hasMorePages())
-                @php
+                    {{-- Next --}}
+                    @if ($users->hasMorePages())
+                    @php
                     $nextPage = $currentPage + 1;
                     $paramsNext = $preserve;
                     if ($nextPage > 1) $paramsNext['page'] = $nextPage;
                     $nextUrl = $baseUrl . (count($paramsNext) ? '?' . http_build_query($paramsNext) : '');
-                @endphp
-                <a href="{{ $nextUrl }}">Trang sau &raquo;</a>
-            @else
-                <span>Trang sau &raquo;</span>
-            @endif
+                    @endphp
+                    <a href="{{ $nextUrl }}">Trang sau &raquo;</a>
+                    @else
+                    <span>Trang sau &raquo;</span>
+                    @endif
         </div>
         @endif
 
@@ -613,6 +627,7 @@
         <form id="lockCustomerForm" method="POST" action="">
             @csrf
             @method('PUT')
+            <input type="hidden" name="page" value="{{ request('page', 1) }}">
             <div class="modal-actions">
                 <button type="button" class="btn" id="cancelLockBtn">Hủy</button>
                 <button type="submit" class="btn btn-danger" id="confirmLockBtn">Xác nhận</button>
@@ -627,104 +642,113 @@
 
 @push('scripts')
 <script>
-document.addEventListener('DOMContentLoaded', function () {
-    const lockButtons = document.querySelectorAll('.lock-customer-btn');
-    const modal = document.getElementById('lockCustomerModal');
-    const lockCustomerName = document.getElementById('lockCustomerName');
-    const lockForm = document.getElementById('lockCustomerForm');
-    const cancelBtn = document.getElementById('cancelLockBtn');
-    const closeBtn = document.querySelector('.close-lock-modal');
-    const toastSuccess = document.getElementById('toast-customer-success');
-    const toastError = document.getElementById('toast-customer-error');
+    document.addEventListener('DOMContentLoaded', function() {
+        const lockButtons = document.querySelectorAll('.lock-customer-btn');
+        const modal = document.getElementById('lockCustomerModal');
+        const lockCustomerName = document.getElementById('lockCustomerName');
+        const lockForm = document.getElementById('lockCustomerForm');
+        const cancelBtn = document.getElementById('cancelLockBtn');
+        const closeBtn = document.querySelector('.close-lock-modal');
+        const toastSuccess = document.getElementById('toast-customer-success');
+        const toastError = document.getElementById('toast-customer-error');
 
-    const baseUrl = "{{ url('/admin/users') }}"; // Đường dẫn đến route xử lý
-    const csrfMeta = document.querySelector('meta[name="csrf-token"]');
-    const csrfToken = csrfMeta ? csrfMeta.getAttribute('content') : '{{ csrf_token() }}';
+        const baseUrl = "{{ url('/admin/users') }}"; // Đường dẫn đến route xử lý
+        const csrfMeta = document.querySelector('meta[name="csrf-token"]');
+        const csrfToken = csrfMeta ? csrfMeta.getAttribute('content') : '{{ csrf_token() }}';
 
-    let willLock = true; // mặc định
+        let willLock = true; // mặc định
 
-    function showToast(type, message, duration = 2200) {
-        const el = type === 'success' ? toastSuccess : toastError;
-        el.querySelector('.toast-text').innerText = message;
-        el.style.display = 'block';
-        setTimeout(() => el.style.display = 'none', duration);
-    }
-
-    function openModal(id, username, locked) {
-        lockCustomerName.innerText = username;
-        willLock = (locked === '0'); // nếu chưa bị khóa thì sẽ khóa, ngược lại sẽ mở
-
-        if (!willLock) {
-            document.getElementById('lockModalTitle').innerText = 'Mở khóa tài khoản';
-            document.getElementById('lockModalBody').innerHTML = `Bạn có chắc chắn muốn mở khóa tài khoản <strong>${username}</strong> không?`;
-            document.getElementById('confirmLockBtn').innerText = 'Mở khóa';
-        } else {
-            document.getElementById('lockModalTitle').innerText = 'Khóa tài khoản';
-            document.getElementById('lockModalBody').innerHTML = `Bạn có chắc chắn muốn khóa tài khoản <strong>${username}</strong> không?`;
-            document.getElementById('confirmLockBtn').innerText = 'Khóa tài khoản';
+        function showToast(type, message, duration = 2200) {
+            const el = type === 'success' ? toastSuccess : toastError;
+            el.querySelector('.toast-text').innerText = message;
+            el.style.display = 'block';
+            setTimeout(() => el.style.display = 'none', duration);
         }
 
-        lockForm.action = `${baseUrl}/${id}/lock`;
-        modal.style.display = 'flex';
-        modal.setAttribute('aria-hidden', 'false');
-    }
+        function openModal(id, username, locked) {
+            lockCustomerName.innerText = username;
+            willLock = (locked === '0'); // nếu chưa bị khóa thì sẽ khóa, ngược lại sẽ mở
 
-    function closeModal() {
-        modal.style.display = 'none';
-        modal.setAttribute('aria-hidden', 'true');
-    }
+            if (!willLock) {
+                document.getElementById('lockModalTitle').innerText = 'Mở khóa tài khoản';
+                document.getElementById('lockModalBody').innerHTML = `Bạn có chắc chắn muốn mở khóa tài khoản <strong>${username}</strong> không?`;
+                document.getElementById('confirmLockBtn').innerText = 'Mở khóa';
+            } else {
+                document.getElementById('lockModalTitle').innerText = 'Khóa tài khoản';
+                document.getElementById('lockModalBody').innerHTML = `Bạn có chắc chắn muốn khóa tài khoản <strong>${username}</strong> không?`;
+                document.getElementById('confirmLockBtn').innerText = 'Khóa tài khoản';
+            }
 
-    lockButtons.forEach(btn => {
-        btn.addEventListener('click', function () {
-            const id = this.dataset.customerId;
-            const username = this.dataset.username;
-            const locked = this.dataset.locked;
-            openModal(id, username, locked);
+            lockForm.action = `${baseUrl}/${id}/lock`;
+            modal.style.display = 'flex';
+            modal.setAttribute('aria-hidden', 'false');
+        }
+
+        function closeModal() {
+            modal.style.display = 'none';
+            modal.setAttribute('aria-hidden', 'true');
+        }
+
+        lockButtons.forEach(btn => {
+            btn.addEventListener('click', function() {
+                const id = this.dataset.customerId;
+                const username = this.dataset.username;
+                const locked = this.dataset.locked;
+                openModal(id, username, locked);
+            });
+        });
+
+        cancelBtn.addEventListener('click', closeModal);
+        if (closeBtn) closeBtn.addEventListener('click', closeModal);
+        modal.addEventListener('click', e => {
+            if (e.target === modal) closeModal();
+        });
+        document.addEventListener('keydown', e => {
+            if (e.key === 'Escape') closeModal();
+        });
+
+        lockForm.addEventListener('submit', function(e) {
+            e.preventDefault();
+            const url = this.action;
+            const submitBtn = document.getElementById('confirmLockBtn');
+            submitBtn.disabled = true;
+            submitBtn.innerText = 'Đang xử lý...';
+
+            fetch(url, {
+                    method: 'PUT',
+                    credentials: 'same-origin',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'X-CSRF-TOKEN': csrfToken,
+                        'Accept': 'application/json'
+                    },
+                    body: JSON.stringify({
+                        lock: willLock
+                    })
+                })
+                .then(async res => {
+                    const json = await res.json().catch(() => null);
+                    if (!res.ok) throw {
+                        status: res.status,
+                        json
+                    };
+                    return json;
+                })
+                .then(data => {
+                    showToast('success', data.message || 'Thao tác thành công');
+                    closeModal();
+                    setTimeout(() => location.reload(), 600);
+                })
+                .catch(err => {
+                    console.error(err);
+                    let msg = 'Có lỗi xảy ra';
+                    if (err.json && err.json.message) msg = err.json.message;
+                    showToast('error', msg);
+                    submitBtn.disabled = false;
+                    submitBtn.innerText = 'Xác nhận';
+                });
         });
     });
-
-    cancelBtn.addEventListener('click', closeModal);
-    if (closeBtn) closeBtn.addEventListener('click', closeModal);
-    modal.addEventListener('click', e => { if (e.target === modal) closeModal(); });
-    document.addEventListener('keydown', e => { if (e.key === 'Escape') closeModal(); });
-
-    lockForm.addEventListener('submit', function (e) {
-        e.preventDefault();
-        const url = this.action;
-        const submitBtn = document.getElementById('confirmLockBtn');
-        submitBtn.disabled = true;
-        submitBtn.innerText = 'Đang xử lý...';
-
-        fetch(url, {
-            method: 'PUT',
-            credentials: 'same-origin',
-            headers: {
-                'Content-Type': 'application/json',
-                'X-CSRF-TOKEN': csrfToken,
-                'Accept': 'application/json'
-            },
-            body: JSON.stringify({ lock: willLock })
-        })
-        .then(async res => {
-            const json = await res.json().catch(() => null);
-            if (!res.ok) throw { status: res.status, json };
-            return json;
-        })
-        .then(data => {
-            showToast('success', data.message || 'Thao tác thành công');
-            closeModal();
-            setTimeout(() => location.reload(), 600);
-        })
-        .catch(err => {
-            console.error(err);
-            let msg = 'Có lỗi xảy ra';
-            if (err.json && err.json.message) msg = err.json.message;
-            showToast('error', msg);
-            submitBtn.disabled = false;
-            submitBtn.innerText = 'Xác nhận';
-        });
-    });
-});
 </script>
 @endpush
 

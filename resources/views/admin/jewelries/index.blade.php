@@ -781,6 +781,7 @@
     <form class="modal-container js-modal-addJewelry-container" method="POST"
         action="{{ route('admin.jewelries.store') }}" enctype="multipart/form-data">
         @csrf
+        <input type="hidden" name="page" value="{{ request('page', 1) }}">
         <div class="modal-close js-modal-addJewelry-close">
             <i class="fa-solid fa-xmark"></i>
         </div>
@@ -897,6 +898,7 @@
     <form class="modal-container js-modal-changeJewelry-container" method="POST" action="" enctype="multipart/form-data">
         @csrf
         @method('PUT')
+        <input type="hidden" name="page" value="{{ request('page', 1) }}">
         <div class="modal-close js-modal-changeJewelry-close">
             <i class="fa-solid fa-xmark"></i>
         </div>
@@ -1023,6 +1025,7 @@
         enctype="multipart/form-data">
         @csrf
         @method('DELETE')
+        <input type="hidden" name="page" value="{{ request('page', 1) }}">
         <div class="modal-delete-close js-modal-deleteJewelry-close">
             <i class="fa-solid fa-xmark"></i>
         </div>

@@ -498,6 +498,7 @@
     <form class="modal-container modal-container-category js-modal-addCategory-container" method="POST"
         action="{{ route('admin.categories.store') }}" enctype="multipart/form-data">
         @csrf
+        <input type="hidden" name="page" value="{{ request('page', 1) }}">
         <div class="modal-close js-modal-addCategory-close"><i class="fa-solid fa-xmark"></i></div>
         <header class="modal-header modal-header-books"><i class="modal-heading-icon fa-solid fa-tags"></i>Thêm danh mục
         </header>
@@ -536,6 +537,7 @@
     <form class="modal-container modal-container-category js-modal-editCategory-container" method="POST" action="" enctype="multipart/form-data">
         @csrf
         @method('PUT')
+        <input type="hidden" name="page" value="{{ request('page', 1) }}">
         <div class="modal-close js-modal-editCategory-close"><i class="fa-solid fa-xmark"></i></div>
         <header class="modal-header modal-header-books"><i class="modal-heading-icon fa-solid fa-tags"></i>Chỉnh sửa
             danh mục</header>
@@ -581,6 +583,7 @@
     <form class="modal-delete-container js-modal-deleteCategory-container" method="POST" action="">
         @csrf
         @method('DELETE')
+        <input type="hidden" name="page" value="{{ request('page', 1) }}">
         <div class="modal-delete-close js-modal-deleteCategory-close"><i class="fa-solid fa-xmark"></i></div>
         <div class="modal-delete-body">
             <p>Bạn có chắc chắn muốn xóa danh mục này không?</p>

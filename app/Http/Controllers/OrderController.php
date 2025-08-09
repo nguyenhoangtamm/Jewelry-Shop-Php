@@ -38,7 +38,12 @@ class OrderController extends Controller
         $order->status = 'hoàn thành';
         $order->save();
 
-        return redirect()->route('admin.orders.index')->with('success', 'Duyệt đơn hàng thành công!');
+        $page = $request->input('page');
+        $redirect = redirect()->route('admin.orders.pending');
+        if ($page) {
+            $redirect = redirect()->route('admin.orders.pending', ['page' => $page]);
+        }
+        return $redirect->with('success', 'Duyệt đơn hàng thành công!');
     }
 
     public function pending()
@@ -61,7 +66,7 @@ class OrderController extends Controller
     }
 
 
-    public function destroy($id)
+    public function destroy(Request $request, $id)
     {
         $order = Order::findOrFail($id);
         $order->delete();

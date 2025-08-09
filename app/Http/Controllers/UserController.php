@@ -29,26 +29,51 @@ class UserController extends Controller
         ]);
         $user = User::findOrFail($id);
         $user->update($validated);
-        return redirect()->route('admin.users.index')->with('success', 'Customer updated successfully.');
+
+        $page = $request->input('page');
+        $redirect = redirect()->route('admin.users.index');
+        if ($page) {
+            $redirect = redirect()->route('admin.users.index', ['page' => $page]);
+        }
+        return $redirect->with('success', 'Customer updated successfully.');
     }
 
-    public function destroy($id)
+    public function destroy(Request $request, $id)
     {
         $user = User::findOrFail($id);
         $user->is_deleted = 1;
         $user->save();
-        return redirect()->route('admin.users.index')->with('success', 'Customer deleted successfully.');
+
+        $page = $request->input('page');
+        $redirect = redirect()->route('admin.users.index');
+        if ($page) {
+            $redirect = redirect()->route('admin.users.index', ['page' => $page]);
+        }
+        return $redirect->with('success', 'Customer deleted successfully.');
     }
 
     public function lock(Request $request, $id)
-{
-    $user = User::findOrFail($id);
-    $user->is_locked = $request->input('lock') ? 1 : 0;
-    $user->save();
+    {
+        $user = User::findOrFail($id);
+        $user->is_locked = $request->input('lock') ? 1 : 0;
+        $user->save();
 
-    return response()->json([
-        'message' => $request->input('lock') ? 'Tài khoản đã bị khóa' : 'Tài khoản đã được mở khóa'
-    ]);
-}
+        return response()->json([
+            'message' => $request->input('lock') ? 'Tài khoản đã bị khóa' : 'Tài khoản đã được mở khóa'
+        ]);
+    }
 
+    public function toggleLock(Request $request, $id)
+    {
+        $user = User::findOrFail($id);
+        $user->is_locked = !$user->is_locked;
+        $user->save();
+
+        $page = $request->input('page');
+        $redirect = redirect()->route('admin.users.index');
+        if ($page) {
+            $redirect = redirect()->route('admin.users.index', ['page' => $page]);
+        }
+        return $redirect->with('success', $user->is_locked ? 'Tài khoản đã bị khóa' : 'Tài khoản đã được mở khóa');
+    }
 }

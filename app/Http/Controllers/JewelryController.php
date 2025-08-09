@@ -79,8 +79,12 @@ class JewelryController extends Controller
             }
         }
 
-        return redirect()->route('admin.jewelries.index')
-            ->with('success', 'Đã thêm trang sức thành công!');
+        $page = $request->input('page');
+        $redirect = redirect()->route('admin.jewelries.index');
+        if ($page) {
+            $redirect = redirect()->route('admin.jewelries.index', ['page' => $page]);
+        }
+        return $redirect->with('success', 'Đã thêm trang sức thành công!');
     }
 
     public function edit($id)
@@ -133,15 +137,24 @@ class JewelryController extends Controller
 
         $jewelry->update($validated);
 
-        return redirect()->route('admin.jewelries.index')
-            ->with('success', 'Cập nhật trang sức thành công!');
+        $page = $request->input('page');
+        $redirect = redirect()->route('admin.jewelries.index');
+        if ($page) {
+            $redirect = redirect()->route('admin.jewelries.index', ['page' => $page]);
+        }
+        return $redirect->with('success', 'Cập nhật trang sức thành công!');
     }
 
-    public function destroy($id)
+    public function destroy(Request $request, $id)
     {
         $jewelry = Jewelry::findOrFail($id);
         $jewelry->softDelete();
 
-        return redirect()->route('admin.jewelries.index')->with('success', 'Xóa trang sức thành công!');
+        $page = $request->input('page');
+        $redirect = redirect()->route('admin.jewelries.index');
+        if ($page) {
+            $redirect = redirect()->route('admin.jewelries.index', ['page' => $page]);
+        }
+        return $redirect->with('success', 'Xóa trang sức thành công!');
     }
 }
