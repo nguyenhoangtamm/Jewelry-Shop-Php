@@ -204,10 +204,10 @@
         font-size: 12px;
     }
 
-    
 
 
-    
+
+
 
     /* Pagination */
     .pagination {
@@ -729,13 +729,13 @@
                     <td class="jewelry-main-stone">{{ ucfirst(strtolower($jewelry->main_stone ?? 'Không rõ')) }}</td>
 
                     <td class="jewelry-stock">{{ $jewelry->stock ?? '0' }}</td>
-<td>
-    @if ($jewelry->main_image)
-        <img src="{{ $jewelry->main_image }}" width="100" alt="Ảnh">
-    @else
-        Không có ảnh
-    @endif
-</td>
+                    <td>
+                        @if ($jewelry->main_image)
+                        <img src="{{ $jewelry->main_image }}" width="100" alt="Ảnh">
+                        @else
+                        Không có ảnh
+                        @endif
+                    </td>
 
 
                     <td class="jewelry-description">{{ $jewelry->description ?? '' }}</td>
@@ -749,7 +749,8 @@
                             data-stock="{{ $jewelry->stock }}"
                             data-description="{{ $jewelry->description }}"
                             data-weight="{{ $jewelry->weight }}"
-                            data-policy="{{ $jewelry->after_sales_policy }}">
+                            data-policy="{{ $jewelry->after_sales_policy }}"
+                            data-current-image="{{ $jewelry->main_image }}">
                         </button>
 
                         <a href="?delete={{ $jewelry->id }}" class="fas fa-trash icon-delete js-delete-jewelry"></a>
@@ -953,8 +954,15 @@
                 </label>
                 <label for="edit-jewelry-image" class="modal-label">
                     Hình ảnh
-                    <input type="file" name="image" id="edit-jewelry-image" class="modal-input" onchange="previewImage(event)">
-                    <img id="imagePreview" src="#" alt="Ảnh xem trước" style="display:none; max-width: 200px; margin-top: 10px;" />
+                    <input type="file" name="image" id="edit-jewelry-image" class="modal-input" onchange="previewEditImage(event)">
+                    <div id="currentImageContainer" style="margin-top: 10px;">
+                        <div style="margin-bottom: 5px; font-weight: 500; color: #6b7280;">Ảnh hiện tại:</div>
+                        <img id="currentImage" src="" alt="Ảnh hiện tại" style="display:none; max-width: 200px; border-radius: 8px; border: 2px solid #e2e8f0;" />
+                        <div id="noCurrentImage" style="display:none; padding: 20px; background: #f9fafb; border: 2px dashed #d1d5db; border-radius: 8px; text-align: center; color: #6b7280;">
+                            Chưa có ảnh
+                        </div>
+                    </div>
+                    <img id="editImagePreview" src="#" alt="Ảnh xem trước" style="display:none; max-width: 200px; margin-top: 10px; border-radius: 8px; border: 2px solid #3b82f6;" />
                     <span class="image-changeJewelry-error check-error"></span>
                 </label>
             </div>
@@ -1051,6 +1059,21 @@
         }
     }
 
+    function previewEditImage(event) {
+        const file = event.target.files[0];
+        const preview = document.getElementById('editImagePreview');
+        if (file) {
+            const reader = new FileReader();
+            reader.onload = function(e) {
+                preview.src = e.target.result;
+                preview.style.display = 'block';
+            }
+            reader.readAsDataURL(file);
+        } else {
+            preview.style.display = 'none';
+        }
+    }
+
     document.addEventListener('DOMContentLoaded', function() {
         // ===== OPEN ADD MODAL =====
         const openAddBtn = document.querySelector('.js-add-jewelry');
@@ -1100,6 +1123,26 @@
                 document.getElementById('edit-jewelry-description').value = btn.getAttribute('data-description') || '';
                 document.getElementById('edit-jewelry-weight').value = btn.getAttribute('data-weight') || '';
                 document.getElementById('edit-jewelry-policy').value = btn.getAttribute('data-policy') || '';
+
+                // Xử lý hiển thị ảnh hiện tại
+                const currentImageUrl = btn.getAttribute('data-current-image');
+                const currentImage = document.getElementById('currentImage');
+                const noCurrentImage = document.getElementById('noCurrentImage');
+                const editImagePreview = document.getElementById('editImagePreview');
+
+                // Reset preview ảnh mới
+                editImagePreview.style.display = 'none';
+                document.getElementById('edit-jewelry-image').value = '';
+
+                if (currentImageUrl && currentImageUrl !== 'null' && currentImageUrl !== '') {
+                    currentImage.src = currentImageUrl;
+                    currentImage.style.display = 'block';
+                    noCurrentImage.style.display = 'none';
+                } else {
+                    currentImage.style.display = 'none';
+                    noCurrentImage.style.display = 'block';
+                }
+
                 editModal.style.display = 'flex';
                 document.body.style.overflow = 'hidden';
             });
