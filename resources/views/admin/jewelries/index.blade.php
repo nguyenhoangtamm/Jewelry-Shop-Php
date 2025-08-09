@@ -204,53 +204,10 @@
         font-size: 12px;
     }
 
-    /* Table Styles */
-    .table-container {
-        overflow-x: auto;
-    }
+    
 
-    #table-jewelry {
-        width: 100%;
-        border-collapse: collapse;
-        font-size: 14px;
-    }
 
-    #table-jewelry th {
-        background: linear-gradient(135deg, #f1f5f9 0%, #e2e8f0 100%);
-        color: var(--galaxy-dark);
-        padding: 16px 12px;
-        text-align: left;
-        font-weight: 600;
-        font-size: 13px;
-        text-transform: uppercase;
-        letter-spacing: 0.5px;
-        border-bottom: 2px solid var(--galaxy-accent);
-        position: sticky;
-        top: 0;
-        z-index: 10;
-    }
-
-    #table-jewelry td {
-        padding: 16px 12px;
-        border-bottom: 1px solid #e2e8f0;
-        vertical-align: middle;
-        transition: background-color 0.3s ease;
-    }
-
-    #table-jewelry tr:hover td {
-        background-color: rgba(59, 130, 246, 0.05);
-    }
-
-    #table-jewelry img {
-        border-radius: 8px;
-        box-shadow: var(--shadow-sm);
-        transition: transform 0.3s ease;
-    }
-
-    #table-jewelry img:hover {
-        transform: scale(1.1);
-        box-shadow: var(--shadow-md);
-    }
+    
 
     /* Pagination */
     .pagination {
@@ -772,13 +729,15 @@
                     <td class="jewelry-main-stone">{{ ucfirst(strtolower($jewelry->main_stone ?? 'Không rõ')) }}</td>
 
                     <td class="jewelry-stock">{{ $jewelry->stock ?? '0' }}</td>
-                    <td>
-                        @if ($jewelry->main_image)
-                        <img src="{{ asset($jewelry->main_image) }}" alt="jewelry" width="80">
-                        @else
-                        Không có ảnh
-                        @endif
-                    </td>
+<td>
+    @if ($jewelry->main_image)
+        <img src="{{ $jewelry->main_image }}" width="100" alt="Ảnh">
+    @else
+        Không có ảnh
+    @endif
+</td>
+
+
                     <td class="jewelry-description">{{ $jewelry->description ?? '' }}</td>
                     <td>
                         <button type="button" class="fa-solid fa-pen icon-change js-changeJewelry"

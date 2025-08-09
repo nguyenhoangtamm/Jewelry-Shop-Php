@@ -2,6 +2,8 @@
 @section('title', 'Thanh toán đơn hàng')
 @section('content')
 <link rel="stylesheet" href="{{ asset('css/checkout.css') }}">
+<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+
 <style>
     * {
         margin: 0;
@@ -352,22 +354,49 @@
                                 <div style="font-size: 12px; color: #666;">Thanh toán bằng tiền mặt khi nhận hàng</div>
                             </div>
                         </label>
-                        <label class="payment-method">
-                            <input type="radio" name="payment_method" value="bank_transfer">
-                            <div class="payment-icon">🏦</div>
-                            <div>
-                                <div style="font-weight: 600;">Chuyển khoản ngân hàng</div>
-                                <div style="font-size: 12px; color: #666;">Chuyển khoản qua tài khoản ngân hàng</div>
-                            </div>
-                        </label>
-                        <label class="payment-method">
-                            <input type="radio" name="payment_method" value="vnpay">
-                            <div class="payment-icon">💳</div>
-                            <div>
-                                <div style="font-weight: 600;">VNPAY</div>
-                                <div style="font-size: 12px; color: #666;">Thanh toán qua VNPAY - Ưu đãi 300K</div>
-                            </div>
-                        </label>
+                       <label class="payment-method">
+    <input type="radio" name="payment_method" value="bank_transfer">
+    <div class="payment-icon">🏦</div>
+    <div>
+        <div style="font-weight: 600;">Chuyển khoản ngân hàng</div>
+        <div style="font-size: 12px; color: #666;">Chuyển khoản qua tài khoản ngân hàng</div>
+    </div>
+</label>
+
+<label class="payment-method">
+    <input type="radio" name="payment_method" value="cash">
+    <div class="payment-icon">💵</div>
+    <div>
+        <div style="font-weight: 600;">Thanh toán khi nhận hàng</div>
+        <div style="font-size: 12px; color: #666;">Thanh toán trực tiếp khi nhận hàng</div>
+    </div>
+</label>
+
+<div id="bank-transfer-info" style="display: none; margin-top: 15px; border: 1px solid #ddd; padding: 15px; border-radius: 8px;">
+  
+    <div style="margin-top: 10px;">
+        <img src="https://img.vietqr.io/image/sacombank-070130092398-compact2.png?accountName=PHAM%20MY%20TIEN&amount=100000&addInfo=Thanh+toan+don+hang+1234" alt="QR code Sacombank" style="max-width: 150px;">
+
+    </div>
+</div>
+
+<script>
+    $(document).ready(function() {
+        $('input[name="payment_method"]').on('change', function() {
+            if ($(this).val() === 'bank_transfer' && $(this).is(':checked')) {
+                $('#bank-transfer-info').slideDown();
+            } else {
+                $('#bank-transfer-info').slideUp();
+            }
+        });
+    });
+</script>
+
+
+
+
+
+
                     </div>
                 </div>
 

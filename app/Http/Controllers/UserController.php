@@ -18,30 +18,6 @@ class UserController extends Controller
         return view('admin.users.index', compact('users', 'search'));
     }
 
-    public function store(Request $request)
-    {
-        $validated = $request->validate([
-            'username' => 'required|string|max:255|unique:users,username',
-            'date_of_birth' => 'required|date',
-            'email' => 'required|email|unique:users,email',
-            'phone_number' => 'required|string|max:20',
-            'address' => 'required|string|max:255',
-            'password' => 'required|string|min:6',
-        ]);
-
-        $validated['password'] = bcrypt($validated['password']);
-        $validated['is_deleted'] = 0;
-
-        User::create($validated);
-        return redirect()->route('admin.users.index')->with('success', 'User created successfully.');
-    }
-
-    public function edit($id)
-    {
-        $user = User::findOrFail($id);
-        return view('admin.users.edit', compact('user'));
-    }
-
     public function update(Request $request, $id)
     {
         $validated = $request->validate([
@@ -59,7 +35,20 @@ class UserController extends Controller
     public function destroy($id)
     {
         $user = User::findOrFail($id);
-        $user->softDelete();
+        $user->is_deleted = 1;
+        $user->save();
         return redirect()->route('admin.users.index')->with('success', 'Customer deleted successfully.');
     }
+
+    public function lock(Request $request, $id)
+{
+    $user = User::findOrFail($id);
+    $user->is_locked = $request->input('lock') ? 1 : 0;
+    $user->save();
+
+    return response()->json([
+        'message' => $request->input('lock') ? 'Tài khoản đã bị khóa' : 'Tài khoản đã được mở khóa'
+    ]);
+}
+
 }

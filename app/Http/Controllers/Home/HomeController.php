@@ -36,4 +36,27 @@ class HomeController extends Controller
             ->firstOrFail();
         return view('user.product_detail', compact('product'));
     }
+    public function about()
+{
+    $products = [
+        [
+            "img" => "https://timevalue.vn/wp-content/uploads/2023/11/nhan-kim-cuong-nu-RTV29-1.jpg",
+            "name" => "Nhẫn Kim Cương",
+            "desc" => "Sang trọng và tinh tế."
+        ],
+        [
+            "img" => "https://cdn.pnj.io/images/thumbnails/485/485/detailed/114/gl0000y001613-lac-tay-vang-24k-pnj-1.png",
+            "name" => "Vòng Tay Vàng",
+            "desc" => "Tinh xảo trong từng chi tiết."
+        ],
+        [
+            "img" => "https://tse4.mm.bing.net/th/id/OIP.F_PuplSo_FSmkexToEiGoQHaHa?pid=Api&P=0&h=220",
+            "name" => "Dây Chuyền Bạch Kim",
+            "desc" => "Thể hiện đẳng cấp phái đẹp."
+        ],
+    ];
+
+    return view('user.gioi_thieu', compact('products'));
+}
+
 }

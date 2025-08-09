@@ -1,3 +1,12 @@
+<div class="header-wrapper">
+    <div class="header-title">
+        <h2>@yield('page_header', 'Xin Chào, ADMIN')</h2>
+    </div>
+    <div class="user-info">
+        <img src="{{ asset('images_web/avatar.png') }}" alt="avatar">
+    </div>
+</div>
+
 <ul class="menu">
     <li class="{{ request()->routeIs('admin.dashboard') ? 'active' : '' }}">
         <a href="{{ route('admin.dashboard') }}">
@@ -29,47 +38,23 @@
             <span>Đơn hàng</span>
         </a>
     </li>
-    <li class="logout">
-        <a href="#" id="admin-logout-btn" style="display: flex; align-items: center;">
-            <i class="fas fa-sign-out-alt"></i>
+     <li class="{{ request()->is('admin/orders/pending*') ? 'active' : '' }}">
+      <a href="{{ route('admin.orders.pending') }}">
+        <i class="fa-solid fa-check-circle"></i>
+            <span>Duyệt đơn hàng</span>
+        </a>
+    </li>
+        <li class="{{ request()->is('admin/orders/pending*') ? 'active' : '' }}">
+      <a href="{{ route('admin.orders.pending') }}">
+        <i class="fas fa-sign-out-alt"></i>
             <span>Đăng xuất</span>
         </a>
     </li>
+    {{-- <li class="logout">
+        <a href="{{ url('user/login-signup') }}">
+            <i class="fas fa-sign-out-alt"></i>
+            <span>Đăng xuất</span>
+        </a>
+    </li> --}}
 </ul>
 
-@if(Auth::check())
-<script>
-    function handleAdminLogoutAjax() {
-        fetch("{{ route('api.auth.logout') }}", {
-                method: "POST",
-                headers: {
-                    'X-CSRF-TOKEN': '{{ csrf_token() }}',
-                    'Accept': 'application/json'
-                }
-            })
-            .then(res => res.json())
-            .then(data => {
-                window.location.reload();
-            })
-            .catch(() => {
-                alert('Đăng xuất thất bại!');
-            });
-    }
-    document.addEventListener('DOMContentLoaded', function() {
-        var logoutBtn = document.getElementById('admin-logout-btn');
-        if (logoutBtn) logoutBtn.addEventListener('click', function(e) {
-            e.preventDefault();
-            handleAdminLogoutAjax();
-        });
-    });
-</script>
-@endif
-
-<div class="header-wrapper">
-    <div class="header-title">
-        <h2>@yield('page_header', 'Trang quản trị')</h2>
-    </div>
-    <div class="user-info">
-        <img src="{{ asset('images_web/avatar.png') }}" alt="avatar">
-    </div>
-</div>

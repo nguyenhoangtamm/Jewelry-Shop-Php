@@ -1,6 +1,7 @@
 @extends('user.layout')
 @section('content')
 
+<meta name="csrf-token" content="{{ csrf_token() }}">
 <link rel="stylesheet" href="{{ asset('css/chi_tiet_sp_new.css') }}">
 
 <!-- SCROLL PAGE START -->
@@ -23,10 +24,8 @@
                     </button>
                     <div class="thumbnail-list">
                         @foreach($images as $index => $img)
-                        <img src="{{ $img['path'] }}"
-                            alt="Ảnh sản phẩm {{ $index + 1 }}"
-                            class="thumbnail {{ $index === 0 ? 'active' : '' }}"
-                            data-main="{{ $img['path'] }}"
+                        <img src="{{ $img['path'] }}" alt="Ảnh sản phẩm {{ $index + 1 }}"
+                            class="thumbnail {{ $index === 0 ? 'active' : '' }}" data-main="{{ $img['path'] }}"
                             onclick="changeMainImage('{{ $img['path'] }}', this)">
                         @endforeach
                     </div>
@@ -46,7 +45,8 @@
                     </div>
                     @else
                     <div class="main-image-container">
-                        <img src="../images/default-product.jpg" alt="{{ $jewelry->name }}" class="main-image" id="mainImage">
+                        <img src="../images/default-product.jpg" alt="{{ $jewelry->name }}" class="main-image"
+                            id="mainImage">
                         <div class="new-badge">NEW</div>
                     </div>
                     @endif
@@ -59,10 +59,7 @@
 
                     <div class="rating">
                         <div class="stars">
-                            @for($i = 1; $i <= 5; $i++)
-                                {!! $i <=$averageRating ? '★' : '☆' !!}
-                                @endfor
-                                </div>
+                            @for($i = 1; $i <= 5; $i++) {!! $i <=$averageRating ? '★' : '☆' !!} @endfor </div>
                                 <span>({{ $averageRating }}) {{ $totalReviews }} đánh giá</span>
                         </div>
 
@@ -82,7 +79,8 @@
                         <div class="size-selection">
                             <label class="size-label">Vui lòng chọn số lượng *</label>
                             <div class="size-options">
-                                <input type="number" class="quantity" name="quantity" min="1" max="{{ $jewelry->stock }}" value="1">
+                                <input type="number" class="quantity" name="quantity" min="1"
+                                    max="{{ $jewelry->stock }}" value="1">
                             </div>
                             <div style="font-size: 14px; color: #666;">
                                 Ưu đãi dành riêng cho bạn - Tư vấn ngay tại <span style="color: #e74c3c;">FREE</span>
@@ -120,10 +118,12 @@
                         </div>
 
                         <div class="buttons">
-                            <button class="btn btn-primary buy-now" data-id="{{ $jewelry->id }}" @if($jewelry->stock == 0) disabled @endif>
+                            <button class="btn btn-primary buy-now" data-id="{{ $jewelry->id }}" @if($jewelry->stock ==
+                                0) disabled @endif>
                                 {{ $jewelry->stock == 0 ? 'Hết hàng' : 'Mua ngay' }}
                             </button>
-                            <button class="btn btn-outline add-to-cart" data-id="{{ $jewelry->id }}" @if($jewelry->stock == 0) disabled @endif>
+                            <button class="btn btn-outline add-to-cart" data-id="{{ $jewelry->id }}" @if($jewelry->stock
+                                == 0) disabled @endif>
                                 {{ $jewelry->stock == 0 ? 'Hết hàng' : 'Thêm vào giỏ hàng' }}
                             </button>
                             <button class="btn btn-secondary">Đặt ngay (miễn phí)</button>
@@ -252,15 +252,15 @@
 
                     <div class="rating-breakdown">
                         <?php for ($i = 5; $i >= 1; $i--): ?>
-                            <div class="rating-bar">
-                                <div class="rating-label"><?php echo $i ?> Sao</div>
-                                <div class="rating-progress">
-                                    <div class="rating-fill"
-                                        style="width: <?php echo $totalReviews > 0 ? ($ratingCounts[$i] / $totalReviews * 100) : 0 ?>%">
-                                    </div>
+                        <div class="rating-bar">
+                            <div class="rating-label"><?php echo $i ?> Sao</div>
+                            <div class="rating-progress">
+                                <div class="rating-fill"
+                                    style="width: <?php echo $totalReviews > 0 ? ($ratingCounts[$i] / $totalReviews * 100) : 0 ?>%">
                                 </div>
-                                <div class="rating-count"><?php echo $ratingCounts[$i] ?></div>
                             </div>
+                            <div class="rating-count"><?php echo $ratingCounts[$i] ?></div>
+                        </div>
                         <?php endfor; ?>
                     </div>
                 </div>
@@ -287,7 +287,9 @@
                         </div>
                         <div class="comment-input">
                             <label for="reviewContent">Nhận xét:</label>
-                            <textarea id="reviewContent" name="content" placeholder="Chia sẻ trải nghiệm của bạn về sản phẩm này..." rows="4" required></textarea>
+                            <textarea id="reviewContent" name="content"
+                                placeholder="Chia sẻ trải nghiệm của bạn về sản phẩm này..." rows="4"
+                                required></textarea>
                         </div>
                         <button type="submit" class="btn btn-primary">Gửi đánh giá</button>
                     </form>
@@ -327,8 +329,7 @@
                                 </div>
                             </div>
                             <div class="review-rating">
-                                @for($i = 1; $i <= 5; $i++)
-                                    {!! $i <=$review->rating ? '★' : '☆' !!}
+                                @for($i = 1; $i <= 5; $i++) {!! $i <=$review->rating ? '★' : '☆' !!}
                                     @endfor
                             </div>
                         </div>
@@ -357,7 +358,8 @@
                         <span class="faq-icon">⌄</span>
                     </button>
                     <div class="faq-answer">
-                        <p>{{ !empty($jewelry->after_sales_policy) ? $jewelry->after_sales_policy : 'Sản phẩm được bảo hành theo chính sách của cửa hàng.' }}</p>
+                        <p>{{ !empty($jewelry->after_sales_policy) ? $jewelry->after_sales_policy : 'Sản phẩm được bảo hành theo chính sách của cửa hàng.' }}
+                        </p>
                     </div>
                 </div>
 
@@ -407,154 +409,389 @@
 <script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
 <script type="module" src="./js/details.js"></script>
 <script>
-    // Gallery functionality
-    function changeMainImage(imagePath, thumbnailElement) {
-        const mainImage = document.getElementById('mainImage');
+// Gallery functionality
+function changeMainImage(imagePath, thumbnailElement) {
+    const mainImage = document.getElementById('mainImage');
 
-        // Add fade effect
-        mainImage.style.opacity = '0.7';
+    // Add fade effect
+    mainImage.style.opacity = '0.7';
 
+    setTimeout(() => {
+        // Update main image
+        mainImage.src = imagePath;
+        mainImage.style.opacity = '1';
+        mainImage.classList.add('fade-in');
+
+        // Remove active class from all thumbnails
+        document.querySelectorAll('.thumbnail').forEach(t => t.classList.remove('active'));
+
+        // Add active class to clicked thumbnail
+        thumbnailElement.classList.add('active');
+
+        // Remove animation class after animation completes
         setTimeout(() => {
-            // Update main image
-            mainImage.src = imagePath;
-            mainImage.style.opacity = '1';
-            mainImage.classList.add('fade-in');
+            mainImage.classList.remove('fade-in');
+        }, 300);
+    }, 150);
+}
 
-            // Remove active class from all thumbnails
-            document.querySelectorAll('.thumbnail').forEach(t => t.classList.remove('active'));
+// Thumbnail scroll functionality
+function scrollThumbnails(direction) {
+    const thumbnailList = document.querySelector('.thumbnail-list');
+    const scrollAmount = 90; // Thumbnail height + gap
 
-            // Add active class to clicked thumbnail
-            thumbnailElement.classList.add('active');
-
-            // Remove animation class after animation completes
-            setTimeout(() => {
-                mainImage.classList.remove('fade-in');
-            }, 300);
-        }, 150);
+    if (direction === 'up') {
+        thumbnailList.scrollTop -= scrollAmount;
+    } else {
+        thumbnailList.scrollTop += scrollAmount;
     }
 
-    // Thumbnail scroll functionality
-    function scrollThumbnails(direction) {
-        const thumbnailList = document.querySelector('.thumbnail-list');
-        const scrollAmount = 90; // Thumbnail height + gap
+    // Update navigation button states
+    updateNavigationButtons();
+}
 
-        if (direction === 'up') {
-            thumbnailList.scrollTop -= scrollAmount;
-        } else {
-            thumbnailList.scrollTop += scrollAmount;
-        }
+// Update navigation button states based on scroll position
+function updateNavigationButtons() {
+    const thumbnailList = document.querySelector('.thumbnail-list');
+    const upBtn = document.querySelector('.thumbnail-nav.up');
+    const downBtn = document.querySelector('.thumbnail-nav.down');
 
-        // Update navigation button states
-        updateNavigationButtons();
+    if (thumbnailList && upBtn && downBtn) {
+        const isAtTop = thumbnailList.scrollTop <= 0;
+        const isAtBottom = thumbnailList.scrollTop >= thumbnailList.scrollHeight - thumbnailList.clientHeight;
+
+        upBtn.style.opacity = isAtTop ? '0.5' : '1';
+        downBtn.style.opacity = isAtBottom ? '0.5' : '1';
+        upBtn.style.pointerEvents = isAtTop ? 'none' : 'auto';
+        downBtn.style.pointerEvents = isAtBottom ? 'none' : 'auto';
     }
+}
 
-    // Update navigation button states based on scroll position
-    function updateNavigationButtons() {
-        const thumbnailList = document.querySelector('.thumbnail-list');
-        const upBtn = document.querySelector('.thumbnail-nav.up');
-        const downBtn = document.querySelector('.thumbnail-nav.down');
+// Initialize on page load
+document.addEventListener('DOMContentLoaded', function() {
+    updateNavigationButtons();
 
-        if (thumbnailList && upBtn && downBtn) {
-            const isAtTop = thumbnailList.scrollTop <= 0;
-            const isAtBottom = thumbnailList.scrollTop >= thumbnailList.scrollHeight - thumbnailList.clientHeight;
-
-            upBtn.style.opacity = isAtTop ? '0.5' : '1';
-            downBtn.style.opacity = isAtBottom ? '0.5' : '1';
-            upBtn.style.pointerEvents = isAtTop ? 'none' : 'auto';
-            downBtn.style.pointerEvents = isAtBottom ? 'none' : 'auto';
-        }
+    // Add scroll listener to thumbnail list
+    const thumbnailList = document.querySelector('.thumbnail-list');
+    if (thumbnailList) {
+        thumbnailList.addEventListener('scroll', updateNavigationButtons);
     }
+});
 
-    // Initialize on page load
-    document.addEventListener('DOMContentLoaded', function() {
-        updateNavigationButtons();
+// Tab functionality
+document.querySelectorAll('.tab').forEach(tab => {
+    tab.addEventListener('click', function() {
+        const tabName = this.dataset.tab;
 
-        // Add scroll listener to thumbnail list
-        const thumbnailList = document.querySelector('.thumbnail-list');
-        if (thumbnailList) {
-            thumbnailList.addEventListener('scroll', updateNavigationButtons);
-        }
+        // Remove active class from all tabs
+        document.querySelectorAll('.tab').forEach(t => t.classList.remove('active'));
+        // Add active class to clicked tab
+        this.classList.add('active');
+
+        // Hide all tab contents
+        document.querySelectorAll('.tab-content').forEach(content => {
+            content.classList.remove('active');
+        });
+
+        // Show corresponding tab content
+        document.getElementById(tabName).classList.add('active');
     });
+});
 
-    // Tab functionality
-    document.querySelectorAll('.tab').forEach(tab => {
-        tab.addEventListener('click', function() {
-            const tabName = this.dataset.tab;
+// Review filter functionality
+document.querySelectorAll('.filter-btn').forEach(btn => {
+    btn.addEventListener('click', function() {
+        // Remove active class from all filter buttons
+        document.querySelectorAll('.filter-btn').forEach(b => b.classList.remove('active'));
+        // Add active class to clicked button
+        this.classList.add('active');
 
-            // Remove active class from all tabs
-            document.querySelectorAll('.tab').forEach(t => t.classList.remove('active'));
-            // Add active class to clicked tab
-            this.classList.add('active');
+        const rating = this.dataset.rating;
+        const filter = this.dataset.filter;
 
-            // Hide all tab contents
-            document.querySelectorAll('.tab-content').forEach(content => {
-                content.classList.remove('active');
+        // Show/hide reviews based on filter
+        document.querySelectorAll('.review-item').forEach(item => {
+            if (rating === 'all') {
+                item.style.display = 'block';
+            } else if (rating) {
+                if (item.dataset.rating === rating) {
+                    item.style.display = 'block';
+                } else {
+                    item.style.display = 'none';
+                }
+            }
+        });
+    });
+});
+
+//cau hoi thuong gap
+// FAQ Accordion functionality
+document.addEventListener('DOMContentLoaded', function() {
+    const faqQuestions = document.querySelectorAll('.faq-question');
+
+    faqQuestions.forEach(question => {
+        question.addEventListener('click', function() {
+            const answer = this.nextElementSibling;
+            const isActive = this.classList.contains('active');
+
+            // Đóng tất cả các FAQ khác
+            faqQuestions.forEach(q => {
+                q.classList.remove('active');
+                q.nextElementSibling.classList.remove('active');
             });
 
-            // Show corresponding tab content
-            document.getElementById(tabName).classList.add('active');
+            // Nếu câu hỏi hiện tại chưa được mở, mở nó
+            if (!isActive) {
+                this.classList.add('active');
+                answer.classList.add('active');
+            }
         });
     });
 
-    // Review filter functionality
-    document.querySelectorAll('.filter-btn').forEach(btn => {
-        btn.addEventListener('click', function() {
-            // Remove active class from all filter buttons
-            document.querySelectorAll('.filter-btn').forEach(b => b.classList.remove('active'));
-            // Add active class to clicked button
-            this.classList.add('active');
+    // Sự kiện chuyển trang khi bấm 'Mua ngay'
+    const buyNowBtn = document.querySelector('.btn.buy-now');
+    if (buyNowBtn) {
+        buyNowBtn.addEventListener('click', function(e) {
+            e.preventDefault();
+            window.location.href = '/checkout?jewelry={{ $jewelry->id }}&quantity=' + (document
+                .querySelector('.quantity')?.value || 1);
+        });
+    }
+});
+//Thêm vao giỏ hàng và mua ngay
+// Xử lý thêm vào giỏ hàng
+$('.add-to-cart').on('click', function(e) {
+    e.preventDefault();
 
-            const rating = this.dataset.rating;
-            const filter = this.dataset.filter;
+    const jewelryId = $(this).data('id');
+    const quantity = parseInt($('.quantity').val()) || 1;
+    const button = $(this);
 
-            // Show/hide reviews based on filter
-            document.querySelectorAll('.review-item').forEach(item => {
-                if (rating === 'all') {
-                    item.style.display = 'block';
-                } else if (rating) {
-                    if (item.dataset.rating === rating) {
-                        item.style.display = 'block';
-                    } else {
-                        item.style.display = 'none';
+    // Hiển thị loading
+    button.prop('disabled', true).text('Đang thêm...');
+
+    $.ajax({
+        url: '/cart/add',
+        method: 'POST',
+        data: {
+            _token: $('meta[name="csrf-token"]').attr('content'),
+            jewelry_id: jewelryId,
+            quantity: quantity
+        },
+        success: function(response) {
+            if (response.success) {
+                // Hiển thị thông báo thành công
+                showNotification(response.message, 'success');
+
+                // Cập nhật số lượng giỏ hàng trên header
+                updateCartBadge(response.cart_count);
+
+                // Reset button
+                button.prop('disabled', false).html(
+                    '<i class="fas fa-shopping-cart"></i> Thêm vào giỏ hàng');
+
+                // Reset quantity về 1
+                $('.quantity').val(1);
+            } else {
+                showNotification(response.message, 'error');
+                button.prop('disabled', false).html(
+                    '<i class="fas fa-shopping-cart"></i> Thêm vào giỏ hàng');
+            }
+        },
+        error: function(xhr) {
+            let message = 'Có lỗi xảy ra, vui lòng thử lại!';
+
+            if (xhr.responseJSON && xhr.responseJSON.message) {
+                message = xhr.responseJSON.message;
+            }
+
+            showNotification(message, 'error');
+            button.prop('disabled', false).html(
+                '<i class="fas fa-shopping-cart"></i> Thêm vào giỏ hàng');
+        }
+    });
+});
+
+// Tăng/giảm số lượng
+$('.quantity-btn').on('click', function() {
+    const action = $(this).data('action');
+    const quantityInput = $('.quantity');
+    let currentQuantity = parseInt(quantityInput.val()) || 1;
+    const maxStock = parseInt(quantityInput.attr('max')) || 999;
+
+    if (action === 'increase' && currentQuantity < maxStock) {
+        quantityInput.val(currentQuantity + 1);
+    } else if (action === 'decrease' && currentQuantity > 1) {
+        quantityInput.val(currentQuantity - 1);
+    }
+});
+
+// Kiểm tra số lượng nhập vào
+$('.quantity').on('change', function() {
+    const maxStock = parseInt($(this).attr('max')) || 999;
+    let quantity = parseInt($(this).val()) || 1;
+
+    if (quantity < 1) {
+        $(this).val(1);
+    } else if (quantity > maxStock) {
+        $(this).val(maxStock);
+        showNotification('Số lượng không được vượt quá ' + maxStock, 'warning');
+    }
+});
+
+// Mua ngay
+$('.buy-now').on('click', function(e) {
+    e.preventDefault();
+
+    const jewelryId = $(this).data('id');
+    const quantity = parseInt($('.quantity').val()) || 1;
+    const button = $(this);
+
+    button.prop('disabled', true).text('Đang xử lý...');
+
+    // Thêm vào giỏ hàng trước
+    $.ajax({
+        url: '/cart/add',
+        method: 'POST',
+        data: {
+            _token: $('meta[name="csrf-token"]').attr('content'),
+            jewelry_id: jewelryId,
+            quantity: quantity
+        },
+        success: function(response) {
+            if (response.success) {
+                // Chuyển đến trang giỏ hàng
+                window.location.href = '/cart';
+            } else {
+                showNotification(response.message, 'error');
+                button.prop('disabled', false).html('<i class="fas fa-bolt"></i> Mua ngay');
+            }
+        },
+        error: function() {
+            showNotification('Có lỗi xảy ra, vui lòng thử lại!', 'error');
+            button.prop('disabled', false).html('<i class="fas fa-bolt"></i> Mua ngay');
+        }
+    });
+});
+
+// Hàm hiển thị thông báo đơn giản (không cần Bootstrap JS)
+function showNotification(message, type = 'info') {
+    // Xóa thông báo cũ nếu có
+    $('.custom-notification').remove();
+
+    // Xác định màu sắc và icon theo loại thông báo
+    let bgColor, textColor, icon;
+    switch (type) {
+        case 'success':
+            bgColor = '#28a745';
+            textColor = '#fff';
+            icon = '✓';
+            break;
+        case 'error':
+            bgColor = '#dc3545';
+            textColor = '#fff';
+            icon = '✗';
+            break;
+        case 'warning':
+            bgColor = '#ffc107';
+            textColor = '#000';
+            icon = '⚠';
+            break;
+        default:
+            bgColor = '#17a2b8';
+            textColor = '#fff';
+            icon = 'ℹ';
+    }
+
+    // Tạo HTML thông báo
+    const notificationHtml = `
+        <div class="custom-notification" style="
+            position: fixed;
+            top: 20px;
+            right: 20px;
+            background-color: ${bgColor};
+            color: ${textColor};
+            padding: 15px 20px;
+            border-radius: 5px;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.15);
+            z-index: 9999;
+            max-width: 350px;
+            animation: slideInRight 0.3s ease-out;
+        ">
+            <div style="display: flex; align-items: center; gap: 10px;">
+                <span style="font-size: 18px; font-weight: bold;">${icon}</span>
+                <span style="flex: 1;">${message}</span>
+                <button onclick="$(this).parent().parent().fadeOut()" style="
+                    background: none;
+                    border: none;
+                    color: ${textColor};
+                    font-size: 20px;
+                    cursor: pointer;
+                    padding: 0;
+                    margin-left: 10px;
+                ">×</button>
+            </div>
+        </div>
+    `;
+
+    // Thêm CSS animation nếu chưa có
+    if ($('#notification-styles').length === 0) {
+        $('head').append(`
+            <style id="notification-styles">
+                @keyframes slideInRight {
+                    from {
+                        transform: translateX(100%);
+                        opacity: 0;
+                    }
+                    to {
+                        transform: translateX(0);
+                        opacity: 1;
                     }
                 }
-            });
-        });
-    });
-
-    //cau hoi thuong gap
-    // FAQ Accordion functionality
-    document.addEventListener('DOMContentLoaded', function() {
-        const faqQuestions = document.querySelectorAll('.faq-question');
-
-        faqQuestions.forEach(question => {
-            question.addEventListener('click', function() {
-                const answer = this.nextElementSibling;
-                const isActive = this.classList.contains('active');
-
-                // Đóng tất cả các FAQ khác
-                faqQuestions.forEach(q => {
-                    q.classList.remove('active');
-                    q.nextElementSibling.classList.remove('active');
-                });
-
-                // Nếu câu hỏi hiện tại chưa được mở, mở nó
-                if (!isActive) {
-                    this.classList.add('active');
-                    answer.classList.add('active');
+                
+                @keyframes slideOutRight {
+                    from {
+                        transform: translateX(0);
+                        opacity: 1;
+                    }
+                    to {
+                        transform: translateX(100%);
+                        opacity: 0;
+                    }
                 }
-            });
-        });
+            </style>
+        `);
+    }
 
-        // Sự kiện chuyển trang khi bấm 'Mua ngay'
-        const buyNowBtn = document.querySelector('.btn.buy-now');
-        if (buyNowBtn) {
-            buyNowBtn.addEventListener('click', function(e) {
-                e.preventDefault();
-                window.location.href = '/checkout?jewelry={{ $jewelry->id }}&quantity=' + (document.querySelector('.quantity')?.value || 1);
-            });
+    // Thêm thông báo vào DOM
+    $('body').append(notificationHtml);
+
+    // Tự động ẩn sau 4 giây
+    setTimeout(function() {
+        $('.custom-notification').fadeOut(300, function() {
+            $(this).remove();
+        });
+    }, 4000);
+}
+
+// Cập nhật badge số lượng giỏ hàng
+function updateCartBadge(count) {
+    const badge = $('.cart-badge');
+    if (badge.length > 0) {
+        badge.text(count).show();
+    }
+}
+
+// Load số lượng giỏ hàng khi tải trang
+$(document).ready(function() {
+    $.ajax({
+        url: '/cart/count',
+        method: 'GET',
+        success: function(response) {
+            updateCartBadge(response.cart_count);
         }
     });
+});
 </script>
 
 
