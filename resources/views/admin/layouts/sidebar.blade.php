@@ -30,12 +30,40 @@
         </a>
     </li>
     <li class="logout">
-        <a href="{{ url('user/login-signup') }}">
+        <a href="#" id="admin-logout-btn" style="display: flex; align-items: center;">
             <i class="fas fa-sign-out-alt"></i>
             <span>Đăng xuất</span>
         </a>
     </li>
 </ul>
+
+@if(Auth::check())
+<script>
+    function handleAdminLogoutAjax() {
+        fetch("{{ route('api.auth.logout') }}", {
+                method: "POST",
+                headers: {
+                    'X-CSRF-TOKEN': '{{ csrf_token() }}',
+                    'Accept': 'application/json'
+                }
+            })
+            .then(res => res.json())
+            .then(data => {
+                window.location.reload();
+            })
+            .catch(() => {
+                alert('Đăng xuất thất bại!');
+            });
+    }
+    document.addEventListener('DOMContentLoaded', function() {
+        var logoutBtn = document.getElementById('admin-logout-btn');
+        if (logoutBtn) logoutBtn.addEventListener('click', function(e) {
+            e.preventDefault();
+            handleAdminLogoutAjax();
+        });
+    });
+</script>
+@endif
 
 <div class="header-wrapper">
     <div class="header-title">

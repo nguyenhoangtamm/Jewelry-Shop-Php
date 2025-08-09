@@ -256,7 +256,7 @@
         @foreach($categories as $row)
         <a href="/jewelry/{{ $row->id }}"
             class="bg-white rounded-2xl shadow-lg hover:shadow-xl transition p-4 block">
-            <img src="{{ $row->image_url ?? 'https://via.placeholder.com/100x100?text=No+Image' }}"
+            <img src="{{ isset($row->file->name) ? asset($row->file->name) : 'https://via.placeholder.com/100x100?text=No+Image' }}"
                 class="w-28 h-28 mx-auto object-cover rounded-xl mb-3" />
             <p class="text-base font-semibold">{{ $row->name }}</p>
         </a>

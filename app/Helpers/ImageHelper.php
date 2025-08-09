@@ -2,6 +2,8 @@
 
 namespace App\Helpers;
 
+use App\Models\File;
+
 class ImageHelper
 {
     /**
@@ -91,7 +93,7 @@ class ImageHelper
         $file->move($destinationPath, $fileName);
 
         // Lưu vào database
-        $fileModel = new \App\Models\File();
+        $fileModel = new File();
         $fileModel->name = $file->getClientOriginalName();
         $fileModel->path = $fileName;
         $fileModel->type = $file->getClientMimeType();
