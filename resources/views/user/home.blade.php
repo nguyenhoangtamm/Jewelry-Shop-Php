@@ -524,10 +524,12 @@
             <a href="/jewelry/{{ $row->id }}"
                 class="category-link modern-card p-6 block group">
                 <div class="relative">
-                    <img src="{{ \App\Helpers\ImageHelper::getCategoryIcon($row) }}" 
+                    <img src="{{ $row->image }}" 
                          alt="Ảnh" 
                          class="category-img mx-auto mb-4 group-hover:scale-110 transition-transform duration-300">
-                    <div class="sparkle"></div>
+                    <div class="sparkle">
+                        
+                    </div>
                 </div>
                 <p class="text-base font-semibold text-galaxy-blue group-hover:text-galaxy-accent transition-colors">{{ $row->name }}</p>
             </a>

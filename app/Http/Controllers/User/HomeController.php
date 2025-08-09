@@ -18,7 +18,9 @@ class HomeController extends Controller
             ->where('is_deleted', 0)
             ->limit(12)
             ->get();
-
+        foreach ($categories as $cat) {
+            $cat->image = $cat->file ? ImageHelper::getImageUrl($cat->file->path) : null;
+        }
         // Lấy sản phẩm mới với ảnh chính
         $newProducts = Jewelry::with(['category', 'jewelryFiles.file'])
             ->where('is_deleted', 0)

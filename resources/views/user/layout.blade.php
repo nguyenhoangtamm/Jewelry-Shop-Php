@@ -777,7 +777,7 @@
                     <!-- Logo -->
                     <div class="col-xs-12 col-sm-3 text-center">
                         <a href="index.htm" class="logo" title="Jewelry Store">
-                            <img src="{{ asset('Uploads/shop2198/images/logo2.png') }}" alt="Jewelry Store">
+                            <img src="{{ asset('img/logo_2.png') }}" alt="Jewelry Store">
                         </a>
                     </div>
                     <!-- Search box -->
