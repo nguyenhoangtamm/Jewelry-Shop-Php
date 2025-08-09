@@ -63,9 +63,9 @@ Route::middleware('auth')->group(function () {
     Route::get('/checkout', [CheckoutController::class, 'show'])->name('checkout');
 
     // =============================
-    // Admin routes (nên thêm middleware kiểm tra role admin)
+    // Admin routes - chỉ role admin được truy cập
     // =============================
-    Route::prefix('admin')->name('admin.')->group(function () {
+    Route::prefix('admin')->name('admin.')->middleware('role:admin')->group(function () {
         // Dashboard
         Route::get('/dashboard', [AdminDashboardController::class, 'index'])->name('dashboard');
 
@@ -106,18 +106,18 @@ Route::middleware('auth')->group(function () {
     });
 
     // =============================
-    // Profile routes
+    // Profile routes - customer và admin đều xem/sửa hồ sơ
     // =============================
-    Route::prefix('profile')->name('profile.')->group(function () {
+    Route::prefix('profile')->name('profile.')->middleware('role:customer,admin')->group(function () {
         Route::get('/{id}', [UserProfileController::class, 'show'])->name('show');
         Route::get('/{id}/edit', [UserProfileController::class, 'edit'])->name('edit');
         Route::put('/{id}', [UserProfileController::class, 'update'])->name('update');
     });
 
     // =============================
-    // Cart routes
+    // Cart routes - customer
     // =============================
-    Route::prefix('cart')->name('cart.')->group(function () {
+    Route::prefix('cart')->name('cart.')->middleware('role:customer')->group(function () {
         Route::get('/', [CartController::class, 'show'])->name('show');
         Route::post('/add', [CartController::class, 'add'])->name('add');
         Route::post('/update', [CartController::class, 'update'])->name('update');
@@ -127,8 +127,8 @@ Route::middleware('auth')->group(function () {
     });
 
     // =============================
-    // Sản phẩm, tin tức
+    // Sản phẩm, tin tức - cho phép customer và admin
     // =============================
-    Route::get('/products/all', [ProductController::class, 'showAll'])->name('products.all');
-    Route::get('/tin-tuc', [NewsController::class, 'index'])->name('news.index');
+    Route::get('/products/all', [ProductController::class, 'showAll'])->middleware('role:customer,admin')->name('products.all');
+    Route::get('/tin-tuc', [NewsController::class, 'index'])->middleware('role:customer,admin')->name('news.index');
 });

@@ -101,4 +101,10 @@ class User extends Authenticatable
     {
         return $this->update(['is_deleted' => false]);
     }
+
+    // Helper: normalized role string
+    public function getRoleName(): string
+    {
+        return strtolower(trim((string)($this->role ?? '')));
+    }
 }
