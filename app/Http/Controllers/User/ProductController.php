@@ -6,6 +6,7 @@ use App\Models\Jewelry;
 use App\Models\Category;
 use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
+use App\Helpers\ImageHelper;
 
 class ProductController extends Controller
 {
@@ -15,7 +16,7 @@ class ProductController extends Controller
     public function index(Request $request)
     {
         $query = Jewelry::with('category')
-                        ->where('is_deleted', 0);
+            ->where('is_deleted', 0);
 
         // Filter by category if provided
         if ($request->has('category') && $request->category != '') {
@@ -39,7 +40,7 @@ class ProductController extends Controller
         // Sort products
         $sortBy = $request->get('sort', 'created_at');
         $sortOrder = $request->get('order', 'desc');
-        
+
         $allowedSorts = ['name', 'price', 'created_at', 'sold'];
         if (in_array($sortBy, $allowedSorts)) {
             $query->orderBy($sortBy, $sortOrder);
@@ -53,7 +54,7 @@ class ProductController extends Controller
         }
 
         $products = $query->paginate($perPage)->appends($request->all());
-        
+
         // Get all categories for filter
         $categories = Category::where('is_deleted', 0)->get();
 
@@ -65,8 +66,8 @@ class ProductController extends Controller
      */
     public function showAll(Request $request)
     {
-        $query = Jewelry::with('category')
-                        ->where('is_deleted', 0);
+        $query = Jewelry::with(['category', 'jewelryFiles.file'])
+            ->where('is_deleted', 0);
 
         // Filter by category if provided
         if ($request->has('category') && $request->category != '') {
@@ -87,8 +88,8 @@ class ProductController extends Controller
         // Multiple price range filters
         if ($request->has('price_range') && !empty($request->price_range)) {
             $priceRanges = is_array($request->price_range) ? $request->price_range : [$request->price_range];
-            
-            $query->where(function($q) use ($priceRanges) {
+
+            $query->where(function ($q) use ($priceRanges) {
                 foreach ($priceRanges as $range) {
                     $parts = explode('-', $range);
                     if (count($parts) == 2) {
@@ -170,18 +171,25 @@ class ProductController extends Controller
 
         // Paginate with all query parameters preserved
         $products = $query->paginate($perPage)->appends($request->all());
-        
+
+        // Map image_path for each product using ImageHelper (main image or fallback)
+        foreach ($products as $product) {
+            $img = ImageHelper::getMainImage($product);
+            $product->image_path = $img; // used by current views
+            $product->image = $img;      // alias for convenience
+        }
+
         // Get all categories for filter
         $categories = Category::where('is_deleted', 0)->get();
-        
+
         // Get unique brands for filter
         $brands = Jewelry::where('is_deleted', 0)
-                         ->whereNotNull('brand')
-                         ->where('brand', '!=', '')
-                         ->distinct()
-                         ->pluck('brand')
-                         ->sort()
-                         ->values();
+            ->whereNotNull('brand')
+            ->where('brand', '!=', '')
+            ->distinct()
+            ->pluck('brand')
+            ->sort()
+            ->values();
 
         // Get price ranges for filter
         $priceRanges = [
@@ -195,7 +203,6 @@ class ProductController extends Controller
         ];
 
         return view('user.all', compact('products', 'categories', 'brands', 'priceRanges'));
-
     }
 
     /**
@@ -204,13 +211,13 @@ class ProductController extends Controller
     public function show($id, Request $request)
     {
         $product = Jewelry::with('category')->findOrFail($id);
-        
+
         // Get related products from same category with pagination
         $relatedProducts = Jewelry::where('category_id', $product->category_id)
-                                 ->where('id', '!=', $id)
-                                 ->where('is_deleted', 0)
-                                 ->limit(8)
-                                 ->get();
+            ->where('id', '!=', $id)
+            ->where('is_deleted', 0)
+            ->limit(8)
+            ->get();
 
         // Store referrer URL for back navigation
         $referrer = $request->headers->get('referer');
@@ -243,7 +250,7 @@ class ProductController extends Controller
         Jewelry::create($request->all());
 
         return redirect()->route('products.index')
-                        ->with('success', 'Sản phẩm đã được tạo thành công.');
+            ->with('success', 'Sản phẩm đã được tạo thành công.');
     }
 
     /**
@@ -252,9 +259,9 @@ class ProductController extends Controller
     public function getFeatured($limit = 8)
     {
         return Jewelry::where('is_deleted', 0)
-                     ->orderBy('sold', 'desc')
-                     ->limit($limit)
-                     ->get();
+            ->orderBy('sold', 'desc')
+            ->limit($limit)
+            ->get();
     }
 
     /**
@@ -263,13 +270,13 @@ class ProductController extends Controller
     public function getByCategory($categoryId, $limit = null, $paginate = false)
     {
         $query = Jewelry::where('category_id', $categoryId)
-                        ->where('is_deleted', 0)
-                        ->orderBy('created_at', 'desc');
-        
+            ->where('is_deleted', 0)
+            ->orderBy('created_at', 'desc');
+
         if ($paginate) {
             return $query->paginate($limit ?: 16);
         }
-        
+
         if ($limit) {
             $query->limit($limit);
         }
@@ -284,7 +291,7 @@ class ProductController extends Controller
     {
         $stats = [
             'total_products' => Jewelry::where('is_deleted', 0)->count(),
-            'categories' => Category::withCount(['jewelries' => function($query) {
+            'categories' => Category::withCount(['jewelries' => function ($query) {
                 $query->where('is_deleted', 0);
             }])->where('is_deleted', 0)->get(),
             'price_ranges' => [
@@ -297,12 +304,12 @@ class ProductController extends Controller
                 'over_5m' => Jewelry::where('is_deleted', 0)->where('price', '>', 5000000)->count(),
             ],
             'brands' => Jewelry::where('is_deleted', 0)
-                              ->whereNotNull('brand')
-                              ->where('brand', '!=', '')
-                              ->selectRaw('brand, COUNT(*) as count')
-                              ->groupBy('brand')
-                              ->orderBy('count', 'desc')
-                              ->get(),
+                ->whereNotNull('brand')
+                ->where('brand', '!=', '')
+                ->selectRaw('brand, COUNT(*) as count')
+                ->groupBy('brand')
+                ->orderBy('count', 'desc')
+                ->get(),
             'genders' => [
                 'M' => Jewelry::where('is_deleted', 0)->where('gender', 'M')->count(),
                 'F' => Jewelry::where('is_deleted', 0)->where('gender', 'F')->count(),

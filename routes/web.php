@@ -11,6 +11,7 @@ use App\Http\Controllers\User\CheckoutController;
 use App\Http\Controllers\User\UserProfileController;
 use App\Http\Controllers\User\CartController;
 use App\Http\Controllers\User\ProductController;
+use App\Http\Controllers\User\SearchController;
 use App\Http\Controllers\AdminDashboardController;
 use App\Http\Controllers\JewelryController;
 use App\Http\Controllers\UserController;
@@ -35,6 +36,15 @@ Route::post('/register', [AuthController::class, 'register'])->name('auth.regist
 Route::get('/gioi-thieu', [HomeController::class, 'about'])->name('about');
 Route::get('/lien-he', [ContactController::class, 'show'])->name('contact.show');
 Route::post('/lien-he', [ContactController::class, 'submit'])->name('contact.submit');
+
+// Jewelry route (danh mục sản phẩm)
+Route::get('/jewelry/{id}', [JewelryController::class, 'showByCategory'])->name('jewelry.category');
+
+// Detail product route (public)
+Route::get('/detail/{id}', [ProductDetailController::class, 'show'])->name('jewelry.detail');
+
+// Products listing page (public)
+Route::get('/products', [ProductController::class, 'showAll'])->name('products.all');
 
 // =============================
 // User routes (cần đăng nhập)

@@ -82,4 +82,28 @@ class Jewelry extends Model
     {
         return $this->update(['is_deleted' => false]);
     }
+
+    // Get main image
+    public function getMainImageAttribute()
+    {
+        $mainFile = $this->jewelryFiles()
+            ->where('is_main', true)
+            ->with('file')
+            ->first();
+
+        if ($mainFile && $mainFile->file) {
+            return $mainFile->file->path;
+        }
+
+        // Fallback to first image if no main image
+        $firstFile = $this->jewelryFiles()
+            ->with('file')
+            ->first();
+
+        if ($firstFile && $firstFile->file) {
+            return $firstFile->file->path;
+        }
+
+        return null;
+    }
 }

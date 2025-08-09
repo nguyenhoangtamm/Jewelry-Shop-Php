@@ -783,8 +783,8 @@
                     <!-- Search box -->
                     <div class="col-xs-12 col-sm-6">
                         <div class="search-box">
-                            <form class="search form-inline" style="position: relative;">
-                                <input type="text" name="search" placeholder="Tìm kiếm trang sức, nhẫn, dây chuyền...">
+                            <form class="search form-inline" method="GET" action="{{ route('products.all') }}" style="position: relative;">
+                                <input type="text" name="search" placeholder="Tìm kiếm trang sức, nhẫn, dây chuyền..." value="{{ request('search') }}">
                                 <button type="submit">
                                     <i class="fa fa-search"></i>
                                 </button>

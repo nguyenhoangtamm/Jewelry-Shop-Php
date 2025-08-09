@@ -37,11 +37,10 @@
 
                 <!-- Middle column: Main image -->
                 <div class="product-main-image">
-                    @if($images && count($images) > 0)
+                    @if($main_image)
                     <div class="main-image-container">
-                        <img id="mainImage" src="{{ $images[0]['path'] }}" alt="{{ $jewelry->name }}">
+                        <img id="mainImage" src="{{ $main_image['path'] }}" alt="{{ $jewelry->name }}">
                         <div class="new-badge">NEW</div>
-                        <div class="image-hint">Chưa bao gồm dây chuyền</div>
                     </div>
                     @else
                     <div class="main-image-container">
@@ -126,7 +125,7 @@
                                 == 0) disabled @endif>
                                 {{ $jewelry->stock == 0 ? 'Hết hàng' : 'Thêm vào giỏ hàng' }}
                             </button>
-                            <button class="btn btn-secondary">Đặt ngay (miễn phí)</button>
+                            <!-- <button class="btn btn-secondary">Đặt ngay (miễn phí)</button> -->
                         </div>
 
 
