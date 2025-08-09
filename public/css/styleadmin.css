@@ -17,7 +17,7 @@
     box-sizing: border-box;
     outline: none;
     border: none;
-    font-family: 'Roboto', sans-serif;
+    font-family: "Roboto", sans-serif;
     text-decoration: none;
 }
 
@@ -30,18 +30,12 @@ body {
     top: 0;
     left: 0;
     bottom: 0;
-    width: 110px;
+    width: 290px;
     height: 100vh;
     padding: 0 1.7rem;
     color: var(--wrapper-color);
     overflow: hidden;
-    transition: all 0.5s linear;
     background: var(--primary-color);
-}
-
-.sidebar:hover {
-    width: 290px;
-    transition: all 0.3s ease-in-out;
 }
 
 .menu {
@@ -97,7 +91,6 @@ body {
 .active-page {
     display: block;
 }
-
 
 /*CSS Page trang chủ*/
 #main-body {
@@ -673,7 +666,6 @@ header.modal-header-books {
     background-color: var(--primary-color);
 }
 
-
 @keyframes modalFadeIn {
     from {
         opacity: 0;
@@ -966,7 +958,7 @@ input[type="date"] {
     color: #ff623d;
 }
 
-.toast+.toast {
+.toast + .toast {
     margin-top: 24px;
 }
 

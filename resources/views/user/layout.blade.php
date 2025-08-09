@@ -52,7 +52,7 @@
     <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css">
     <script src="https://cdn.tailwindcss.com"></script>
     <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
-<meta name="csrf-token" content="{{ csrf_token() }}">
+    <meta name="csrf-token" content="{{ csrf_token() }}">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
 
 
@@ -121,14 +121,14 @@
             font-size: 14px;
         }
 
-        .top-link .navbar-nav > li > a {
+        .top-link .navbar-nav>li>a {
             color: rgba(255, 255, 255, 0.9);
             transition: all 0.3s ease;
             padding: 8px 12px;
             border-radius: 6px;
         }
 
-        .top-link .navbar-nav > li > a:hover {
+        .top-link .navbar-nav>li>a:hover {
             color: var(--white);
             background: rgba(255, 255, 255, 0.15);
             backdrop-filter: blur(10px);
@@ -241,7 +241,7 @@
             justify-content: center;
             font-weight: 700;
             border: 3px solid var(--white);
-            box-shadow: 0 2px 10px rgba(0,0,0,0.15);
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.15);
         }
 
         .user-info {
@@ -574,7 +574,7 @@
 
         .footer #trademark-list img:hover {
             transform: translateY(-2px);
-            box-shadow: 0 5px 15px rgba(0,0,0,0.1);
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
             border-color: var(--galaxy-blue-accent);
         }
 
@@ -604,24 +604,24 @@
                 justify-content: center;
                 margin-top: 15px;
             }
-            
+
             .search-box {
                 margin: 15px 0;
             }
-            
+
             .nav-list {
                 flex-direction: column;
             }
-            
-            .footer #introduce-box > div {
+
+            .footer #introduce-box>div {
                 margin-bottom: 30px;
             }
-            
+
             .footer #trademark-list {
                 flex-direction: column;
                 align-items: flex-start;
             }
-            
+
             .main-nav {
                 display: none;
             }
@@ -631,17 +631,18 @@
             .main-header {
                 padding: 15px 0;
             }
-            
+
             .logo img {
                 max-height: 60px;
             }
-            
-            .cart-btn, .user-btn {
+
+            .cart-btn,
+            .user-btn {
                 width: 45px;
                 height: 45px;
                 font-size: 18px;
             }
-            
+
             .cart-count {
                 min-width: 24px;
                 height: 24px;
@@ -651,8 +652,13 @@
 
         /* Loading Animation */
         @keyframes shimmer {
-            0% { transform: translateX(-100%); }
-            100% { transform: translateX(100%); }
+            0% {
+                transform: translateX(-100%);
+            }
+
+            100% {
+                transform: translateX(100%);
+            }
         }
 
         .loading-shimmer {
@@ -667,7 +673,7 @@
             left: 0;
             width: 100%;
             height: 100%;
-            background: linear-gradient(90deg, transparent, rgba(255,255,255,0.4), transparent);
+            background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.4), transparent);
             animation: shimmer 1.5s infinite;
         }
 
@@ -719,10 +725,10 @@
                             <ul class="nav navbar-nav navbar-right hidden-xs" style="font-size: 15px;">
                                 <li><a href="kiem-tra-don-hang.html"><i class="fa fa-search"></i> Kiểm tra đơn hàng</a></li>
                                 <li>
-    <a href="{{ route('cart.show') }}">
-        <i class="fa fa-shopping-cart"></i> Giỏ hàng
-    </a>
-</li>
+                                    <a href="{{ route('cart.show') }}">
+                                        <i class="fa fa-shopping-cart"></i> Giỏ hàng
+                                    </a>
+                                </li>
 
                                 <li><a href="dang-nhap.html"><i class="fa fa-sign-in"></i> Đăng nhập</a></li>
                                 <li><a href="dang-ky.html"><i class="fa fa-user-plus"></i> Đăng ký</a></li>
@@ -752,10 +758,10 @@
                                     <ul class="dropdown-menu" aria-labelledby="quickMenu">
                                         <li><a href="kiem-tra-don-hang.html"><i class="fa fa-search"></i> Kiểm tra đơn hàng</a></li>
                                         <li>
-    <a href="{{ route('cart.show') }}">
-        <i class="fa fa-shopping-cart"></i> Giỏ hàng
-    </a>
-</li>
+                                            <a href="{{ route('cart.show') }}">
+                                                <i class="fa fa-shopping-cart"></i> Giỏ hàng
+                                            </a>
+                                        </li>
 
                                     </ul>
                                 </div>
@@ -764,7 +770,7 @@
                     </div>
                 </div>
             </section>
-            
+
             <!-- Main header -->
             <div class="container main-header">
                 <div class="row" style="align-items: center; display: flex;">
@@ -793,7 +799,7 @@
                                 <i class="fa fa-shopping-bag"></i>
                                 <span class="cart-count">0</span>
                             </a>
-                            
+
                             <!-- User -->
                             <div class="user-info">
                                 @if(Auth::check())
@@ -811,7 +817,7 @@
                     </div>
                 </div>
             </div>
-            
+
             <!-- Navigation Menu -->
             <div class="main-nav">
                 <div class="container">
@@ -824,26 +830,26 @@
                         <li class="nav-item"><a href="{{ route('home') }}">Trang chủ</a></li>
 
                         <li class="nav-item"><a href="{{ route('about') }}">Giới thiệu</a></li>
-     <li class="nav-item"><a href="{{ route('products.all') }}">Sản phẩm</a></li>
+                        <li class="nav-item"><a href="{{ route('products.all') }}">Sản phẩm</a></li>
 
 
-                       <li class="nav-item">
-    <a href="{{ route('news.index') }}">Tin tức</a>
-</li>
+                        <li class="nav-item">
+                            <a href="{{ route('news.index') }}">Tin tức</a>
+                        </li>
 
 
                         <li class="nav-item"><a href="{{ route('contact.show') }}">Liên hệ</a></li>
-                        
+
                     </ul>
                     </ul>
                 </div>
             </div>
         </div>
-        
+
         <main>
             @yield('content')
         </main>
-        
+
         <!-- Footer -->
         <div class="footer">
             <footer id="footer">
@@ -974,7 +980,7 @@
                             </div>
                         </div>
                     </div><!-- /#introduce-box -->
-                    
+
                     <!-- #trademark-box -->
                     <div id="trademark-box" class="row">
                         <div class="col-sm-12">
@@ -993,10 +999,10 @@
                             </ul>
                         </div>
                     </div> <!-- /#trademark-box -->
-                    
+
                     <p class="cpr text-center">
-                        &copy; 2024 Bản quyền thuộc về <strong>JEWELRY STORE</strong> | 
-                        <a href="http://runtime.vn/" target="_blank">Powered by RUNTIME.VN</a> | 
+                        &copy; 2024 Bản quyền thuộc về <strong>JEWELRY STORE</strong> |
+                        <a href="http://runtime.vn/" target="_blank">Powered by RUNTIME.VN</a> |
                         Thiết kế website bán trang sức chuyên nghiệp
                     </p>
                 </div>
@@ -1051,14 +1057,14 @@
     <script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
     <script type="module" src="{{ asset('js/index.js') }}"></script>
     @stack('scripts')
-    
+
     <script type="text/javascript">
         $(function() {
             $(".header-content").css({
                 "background": ''
             });
             $("html").addClass('');
-            
+
             // Scroll to top functionality
             $(window).scroll(function() {
                 if ($(this).scrollTop() > 100) {

@@ -121,9 +121,9 @@
                                     <span class="btn-text">Duyệt</span>
                                 </button>
                             </form>
-                            <button class="preview-btn" onclick="showOrderPreview({{ $order->id }})">
-                                <i class="fas fa-eye"></i>
-                            </button>
+                                <a href="{{ route('admin.orders.show', $order->id) }}" class="preview-btn">
+                                    <i class="fas fa-eye"></i>
+                                </a>
                         </td>
                     </tr>
                     @empty

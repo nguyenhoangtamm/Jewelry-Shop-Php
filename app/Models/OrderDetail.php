@@ -39,7 +39,7 @@ class OrderDetail extends Model
 
     public function jewelry()
     {
-        return $this->belongsTo(Jewelry::class, 'jewelries_id');
+        return $this->belongsTo(Jewelry::class, 'jewelry_id');
     }
 
     // Phương thức để lấy cả record đã xóa

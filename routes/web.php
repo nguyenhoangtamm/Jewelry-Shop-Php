@@ -72,6 +72,9 @@ Route::middleware('auth')->group(function () {
         Route::get('/users/{id}/edit', [UserController::class, 'edit'])->name('users.edit');
         Route::put('/users/{id}', [UserController::class, 'update'])->name('users.update');
         Route::delete('/users/{id}', [UserController::class, 'destroy'])->name('users.destroy');
+        Route::put('/users/{id}/lock', [UserController::class, 'lock'])->name('admin.users.lock');
+        Route::put('/users/{id}/toggle-lock', [UserController::class, 'toggleLock'])->name('admin.users.toggleLock');
+
 
         // Quản lý danh mục
         Route::get('/categories', [CategoryController::class, 'index'])->name('categories.index');
