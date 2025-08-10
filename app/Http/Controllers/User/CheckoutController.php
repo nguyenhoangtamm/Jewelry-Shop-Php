@@ -10,6 +10,7 @@ use App\Models\Order;
 use App\Models\OrderDetail;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Session;
+use Illuminate\Support\Facades\Validator;
 
 class CheckoutController extends Controller
 {
@@ -37,10 +38,16 @@ class CheckoutController extends Controller
     {
         // Kiểm tra đăng nhập
         if (!Auth::check()) {
+            if ($request->ajax()) {
+                return response()->json([
+                    'status' => 'unauthenticated',
+                    'message' => 'Vui lòng đăng nhập để đặt hàng!',
+                    'redirect_url' => route('login'),
+                ], 401);
+            }
             return redirect()->route('login')->with('error', 'Vui lòng đăng nhập để đặt hàng!');
         }
-
-        $request->validate([
+        $rules = [
             'jewelry_id' => 'required|exists:jewelries,id',
             'quantity' => 'required|integer|min:1',
             'fullname' => 'required|string|max:255',
@@ -51,13 +58,31 @@ class CheckoutController extends Controller
             'payment_method' => 'required|in:cod,bank_transfer,cash',
             'note' => 'nullable|string|max:1000',
             'total_amount' => 'required|numeric|min:0'
-        ]);
+        ];
+
+        if ($request->ajax()) {
+            $validator = Validator::make($request->all(), $rules);
+            if ($validator->fails()) {
+                return response()->json([
+                    'status' => 'validation_error',
+                    'errors' => $validator->errors(),
+                ], 422);
+            }
+        } else {
+            $request->validate($rules);
+        }
 
         try {
             $jewelry = Jewelry::findOrFail($request->jewelry_id);
 
             // Kiểm tra tồn kho
             if ($request->quantity > $jewelry->stock) {
+                if ($request->ajax()) {
+                    return response()->json([
+                        'status' => 'error',
+                        'message' => 'Số lượng sản phẩm không đủ trong kho!',
+                    ], 409);
+                }
                 return back()->with('error', 'Số lượng sản phẩm không đủ trong kho!');
             }
 
@@ -68,6 +93,12 @@ class CheckoutController extends Controller
 
             // Kiểm tra tổng tiền từ form có khớp không
             if (abs($totalAmount - $request->total_amount) > 1) {
+                if ($request->ajax()) {
+                    return response()->json([
+                        'status' => 'error',
+                        'message' => 'Có lỗi trong tính toán giá tiền!',
+                    ], 422);
+                }
                 return back()->with('error', 'Có lỗi trong tính toán giá tiền!');
             }
 
@@ -93,8 +124,26 @@ class CheckoutController extends Controller
             // Xóa sản phẩm khỏi giỏ hàng (nếu có)
             $this->removeFromCart($request->jewelry_id);
 
-            return redirect()->route('user.orders.show', $order->id)->with('success', 'Đặt hàng thành công! Mã đơn hàng: #' . $order->id);
+            if ($request->ajax()) {
+                // Không chắc route chi tiết đơn hàng tồn tại, trả về trang chủ làm mặc định
+                $redirectUrl = route('home', absolute: false) ?? url('/');
+                return response()->json([
+                    'status' => 'success',
+                    'message' => 'Đặt hàng thành công! Mã đơn hàng: #' . $order->id,
+                    'order_id' => $order->id,
+                    'redirect_url' => $redirectUrl,
+                ]);
+            }
+            // Fallback điều hướng truyền thống (nếu có route lịch sử đơn hàng)
+            return redirect()->back()->with('success', 'Đặt hàng thành công! Mã đơn hàng: #' . $order->id);
         } catch (\Exception $e) {
+            if ($request->ajax()) {
+                return response()->json([
+                    'status' => 'error',
+                    'message' => 'Có lỗi xảy ra khi đặt hàng. Vui lòng thử lại!',
+                    'error_detail' => $e->getMessage(),
+                ], 500);
+            }
             return back()->with('error', 'Có lỗi xảy ra khi đặt hàng. Vui lòng thử lại!');
         }
     }

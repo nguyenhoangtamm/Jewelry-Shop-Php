@@ -382,6 +382,7 @@
 
                         <script>
                             $(document).ready(function() {
+                                // Toggle bank transfer info
                                 $('input[name="payment_method"]').on('change', function() {
                                     if ($(this).val() === 'bank_transfer' && $(this).is(':checked')) {
                                         $('#bank-transfer-info').slideDown();
@@ -391,12 +392,6 @@
                                 });
                             });
                         </script>
-
-
-
-
-
-
                     </div>
                 </div>
 
@@ -439,65 +434,114 @@
             </div>
             <!-- Nút hành động -->
             <div class="checkout-actions">
-                <button type="submit" form="checkoutForm" class="btn btn-primary">
+                <button type="submit" form="checkoutForm" id="btnPlaceOrder" class="btn btn-primary">
                     ĐẶT HÀNG
                 </button>
                 <a href="/jewelry/{{ $jewelry_id }}" class="btn btn-outline">
                     Quay lại
                 </a>
             </div>
+            <div id="order-messages" style="margin-top:12px;"></div>
         </div>
     </div>
 </div>
 <script>
-    $(document).ready(function() {
-        const subtotal = {
-            !!$total_amount!!
-        };
+    $(function() {
+        const formatCurrency = (n) => new Intl.NumberFormat('vi-VN').format(n) + '₫';
+        const $form = $('#checkoutForm');
+        const $btn = $('#btnPlaceOrder');
+        const $msg = $('#order-messages');
 
-        // Xử lý chọn phương thức vận chuyển
-        $('input[name="shipping_method"]').on('change', function() {
-            updateTotalAmount();
-
-            // Cập nhật UI cho phương thức được chọn
-            $('.payment-method').removeClass('selected');
-            $(this).closest('.payment-method').addClass('selected');
-        });
-
-        // Xử lý chọn phương thức thanh toán
-        $('input[name="payment_method"]').on('change', function() {
-            if ($(this).val() === 'bank_transfer' && $(this).is(':checked')) {
-                $('#bank-transfer-info').slideDown();
+        function setButtonLoading(loading) {
+            if (loading) {
+                $btn.prop('disabled', true).text('ĐANG XỬ LÝ...');
             } else {
-                $('#bank-transfer-info').slideUp();
+                $btn.prop('disabled', false).text('ĐẶT HÀNG');
             }
-
-            // Cập nhật UI cho phương thức được chọn
-            $('.payment-method').removeClass('selected');
-            $(this).closest('.payment-method').addClass('selected');
-        });
-
-        function updateTotalAmount() {
-            const shippingMethod = $('input[name="shipping_method"]:checked').val();
-            const shippingFee = shippingMethod === 'express' ? 50000 : 0;
-            const total = subtotal + shippingFee;
-
-            // Cập nhật hiển thị phí vận chuyển
-            if (shippingFee > 0) {
-                $('#shipping-fee').text(new Intl.NumberFormat('vi-VN').format(shippingFee) + '₫');
-            } else {
-                $('#shipping-fee').text('Miễn phí');
-            }
-
-            // Cập nhật tổng tiền
-            $('#total-amount').text(new Intl.NumberFormat('vi-VN').format(total) + '₫');
-
-            // Cập nhật input hidden
-            $('input[name="total_amount"]').val(total);
         }
 
-        // Khởi tạo ban đầu
-        updateTotalAmount();
+        function renderErrors(errors) {
+            let html = '<div class="alert" style="background:#fdecea;color:#b71c1c;padding:12px;border-radius:6px">';
+            html += '<ul style="margin-left:18px">';
+            Object.keys(errors).forEach(function(k) {
+                errors[k].forEach(function(msg) {
+                    html += '<li>' + msg + '</li>';
+                });
+            });
+            html += '</ul></div>';
+            $msg.html(html);
+        }
+
+        function renderSuccess(message) {
+            const html = '<div class="alert" style="background:#e8f5e9;color:#1b5e20;padding:12px;border-radius:6px">' + message + '</div>';
+            $msg.html(html);
+        }
+
+        // Update shipping fee and total when shipping method changes
+        $('input[name="shipping_method"]').on('change', function() {
+            const method = $(this).val();
+            const base = {
+                {
+                    (int) $total_amount
+                }
+            }; // server subtotal
+            const shipping = method === 'express' ? 50000 : 0;
+            $('#shipping-fee').text(shipping ? formatCurrency(shipping) : 'Miễn phí');
+            $('#total-amount').text(formatCurrency(base + shipping));
+            $form.find('input[name="total_amount"]').val(base + shipping);
+        });
+
+        // AJAX submit
+        $form.on('submit', function(e) {
+            e.preventDefault();
+            $msg.empty();
+            setButtonLoading(true);
+
+            $.ajax({
+                    url: $form.attr('action'),
+                    method: 'POST',
+                    data: $form.serialize(),
+                    headers: {
+                        'X-Requested-With': 'XMLHttpRequest'
+                    }
+                })
+                .done(function(res) {
+                    if (res.status === 'success') {
+                        renderSuccess(res.message || 'Đặt hàng thành công');
+                        if (res.redirect_url) {
+                            setTimeout(function() {
+                                window.location.href = res.redirect_url;
+                            }, 1200);
+                        }
+                    } else if (res.status === 'unauthenticated' && res.redirect_url) {
+                        window.location.href = res.redirect_url;
+                    } else if (res.status === 'validation_error' && res.errors) {
+                        renderErrors(res.errors);
+                    } else {
+                        renderErrors({
+                            general: ['Không thể đặt hàng. Vui lòng thử lại.']
+                        });
+                    }
+                })
+                .fail(function(xhr) {
+                    if (xhr.status === 422 && xhr.responseJSON && xhr.responseJSON.errors) {
+                        renderErrors(xhr.responseJSON.errors);
+                    } else if (xhr.status === 401 && xhr.responseJSON && xhr.responseJSON.redirect_url) {
+                        window.location.href = xhr.responseJSON.redirect_url;
+                    } else if (xhr.responseJSON && xhr.responseJSON.message) {
+                        renderErrors({
+                            general: [xhr.responseJSON.message]
+                        });
+                    } else {
+                        renderErrors({
+                            general: ['Có lỗi xảy ra. Vui lòng thử lại!']
+                        });
+                    }
+                })
+                .always(function() {
+                    setButtonLoading(false);
+                });
+        });
     });
 </script>
 @endsection

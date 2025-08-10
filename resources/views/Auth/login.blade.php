@@ -165,7 +165,7 @@
                 // Chuyển hướng dựa trên role của user
                 setTimeout(() => {
                     if (result.user && result.user.role === 'admin') {
-                        window.location.href = '{{ url("admin/index") }}';
+                        window.location.href = '{{ url("admin/dashboard") }}';
                     } else {
                         window.location.href = '{{ url("/home") }}';
                     }
