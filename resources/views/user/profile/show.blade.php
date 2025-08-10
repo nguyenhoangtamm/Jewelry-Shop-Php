@@ -148,7 +148,7 @@
                         </div>
                         <div class="card-body">
                             <div class="quick-actions">
-                                <a href="#" class="quick-action-item">
+                                <a href="{{ route('user.orders.index') }}" class="quick-action-item">
                                     <div class="action-icon bg-primary">
                                         <i class="fas fa-shopping-cart"></i>
                                     </div>
@@ -161,7 +161,7 @@
                                     </div>
                                 </a>
 
-                                <a href="#" class="quick-action-item">
+                                <a href="{{ route('user.favorites.index') }}" class="quick-action-item">
                                     <div class="action-icon bg-danger">
                                         <i class="fas fa-heart"></i>
                                     </div>
@@ -174,7 +174,7 @@
                                     </div>
                                 </a>
 
-                                <a href="#" class="quick-action-item">
+                                <a href="{{ route('user.points.index') }}" class="quick-action-item">
                                     <div class="action-icon bg-warning">
                                         <i class="fas fa-star"></i>
                                     </div>
@@ -187,7 +187,7 @@
                                     </div>
                                 </a>
 
-                                <a href="#" class="quick-action-item">
+                                <a href="{{ route('user.notifications.index') }}" class="quick-action-item">
                                     <div class="action-icon bg-info">
                                         <i class="fas fa-bell"></i>
                                     </div>

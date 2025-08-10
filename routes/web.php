@@ -19,6 +19,9 @@ use App\Http\Controllers\CategoryController;
 use App\Http\Controllers\OrderController;
 use App\Http\Controllers\User\OrderController as UserOrderController;
 use App\Http\Controllers\NewsController;
+use App\Http\Controllers\User\FavoritesController;
+use App\Http\Controllers\User\PointsController;
+use App\Http\Controllers\User\NotificationsController;
 
 // =============================
 // Public routes (khách, chưa đăng nhập)
@@ -136,6 +139,27 @@ Route::middleware('auth')->group(function () {
     Route::prefix('orders')->name('user.orders.')->middleware('role:customer')->group(function () {
         Route::get('/', [UserOrderController::class, 'index'])->name('index');
         Route::get('/{id}', [UserOrderController::class, 'show'])->name('show');
+    });
+
+    // =============================
+    // Favorites (Wishlist) - customer
+    // =============================
+    Route::prefix('favorites')->name('user.favorites.')->middleware('role:customer')->group(function () {
+        Route::get('/', [FavoritesController::class, 'index'])->name('index');
+    });
+
+    // =============================
+    // Points (Rewards) - customer
+    // =============================
+    Route::prefix('points')->name('user.points.')->middleware('role:customer')->group(function () {
+        Route::get('/', [PointsController::class, 'index'])->name('index');
+    });
+
+    // =============================
+    // Notifications - customer
+    // =============================
+    Route::prefix('notifications')->name('user.notifications.')->middleware('role:customer')->group(function () {
+        Route::get('/', [NotificationsController::class, 'index'])->name('index');
     });
 
     // =============================
