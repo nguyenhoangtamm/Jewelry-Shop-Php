@@ -146,6 +146,7 @@ Route::middleware('auth')->group(function () {
     // =============================
     Route::prefix('favorites')->name('user.favorites.')->middleware('role:customer')->group(function () {
         Route::get('/', [FavoritesController::class, 'index'])->name('index');
+        Route::post('/add', [FavoritesController::class, 'add'])->name('add');
     });
 
     // =============================

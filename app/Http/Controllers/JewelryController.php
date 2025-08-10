@@ -37,7 +37,6 @@ class JewelryController extends Controller
             ->unique()
             ->sort()
             ->values();
-
         return view('admin.jewelries.index', compact('jewelries', 'search', 'categories', 'mainStones'));
     }
 

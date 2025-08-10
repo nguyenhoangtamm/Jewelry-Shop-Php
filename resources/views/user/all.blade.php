@@ -295,27 +295,17 @@
 
                         <!-- Product Image -->
                         <div class="relative overflow-hidden aspect-square bg-gradient-to-br from-gray-50 to-gray-100">
+                            <a href="{{ route('product.detail', $product->id) }}" class="absolute inset-0 z-10" aria-label="{{ $product->name }}">
                             <img src="{{ $product->image }}" alt="{{ $product->name }}"
-                                class="w-full h-full object-cover group-hover:scale-110 transition-transform duration-700">
+                                class="w-full h-full object-cover group-hover:scale-110 transition-transform duration-700 select-none pointer-events-none">
 
                             <!-- Gradient overlay -->
                             <div class="absolute inset-0 bg-gradient-to-t from-black/20 via-transparent to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300"></div>
 
                             <!-- Quick Action Buttons -->
-                            <div class="absolute inset-0 flex items-center justify-center opacity-0 group-hover:opacity-100 transition-all duration-300">
+                            <div class="absolute inset-0 flex items-center justify-center opacity-0 group-hover:opacity-100 transition-all duration-300 z-20">
                                 <div class="flex space-x-3">
-                                    <a href="{{ route('product.detail', $product->id) }}"
-                                        class="bg-white/90 backdrop-blur-sm text-indigo-600 p-3 rounded-full hover:bg-white hover:scale-110 transition-all duration-200 shadow-lg">
-                                        <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" />
-                                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z" />
-                                        </svg>
-                                    </a>
-                                    <button class="bg-white/90 backdrop-blur-sm text-pink-600 p-3 rounded-full hover:bg-white hover:scale-110 transition-all duration-200 shadow-lg">
-                                        <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4.318 6.318a4.5 4.5 0 000 6.364L12 20.364l7.682-7.682a4.5 4.5 0 00-6.364-6.364L12 7.636l-1.318-1.318a4.5 4.5 0 00-6.364 0z" />
-                                        </svg>
-                                    </button>
+                                   
                                 </div>
                             </div>
 
@@ -327,14 +317,15 @@
                                     <div class="w-4 h-4 rounded-full bg-gradient-to-br from-blue-300 to-blue-600 border-2 border-white shadow-sm"></div>
                                 </div>
                             </div>
+                            </a>
                         </div>
 
                         <!-- Product Info -->
                         <div class="p-6">
                             <div class="flex items-center justify-between mb-2">
-                                <span class="text-xs font-semibold text-indigo-600 uppercase tracking-wider bg-indigo-50 px-2 py-1 rounded-full">
-                                    {{ $product->brand ?: $product->category->name ?? 'Trang sức' }}
-                                </span>
+                                <a class="text-xs font-semibold text-indigo-600 uppercase tracking-wider bg-indigo-50 px-2 py-1 rounded-full" href="{{ route('products.all', ['category' => $product->category->id]) }}">
+                                    {{ $product->brand ?? ($product->category->name ?? 'Trang sức') }}
+                                </a>
                                 <div class="flex items-center text-yellow-400">
                                     @for($i = 0; $i < 5; $i++)
                                         <svg class="w-3 h-3 fill-current" viewBox="0 0 20 20">
@@ -344,9 +335,11 @@
                                 </div>
                             </div>
 
-                            <h3 class="font-bold text-gray-900 mb-3 line-clamp-2 text-lg group-hover:text-indigo-700 transition-colors duration-200">
-                                {{ $product->name }}
-                            </h3>
+                            <a href="{{ route('product.detail', $product->id) }}">
+                                <h3 class="font-bold text-gray-900 mb-3 line-clamp-2 text-lg group-hover:text-indigo-700 transition-colors duration-200">
+                                    {{ $product->name }}
+                                </h3>
+                            </a>
 
                             <div class="flex items-center justify-between mb-4">
                                 <div class="flex flex-col">
@@ -367,6 +360,11 @@
                                         {{ $product->stock == 0 ? 'disabled' : '' }}>
                                         <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 3h2l.4 2M7 13h10l4-8H5.4m0 0L7 13m0 0l-1.5 1.5M7 13l-1.5-1.5M17 21a2 2 0 100-4 2 2 0 000 4zM9 21a2 2 0 100-4 2 2 0 000 4z" />
+                                        </svg>
+                                    </button>
+                                    <button type="button" data-fav-id="{{ $product->id }}" class="btn-fav bg-white/90 backdrop-blur-sm text-pink-600 p-3 rounded-full hover:bg-white hover:scale-110 transition-all duration-200 shadow-lg" title="Thêm vào yêu thích">
+                                        <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4.318 6.318a4.5 4.5 0 000 6.364L12 20.364l7.682-7.682a4.5 4.5 0 00-6.364-6.364L12 7.636l-1.318-1.318a4.5 4.5 0 00-6.364 0z" />
                                         </svg>
                                     </button>
                                 </form>
@@ -609,6 +607,7 @@
 <style>
     .line-clamp-2 {
         display: -webkit-box;
+        line-clamp: 2;
         -webkit-line-clamp: 2;
         -webkit-box-orient: vertical;
         overflow: hidden;
@@ -717,6 +716,41 @@
 <script>
     // Enhanced filter functionality with animations
     document.addEventListener('DOMContentLoaded', function() {
+        // Favorite (Wishlist) add via AJAX
+        const csrf = document.querySelector('meta[name="csrf-token"]').getAttribute('content');
+        document.body.addEventListener('click', async function(e) {
+            const btn = e.target.closest('.btn-fav');
+            if (!btn) return;
+            e.preventDefault();
+            const id = btn.getAttribute('data-fav-id');
+            if (!id) return;
+            const prevHtml = btn.innerHTML;
+            btn.classList.add('scale-110');
+            try {
+                const res = await fetch("{{ route('user.favorites.add') }}", {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'X-CSRF-TOKEN': csrf,
+                        'X-Requested-With': 'XMLHttpRequest',
+                    },
+                    body: JSON.stringify({
+                        jewelry_id: parseInt(id)
+                    })
+                });
+                if (res.status === 401) {
+                    window.location.href = "{{ route('login') }}";
+                    return;
+                }
+                const data = await res.json();
+                showEnhancedNotification(data.message || 'Đã thêm vào yêu thích', 'success');
+                btn.classList.add('bg-pink-600', 'text-white');
+            } catch (err) {
+                showEnhancedNotification('Có lỗi xảy ra!', 'error');
+            } finally {
+                setTimeout(() => btn.classList.remove('scale-110'), 200);
+            }
+        });
         // Handle checkbox filters with smooth transitions
         const checkboxes = document.querySelectorAll('input[type="checkbox"]');
         checkboxes.forEach(checkbox => {

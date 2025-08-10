@@ -628,7 +628,6 @@
                     $discount = $p->discount ?? 10;
                     $sold = $p->sold ?? 100;
                     $oldPrice = $p->price / (1 - $discount / 100);
-                    $imgUrl = !empty($p->main_image) ? asset($p->main_image) : asset('img/default.png');
 
                     @endphp
 
