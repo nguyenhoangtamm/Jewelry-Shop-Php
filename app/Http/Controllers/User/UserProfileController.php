@@ -5,9 +5,9 @@ namespace App\Http\Controllers\User;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Hash;
-use Illuminate\Support\Facades\Storage;
 use App\Http\Controllers\Controller;
 use App\Models\User;
+use App\Helpers\ImageHelper;
 
 class UserProfileController extends Controller
 {
@@ -56,16 +56,16 @@ class UserProfileController extends Controller
             }
         }
 
-        // Xử lý upload avatar
+        // Xử lý upload avatar: lưu vào bảng files và lấy tên file (path) giống jewelry
         if ($request->hasFile('avatar')) {
-            // Xóa avatar cũ nếu có
-            if ($user->avatar && Storage::exists('public/avatars/' . $user->avatar)) {
-                Storage::delete('public/avatars/' . $user->avatar);
+            try {
+                $fileModel = ImageHelper::uploadFile($request->file('avatar'), 'images');
+                if ($fileModel) {
+                    $user->avatar = $fileModel->path; // lưu tên file (path) từ bảng files
+                }
+            } catch (\Throwable $e) {
+                return back()->withErrors(['avatar' => 'Không thể tải lên ảnh. Vui lòng thử lại.'])->withInput();
             }
-
-            $avatarName = time() . '_' . $request->file('avatar')->getClientOriginalName();
-            $request->file('avatar')->storeAs('public/avatars', $avatarName);
-            $user->avatar = $avatarName;
         }
 
         // Cập nhật thông tin

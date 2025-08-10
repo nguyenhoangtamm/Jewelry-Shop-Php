@@ -44,7 +44,7 @@
                                     <div class="avatar-container">
                                         <div class="avatar-wrapper">
                                             @if($user->avatar)
-                                            <img id="avatar-preview" src="{{ asset('storage/avatars/' . $user->avatar) }}"
+                                            <img id="avatar-preview" src="{{ \App\Helpers\ImageHelper::getImageUrl($user->avatar) }}"
                                                 alt="Avatar" class="avatar-image">
                                             @else
                                             <div id="avatar-preview" class="avatar-placeholder">

@@ -14,7 +14,7 @@
                         <!-- Avatar -->
                         <div class="avatar-wrapper">
                             @if($user->avatar)
-                            <img src="{{ asset('storage/avatars/' . $user->avatar) }}" alt="Avatar"
+                            <img src="{{ \App\Helpers\ImageHelper::getImageUrl($user->avatar) }}" alt="Avatar"
                                 class="profile-avatar">
                             @else
                             <div class="default-avatar">

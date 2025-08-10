@@ -900,7 +900,7 @@
                                     <a href="#" class="user-btn user-avatar-btn dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false" title="Tài khoản">
                                         @php($avatar = Auth::user()->avatar)
                                         @if($avatar)
-                                        <img src="{{ asset('storage/avatars/' . $avatar) }}" alt="avatar" style="width:100%;height:100%;object-fit:cover;border-radius:50%">
+                                        <img src="{{ \App\Helpers\ImageHelper::getImageUrl($avatar) }}" alt="avatar" style="width:100%;height:100%;object-fit:cover;border-radius:50%">
                                         @else
                                         <span class="avatar-initial">{{ strtoupper(substr(Auth::user()->username ?? Auth::user()->fullname ?? Auth::user()->email,0,1)) }}</span>
                                         @endif
