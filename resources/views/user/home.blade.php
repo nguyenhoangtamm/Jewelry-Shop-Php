@@ -628,6 +628,7 @@
                     $discount = $p->discount ?? 10;
                     $sold = $p->sold ?? 100;
                     $oldPrice = $p->price / (1 - $discount / 100);
+                    $imgUrl = !empty($p->main_image) ? asset($p->main_image) : asset('img/default.png');
 
                     @endphp
 
@@ -872,6 +873,142 @@
                 </p>
             </div>
 
+
+             <div class="flex overflow-x-auto gap-8 scrollbar-hide">
+    @foreach($newProducts as $p)
+        @php
+            $discount = $p->discount ?? 10;
+            $sold = $p->sold ?? 100;
+            $oldPrice = $p->price / (1 - $discount / 100);
+            $imgUrl = \App\Helpers\ImageHelper::getMainImage($p);
+        @endphp
+
+        
+<a href="/detail/{{ $p->id }}"
+   class="flex-shrink-0 w-[260px] product-card overflow-hidden relative block text-black no-underline">
+    <div class="p-5 flex flex-col gap-3">
+        <!-- Badges -->
+        <div class="flex gap-2 mb-2">
+            <div class="product-badge text-xs font-semibold rounded-full px-4 py-1.5">
+                <i class="fas fa-star mr-1 text-xs"></i>Hàng mới
+            </div>
+            @if($discount >= 20)
+                <div class="bg-gradient-to-r from-galaxy-blue to-galaxy-accent text-white text-xs font-semibold rounded-full px-4 py-1.5">
+                    <i class="fas fa-fire mr-1 text-xs"></i>Bán chạy
+                </div>
+            @endif
+        </div>
+        
+        <!-- Product Image -->
+        <div class="relative sparkle group">
+            <img src="{{ $imgUrl }}" alt="{{ $p->name }}" class="rounded-xl w-full h-[180px] object-cover" />
+            
+            <div class="absolute top-3 right-3 w-11 h-11 gift-icon rounded-xl flex items-center justify-center">
+                <i class="fas fa-gift text-white"></i>
+            </div>
+        </div>
+        
+        <!-- Product Name -->
+        <h3 class="text-base mt-2 font-bold text-galaxy-blue leading-tight line-clamp-2">{{ $p->name }}</h3>
+        
+        <!-- Price Section -->
+        <div class="flex items-center gap-3">
+            <span class="product-price text-xl font-bold text-galaxy-blue">{{ number_format($p->price, 0, ',', '.') }}đ</span>
+            <span class="discount-badge text-white text-xs font-bold rounded-full px-3 py-1">-{{ $discount }}%</span>
+        </div>
+        
+        <!-- Old Price -->
+        <div class="text-gray-400 line-through text-sm font-medium -mt-1">{{ number_format($oldPrice, 0, ',', '.') }}đ</div>
+        
+        <!-- Progress Bar -->
+        <div class="mt-2 flex items-center gap-3">
+            <i class="fas fa-fire text-galaxy-gold"></i>
+            <div class="flex-1 progress-container rounded-full h-6 overflow-hidden">
+                <div class="progress-fill h-full text-white text-xs font-semibold flex items-center justify-center"
+                     style="width: {{ min(100, ($sold / 500) * 100) }}%;">
+                    Đã bán {{ $sold }}
+                </div>
+            </div>
+        </div>
+    </div>
+</a>
+@endforeach
+
+</div>
+</div> {{-- Đóng flex container --}}
+
+<!-- Nút xem tất cả -->
+<div class="mt-8 text-center">
+    <a href="{{ route('products.all') }}"
+       class="view-all-button inline-block text-white font-bold py-3 px-8 rounded-xl transition-all duration-300">
+        <span class="flex items-center gap-2">
+            <span>Xem tất cả</span>
+            <i class="fas fa-arrow-right text-sm"></i>
+        </span>
+    </a>
+</div>
+
+<style>
+.product-card {
+    background: white;
+    border-radius: 18px;
+    box-shadow: 0 6px 24px rgba(102, 126, 234, 0.08);
+    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+    border: 1px solid rgba(102, 126, 234, 0.05);
+}
+
+.product-card:hover {
+    transform: translateY(-4px) scale(1.01);
+    box-shadow: 0 16px 48px rgba(102, 126, 234, 0.15);
+    border-color: rgba(102, 126, 234, 0.1);
+}
+
+.product-badge {
+    background: linear-gradient(135deg, rgba(102, 126, 234, 0.1), rgba(102, 126, 234, 0.15));
+    color: #667eea;
+    border: 1px solid rgba(102, 126, 234, 0.15);
+}
+
+.gift-icon {
+    background: linear-gradient(135deg, #667eea, #764ba2);
+    box-shadow: 0 3px 12px rgba(102, 126, 234, 0.3);
+    transition: transform 0.2s ease;
+}
+
+.gift-icon:hover {
+    transform: scale(1.1);
+}
+
+.discount-badge {
+    background: linear-gradient(135deg, #ff6b6b, #ff8e8e);
+}
+
+.progress-container {
+    background: linear-gradient(90deg, rgba(102, 126, 234, 0.08), rgba(102, 126, 234, 0.04));
+}
+
+.progress-fill {
+    background: linear-gradient(90deg, #667eea, #764ba2);
+    border-radius: 25px;
+}
+
+.view-all-button {
+    background: linear-gradient(135deg, #667eea, #764ba2);
+    box-shadow: 0 6px 20px rgba(102, 126, 234, 0.25);
+}
+
+.view-all-button:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 8px 30px rgba(102, 126, 234, 0.35);
+}
+
+.line-clamp-2 {
+    overflow: hidden;
+    display: -webkit-box;
+    -webkit-line-clamp: 2;
+    -webkit-box-orient: vertical;
+}
+</style>
 
             <body class="bg-white text-[#4a3a23]">
                 <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 pt-10">
