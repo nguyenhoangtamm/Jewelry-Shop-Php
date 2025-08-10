@@ -37,6 +37,7 @@ class JewelryController extends Controller
             ->unique()
             ->sort()
             ->values();
+
         return view('admin.jewelries.index', compact('jewelries', 'search', 'categories', 'mainStones'));
     }
 
@@ -117,31 +118,29 @@ class JewelryController extends Controller
         $jewelry = Jewelry::findOrFail($id);
 
         // Xử lý ảnh nếu có upload mới
-        if ($request->hasFile('image')) {
-            $fileModel = ImageHelper::uploadFile($request->file('image'));
+       if ($request->hasFile('image')) {
+    $fileModel = ImageHelper::uploadFile($request->file('image'));
 
-            if ($fileModel) {
-                // Lưu vào bảng jewelry_files
-                $hasMainImage = \App\Models\JewelryFile::where('jewelry_id', $jewelry->id)
-                    ->where('is_main', 1)
-                    ->exists();
+    if ($fileModel) {
+        // Gỡ đánh dấu ảnh chính cũ
+        \App\Models\JewelryFile::where('jewelry_id', $jewelry->id)
+            ->where('is_main', 1)
+            ->update(['is_main' => 0]);
 
-                $jewelryFile = new \App\Models\JewelryFile();
-                $jewelryFile->jewelry_id = $jewelry->id;
-                $jewelryFile->file_id = $fileModel->id;
-                $jewelryFile->is_main = !$hasMainImage ? 1 : 0;
-                $jewelryFile->save();
-            }
-        }
+        // Lưu ảnh mới làm ảnh chính
+        $jewelryFile = new \App\Models\JewelryFile();
+        $jewelryFile->jewelry_id = $jewelry->id;
+        $jewelryFile->file_id = $fileModel->id;
+        $jewelryFile->is_main = 1;
+        $jewelryFile->save();
+    }
+}
+
 
         $jewelry->update($validated);
 
-        $page = $request->input('page');
-        $redirect = redirect()->route('admin.jewelries.index');
-        if ($page) {
-            $redirect = redirect()->route('admin.jewelries.index', ['page' => $page]);
-        }
-        return $redirect->with('success', 'Cập nhật trang sức thành công!');
+        return redirect()->route('admin.jewelries.index')
+            ->with('success', 'Cập nhật trang sức thành công!');
     }
 
     public function destroy(Request $request, $id)
