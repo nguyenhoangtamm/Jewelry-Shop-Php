@@ -478,18 +478,15 @@
         }
 
         // Update shipping fee and total when shipping method changes
-        $('input[name="shipping_method"]').on('change', function() {
-            const method = $(this).val();
-            const base = {
-                {
-                    (int) $total_amount
-                }
-            }; // server subtotal
-            const shipping = method === 'express' ? 50000 : 0;
-            $('#shipping-fee').text(shipping ? formatCurrency(shipping) : 'Miễn phí');
-            $('#total-amount').text(formatCurrency(base + shipping));
-            $form.find('input[name="total_amount"]').val(base + shipping);
-        });
+$('input[name="shipping_method"]').on('change', function() {
+    const method = $(this).val();
+    const base = Number({{ (int) $total_amount }}); // subtotal từ server
+    const shipping = method === 'express' ? 50000 : 0;
+    $('#shipping-fee').text(shipping ? formatCurrency(shipping) : 'Miễn phí');
+    $('#total-amount').text(formatCurrency(base + shipping));
+    $form.find('input[name="total_amount"]').val(base + shipping);
+});
+
 
         // AJAX submit
         $form.on('submit', function(e) {
