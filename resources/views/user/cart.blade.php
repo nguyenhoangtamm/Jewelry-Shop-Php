@@ -83,7 +83,7 @@
                             <i class="fas fa-trash-alt me-2"></i>
                             Xóa tất cả
                         </button>
-                        <a href="{{ route('home') }}" class="btn-continue-shopping">
+                        <a href="{{ route('products.all') }}" class="btn-continue-shopping">
                             <i class="fas fa-arrow-left me-2"></i>
                             Tiếp tục mua sắm
                         </a>
@@ -122,11 +122,11 @@
                         <span class="total-value" id="cart-total">{{ number_format($total_amount, 0, ',', '.') }}
                             VNĐ</span>
                     </div>
-                <button type="button" class="btn-checkout"
-                    onclick="window.location='{{ route('checkout', ['jewelry' => $item['id'], 'quantity' => $item['quantity']]) }}'">
-                    <i class="fas fa-credit-card me-2"></i>
-                    Tiến hành thanh toán
-                </button>
+                    <button type="button" class="btn-checkout"
+                        onclick="window.location='{{ route('checkout', ['jewelry' => $item['id'], 'quantity' => $item['quantity']]) }}'">
+                        <i class="fas fa-credit-card me-2"></i>
+                        Tiến hành thanh toán
+                    </button>
                     <div class="security-info">
                         <div class="security-item">
                             <i class="fas fa-shield-alt text-success"></i>
@@ -149,666 +149,666 @@
 </div>
 
 <style>
-/* Empty Cart Styles */
-.empty-cart-container {
-    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-    border-radius: 20px;
-    padding: 60px 20px;
-    color: white;
-    margin: 20px 0;
-}
-
-.empty-cart-icon {
-    font-size: 5rem;
-    opacity: 0.8;
-    animation: bounce 2s infinite;
-}
-
-@keyframes bounce {
-
-    0%,
-    20%,
-    50%,
-    80%,
-    100% {
-        transform: translateY(0);
+    /* Empty Cart Styles */
+    .empty-cart-container {
+        background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+        border-radius: 20px;
+        padding: 60px 20px;
+        color: white;
+        margin: 20px 0;
     }
 
-    40% {
-        transform: translateY(-10px);
+    .empty-cart-icon {
+        font-size: 5rem;
+        opacity: 0.8;
+        animation: bounce 2s infinite;
     }
 
-    60% {
-        transform: translateY(-5px);
+    @keyframes bounce {
+
+        0%,
+        20%,
+        50%,
+        80%,
+        100% {
+            transform: translateY(0);
+        }
+
+        40% {
+            transform: translateY(-10px);
+        }
+
+        60% {
+            transform: translateY(-5px);
+        }
     }
-}
 
-/* Cart Card Styles */
-.cart-card {
-    background: #fff;
-    border-radius: 15px;
-    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
-    overflow: hidden;
-    border: 1px solid #e9ecef;
-}
+    /* Cart Card Styles */
+    .cart-card {
+        background: #fff;
+        border-radius: 15px;
+        box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
+        overflow: hidden;
+        border: 1px solid #e9ecef;
+    }
 
-.cart-header {
-    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-    color: white;
-    padding: 20px 25px;
-    border-bottom: none;
-}
+    .cart-header {
+        background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+        color: white;
+        padding: 20px 25px;
+        border-bottom: none;
+    }
 
-.cart-body {
-    padding: 0;
-}
+    .cart-body {
+        padding: 0;
+    }
 
-/* Cart Item Styles */
-.cart-item {
-    display: flex;
-    align-items: center;
-    padding: 25px;
-    border-bottom: 1px solid #f1f3f4;
-    transition: all 0.3s ease;
-    position: relative;
-}
-
-.cart-item:hover {
-    background: #f8f9ff;
-    transform: translateY(-2px);
-    box-shadow: 0 5px 15px rgba(0, 0, 0, 0.08);
-}
-
-.cart-item:last-child {
-    border-bottom: none;
-}
-
-.item-image {
-    width: 100px;
-    height: 100px;
-    margin-right: 20px;
-    overflow: hidden;
-    border-radius: 12px;
-    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
-}
-
-.item-image img {
-    width: 100%;
-    height: 100%;
-    object-fit: cover;
-    transition: transform 0.3s ease;
-}
-
-.cart-item:hover .item-image img {
-    transform: scale(1.05);
-}
-
-.item-details {
-    flex: 1;
-    margin-right: 20px;
-}
-
-.item-name {
-    font-weight: 600;
-    color: #2c3e50;
-    margin-bottom: 8px;
-    font-size: 1.1rem;
-}
-
-.item-price {
-    margin-bottom: 15px;
-}
-
-.price-label {
-    color: #6c757d;
-    font-size: 0.9rem;
-}
-
-.price-value {
-    color: #e74c3c;
-    font-weight: 600;
-    margin-left: 8px;
-}
-
-/* Quantity Controls */
-.quantity-controls {
-    display: flex;
-    align-items: center;
-    gap: 10px;
-}
-
-.quantity-label {
-    color: #6c757d;
-    font-size: 0.9rem;
-    margin: 0;
-}
-
-.quantity-wrapper {
-    display: flex;
-    align-items: center;
-    border: 2px solid #e9ecef;
-    border-radius: 25px;
-    overflow: hidden;
-    background: white;
-}
-
-.quantity-btn {
-    background: #667eea;
-    border: none;
-    color: white;
-    width: 35px;
-    height: 35px;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    cursor: pointer;
-    transition: all 0.3s ease;
-}
-
-.quantity-btn:hover {
-    background: #5a6fd8;
-    transform: scale(1.1);
-}
-
-.quantity-input {
-    border: none;
-    text-align: center;
-    width: 50px;
-    height: 35px;
-    font-weight: 600;
-    color: #2c3e50;
-    background: transparent;
-}
-
-.quantity-input:focus {
-    outline: none;
-    background: #f8f9ff;
-}
-
-/* Item Total Section */
-.item-total-section {
-    display: flex;
-    flex-direction: column;
-    align-items: end;
-    gap: 15px;
-}
-
-.item-total-price {
-    text-align: right;
-}
-
-.total-label {
-    color: #6c757d;
-    font-size: 0.9rem;
-    display: block;
-}
-
-.item-total {
-    color: #27ae60;
-    font-weight: bold;
-    font-size: 1.1rem;
-}
-
-.remove-btn {
-    background: #dc3545;
-    border: none;
-    color: white;
-    padding: 8px 15px;
-    border-radius: 20px;
-    cursor: pointer;
-    transition: all 0.3s ease;
-    display: flex;
-    align-items: center;
-    gap: 5px;
-    font-size: 0.9rem;
-}
-
-.remove-btn:hover {
-    background: #c82333;
-    transform: translateY(-2px);
-    box-shadow: 0 4px 8px rgba(220, 53, 69, 0.3);
-}
-
-/* Cart Actions */
-.cart-actions {
-    padding: 25px;
-    background: #f8f9fa;
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    gap: 15px;
-}
-
-.btn-clear-all {
-    background: #ffc107;
-    border: none;
-    color: #212529;
-    padding: 12px 25px;
-    border-radius: 25px;
-    font-weight: 600;
-    cursor: pointer;
-    transition: all 0.3s ease;
-}
-
-.btn-clear-all:hover {
-    background: #e0a800;
-    transform: translateY(-2px);
-    box-shadow: 0 4px 8px rgba(255, 193, 7, 0.3);
-}
-
-.btn-continue-shopping {
-    background: #6c757d;
-    color: white;
-    text-decoration: none;
-    padding: 12px 25px;
-    border-radius: 25px;
-    font-weight: 600;
-    transition: all 0.3s ease;
-}
-
-.btn-continue-shopping:hover {
-    background: #5a6268;
-    color: white;
-    text-decoration: none;
-    transform: translateY(-2px);
-    box-shadow: 0 4px 8px rgba(108, 117, 125, 0.3);
-}
-
-/* Summary Card */
-.summary-card {
-    background: #fff;
-    border-radius: 15px;
-    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
-    overflow: hidden;
-    border: 1px solid #e9ecef;
-    position: sticky;
-    top: 20px;
-}
-
-.summary-header {
-    background: linear-gradient(135deg, #28a745 0%, #20c997 100%);
-    color: white;
-    padding: 20px 25px;
-}
-
-.summary-body {
-    padding: 25px;
-}
-
-.summary-row {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    margin-bottom: 15px;
-}
-
-.summary-label {
-    color: #6c757d;
-    font-weight: 500;
-}
-
-.summary-value {
-    color: #2c3e50;
-    font-weight: 600;
-}
-
-.summary-divider {
-    height: 2px;
-    background: linear-gradient(to right, #667eea, #764ba2);
-    margin: 20px 0;
-    border-radius: 1px;
-}
-
-.summary-total {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    margin-bottom: 25px;
-    padding: 15px;
-    background: #f8f9ff;
-    border-radius: 10px;
-    border: 2px solid #667eea;
-}
-
-.total-label {
-    font-size: 1.1rem;
-    font-weight: bold;
-    color: #2c3e50;
-}
-
-.total-value {
-    font-size: 1.3rem;
-    font-weight: bold;
-    color: #e74c3c;
-}
-
-.btn-checkout {
-    width: 100%;
-    background: linear-gradient(135deg, #28a745 0%, #20c997 100%);
-    border: none;
-    color: white;
-    padding: 15px;
-    border-radius: 50px;
-    font-size: 1.1rem;
-    font-weight: bold;
-    cursor: pointer;
-    transition: all 0.3s ease;
-    margin-bottom: 20px;
-}
-
-.btn-checkout:hover {
-    transform: translateY(-2px);
-    box-shadow: 0 8px 25px rgba(40, 167, 69, 0.3);
-}
-
-/* Security Info */
-.security-info {
-    margin-top: 20px;
-}
-
-.security-item {
-    display: flex;
-    align-items: center;
-    gap: 10px;
-    margin-bottom: 10px;
-    color: #6c757d;
-    font-size: 0.9rem;
-}
-
-.security-item i {
-    width: 20px;
-}
-
-/* Responsive Design */
-@media (max-width: 768px) {
+    /* Cart Item Styles */
     .cart-item {
-        flex-direction: column;
-        text-align: center;
-        gap: 15px;
+        display: flex;
+        align-items: center;
+        padding: 25px;
+        border-bottom: 1px solid #f1f3f4;
+        transition: all 0.3s ease;
+        position: relative;
+    }
+
+    .cart-item:hover {
+        background: #f8f9ff;
+        transform: translateY(-2px);
+        box-shadow: 0 5px 15px rgba(0, 0, 0, 0.08);
+    }
+
+    .cart-item:last-child {
+        border-bottom: none;
     }
 
     .item-image {
-        margin-right: 0;
+        width: 100px;
+        height: 100px;
+        margin-right: 20px;
+        overflow: hidden;
+        border-radius: 12px;
+        box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    }
+
+    .item-image img {
+        width: 100%;
+        height: 100%;
+        object-fit: cover;
+        transition: transform 0.3s ease;
+    }
+
+    .cart-item:hover .item-image img {
+        transform: scale(1.05);
     }
 
     .item-details {
-        margin-right: 0;
+        flex: 1;
+        margin-right: 20px;
     }
 
-    .cart-actions {
-        flex-direction: column;
+    .item-name {
+        font-weight: 600;
+        color: #2c3e50;
+        margin-bottom: 8px;
+        font-size: 1.1rem;
+    }
+
+    .item-price {
+        margin-bottom: 15px;
+    }
+
+    .price-label {
+        color: #6c757d;
+        font-size: 0.9rem;
+    }
+
+    .price-value {
+        color: #e74c3c;
+        font-weight: 600;
+        margin-left: 8px;
+    }
+
+    /* Quantity Controls */
+    .quantity-controls {
+        display: flex;
+        align-items: center;
         gap: 10px;
     }
 
-    .btn-clear-all,
-    .btn-continue-shopping {
-        width: 100%;
+    .quantity-label {
+        color: #6c757d;
+        font-size: 0.9rem;
+        margin: 0;
+    }
+
+    .quantity-wrapper {
+        display: flex;
+        align-items: center;
+        border: 2px solid #e9ecef;
+        border-radius: 25px;
+        overflow: hidden;
+        background: white;
+    }
+
+    .quantity-btn {
+        background: #667eea;
+        border: none;
+        color: white;
+        width: 35px;
+        height: 35px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        cursor: pointer;
+        transition: all 0.3s ease;
+    }
+
+    .quantity-btn:hover {
+        background: #5a6fd8;
+        transform: scale(1.1);
+    }
+
+    .quantity-input {
+        border: none;
         text-align: center;
-    }
-}
-
-/* Custom Notifications */
-.custom-notification {
-    animation: slideInRight 0.3s ease-out;
-}
-
-@keyframes slideInRight {
-    from {
-        transform: translateX(100%);
-        opacity: 0;
+        width: 50px;
+        height: 35px;
+        font-weight: 600;
+        color: #2c3e50;
+        background: transparent;
     }
 
-    to {
-        transform: translateX(0);
-        opacity: 1;
+    .quantity-input:focus {
+        outline: none;
+        background: #f8f9ff;
     }
-}
+
+    /* Item Total Section */
+    .item-total-section {
+        display: flex;
+        flex-direction: column;
+        align-items: end;
+        gap: 15px;
+    }
+
+    .item-total-price {
+        text-align: right;
+    }
+
+    .total-label {
+        color: #6c757d;
+        font-size: 0.9rem;
+        display: block;
+    }
+
+    .item-total {
+        color: #27ae60;
+        font-weight: bold;
+        font-size: 1.1rem;
+    }
+
+    .remove-btn {
+        background: #dc3545;
+        border: none;
+        color: white;
+        padding: 8px 15px;
+        border-radius: 20px;
+        cursor: pointer;
+        transition: all 0.3s ease;
+        display: flex;
+        align-items: center;
+        gap: 5px;
+        font-size: 0.9rem;
+    }
+
+    .remove-btn:hover {
+        background: #c82333;
+        transform: translateY(-2px);
+        box-shadow: 0 4px 8px rgba(220, 53, 69, 0.3);
+    }
+
+    /* Cart Actions */
+    .cart-actions {
+        padding: 25px;
+        background: #f8f9fa;
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        gap: 15px;
+    }
+
+    .btn-clear-all {
+        background: #ffc107;
+        border: none;
+        color: #212529;
+        padding: 12px 25px;
+        border-radius: 25px;
+        font-weight: 600;
+        cursor: pointer;
+        transition: all 0.3s ease;
+    }
+
+    .btn-clear-all:hover {
+        background: #e0a800;
+        transform: translateY(-2px);
+        box-shadow: 0 4px 8px rgba(255, 193, 7, 0.3);
+    }
+
+    .btn-continue-shopping {
+        background: #6c757d;
+        color: white;
+        text-decoration: none;
+        padding: 12px 25px;
+        border-radius: 25px;
+        font-weight: 600;
+        transition: all 0.3s ease;
+    }
+
+    .btn-continue-shopping:hover {
+        background: #5a6268;
+        color: white;
+        text-decoration: none;
+        transform: translateY(-2px);
+        box-shadow: 0 4px 8px rgba(108, 117, 125, 0.3);
+    }
+
+    /* Summary Card */
+    .summary-card {
+        background: #fff;
+        border-radius: 15px;
+        box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
+        overflow: hidden;
+        border: 1px solid #e9ecef;
+        position: sticky;
+        top: 20px;
+    }
+
+    .summary-header {
+        background: linear-gradient(135deg, #28a745 0%, #20c997 100%);
+        color: white;
+        padding: 20px 25px;
+    }
+
+    .summary-body {
+        padding: 25px;
+    }
+
+    .summary-row {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        margin-bottom: 15px;
+    }
+
+    .summary-label {
+        color: #6c757d;
+        font-weight: 500;
+    }
+
+    .summary-value {
+        color: #2c3e50;
+        font-weight: 600;
+    }
+
+    .summary-divider {
+        height: 2px;
+        background: linear-gradient(to right, #667eea, #764ba2);
+        margin: 20px 0;
+        border-radius: 1px;
+    }
+
+    .summary-total {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        margin-bottom: 25px;
+        padding: 15px;
+        background: #f8f9ff;
+        border-radius: 10px;
+        border: 2px solid #667eea;
+    }
+
+    .total-label {
+        font-size: 1.1rem;
+        font-weight: bold;
+        color: #2c3e50;
+    }
+
+    .total-value {
+        font-size: 1.3rem;
+        font-weight: bold;
+        color: #e74c3c;
+    }
+
+    .btn-checkout {
+        width: 100%;
+        background: linear-gradient(135deg, #28a745 0%, #20c997 100%);
+        border: none;
+        color: white;
+        padding: 15px;
+        border-radius: 50px;
+        font-size: 1.1rem;
+        font-weight: bold;
+        cursor: pointer;
+        transition: all 0.3s ease;
+        margin-bottom: 20px;
+    }
+
+    .btn-checkout:hover {
+        transform: translateY(-2px);
+        box-shadow: 0 8px 25px rgba(40, 167, 69, 0.3);
+    }
+
+    /* Security Info */
+    .security-info {
+        margin-top: 20px;
+    }
+
+    .security-item {
+        display: flex;
+        align-items: center;
+        gap: 10px;
+        margin-bottom: 10px;
+        color: #6c757d;
+        font-size: 0.9rem;
+    }
+
+    .security-item i {
+        width: 20px;
+    }
+
+    /* Responsive Design */
+    @media (max-width: 768px) {
+        .cart-item {
+            flex-direction: column;
+            text-align: center;
+            gap: 15px;
+        }
+
+        .item-image {
+            margin-right: 0;
+        }
+
+        .item-details {
+            margin-right: 0;
+        }
+
+        .cart-actions {
+            flex-direction: column;
+            gap: 10px;
+        }
+
+        .btn-clear-all,
+        .btn-continue-shopping {
+            width: 100%;
+            text-align: center;
+        }
+    }
+
+    /* Custom Notifications */
+    .custom-notification {
+        animation: slideInRight 0.3s ease-out;
+    }
+
+    @keyframes slideInRight {
+        from {
+            transform: translateX(100%);
+            opacity: 0;
+        }
+
+        to {
+            transform: translateX(0);
+            opacity: 1;
+        }
+    }
 </style>
 
 <script>
-$(document).ready(function() {
-    console.log('Cart JavaScript loaded successfully');
+    $(document).ready(function() {
+        console.log('Cart JavaScript loaded successfully');
 
-    // Test nếu jQuery hoạt động
-    console.log('jQuery version:', $.fn.jquery);
+        // Test nếu jQuery hoạt động
+        console.log('jQuery version:', $.fn.jquery);
 
-    // Test CSRF token
-    console.log('CSRF Token:', $('meta[name="csrf-token"]').attr('content'));
+        // Test CSRF token
+        console.log('CSRF Token:', $('meta[name="csrf-token"]').attr('content'));
 
-    // Tăng/giảm số lượng
-    $('.quantity-btn').on('click', function() {
-        console.log('Quantity button clicked');
-        const action = $(this).data('action');
-        const id = $(this).data('id');
-        const input = $(`.quantity-input[data-id="${id}"]`);
-        let quantity = parseInt(input.val());
+        // Tăng/giảm số lượng
+        $('.quantity-btn').on('click', function() {
+            console.log('Quantity button clicked');
+            const action = $(this).data('action');
+            const id = $(this).data('id');
+            const input = $(`.quantity-input[data-id="${id}"]`);
+            let quantity = parseInt(input.val());
 
-        console.log('Action:', action, 'ID:', id, 'Current quantity:', quantity);
+            console.log('Action:', action, 'ID:', id, 'Current quantity:', quantity);
 
-        if (action === 'increase') {
-            quantity++;
-        } else if (action === 'decrease' && quantity > 1) {
-            quantity--;
-        }
+            if (action === 'increase') {
+                quantity++;
+            } else if (action === 'decrease' && quantity > 1) {
+                quantity--;
+            }
 
-        input.val(quantity);
-        updateCartItem(id, quantity);
-    });
+            input.val(quantity);
+            updateCartItem(id, quantity);
+        });
 
-    // Thay đổi số lượng trực tiếp
-    $('.quantity-input').on('change', function() {
-        console.log('Quantity input changed');
-        const id = $(this).data('id');
-        const quantity = parseInt($(this).val());
+        // Thay đổi số lượng trực tiếp
+        $('.quantity-input').on('change', function() {
+            console.log('Quantity input changed');
+            const id = $(this).data('id');
+            const quantity = parseInt($(this).val());
 
-        console.log('Input change - ID:', id, 'Quantity:', quantity);
+            console.log('Input change - ID:', id, 'Quantity:', quantity);
 
-        if (quantity < 1) {
-            $(this).val(1);
-            return;
-        }
+            if (quantity < 1) {
+                $(this).val(1);
+                return;
+            }
 
-        updateCartItem(id, quantity);
-    });
+            updateCartItem(id, quantity);
+        });
 
-    // Xóa sản phẩm - THÊM DEBUG
-    $('.remove-item').on('click', function(e) {
-        e.preventDefault();
-        console.log('Remove button clicked!');
+        // Xóa sản phẩm - THÊM DEBUG
+        $('.remove-item').on('click', function(e) {
+            e.preventDefault();
+            console.log('Remove button clicked!');
 
-        const id = $(this).data('id');
-        console.log('Product ID to remove:', id);
+            const id = $(this).data('id');
+            console.log('Product ID to remove:', id);
 
-        if (confirm('Bạn có chắc muốn xóa sản phẩm này khỏi giỏ hàng?')) {
-            console.log('User confirmed removal');
-            removeCartItem(id);
-        } else {
-            console.log('User cancelled removal');
-        }
-    });
+            if (confirm('Bạn có chắc muốn xóa sản phẩm này khỏi giỏ hàng?')) {
+                console.log('User confirmed removal');
+                removeCartItem(id);
+            } else {
+                console.log('User cancelled removal');
+            }
+        });
 
-    // Xóa tất cả
-    $('#clear-cart').on('click', function(e) {
-        e.preventDefault();
-        console.log('Clear cart button clicked!');
+        // Xóa tất cả
+        $('#clear-cart').on('click', function(e) {
+            e.preventDefault();
+            console.log('Clear cart button clicked!');
 
-        if (confirm('Bạn có chắc muốn xóa tất cả sản phẩm trong giỏ hàng?')) {
-            console.log('User confirmed clear cart');
-            clearCart();
-        } else {
-            console.log('User cancelled clear cart');
-        }
-    });
+            if (confirm('Bạn có chắc muốn xóa tất cả sản phẩm trong giỏ hàng?')) {
+                console.log('User confirmed clear cart');
+                clearCart();
+            } else {
+                console.log('User cancelled clear cart');
+            }
+        });
 
-    function updateCartItem(id, quantity) {
-        console.log('updateCartItem called with ID:', id, 'Quantity:', quantity);
+        function updateCartItem(id, quantity) {
+            console.log('updateCartItem called with ID:', id, 'Quantity:', quantity);
 
-        $.ajax({
-            url: '/cart/update',
-            method: 'POST',
-            data: {
-                _token: $('meta[name="csrf-token"]').attr('content'),
-                jewelry_id: id,
-                quantity: quantity
-            },
-            beforeSend: function() {
-                console.log('Sending update request...');
-            },
-            success: function(response) {
-                console.log('Update success response:', response);
+            $.ajax({
+                url: '/cart/update',
+                method: 'POST',
+                data: {
+                    _token: $('meta[name="csrf-token"]').attr('content'),
+                    jewelry_id: id,
+                    quantity: quantity
+                },
+                beforeSend: function() {
+                    console.log('Sending update request...');
+                },
+                success: function(response) {
+                    console.log('Update success response:', response);
 
-                if (response.success) {
-                    // Cập nhật tổng tiền của sản phẩm
-                    $(`.cart-item[data-id="${id}"] .item-total`).text(response.item_total);
+                    if (response.success) {
+                        // Cập nhật tổng tiền của sản phẩm
+                        $(`.cart-item[data-id="${id}"] .item-total`).text(response.item_total);
 
-                    // Cập nhật tổng giỏ hàng
-                    $('#cart-count').text(response.cart_count);
-                    $('#cart-subtotal').text(response.cart_total);
-                    $('#cart-total').text(response.cart_total);
+                        // Cập nhật tổng giỏ hàng
+                        $('#cart-count').text(response.cart_count);
+                        $('#cart-subtotal').text(response.cart_total);
+                        $('#cart-total').text(response.cart_total);
 
-                    // Cập nhật badge giỏ hàng trên header (nếu có)
-                    $('.cart-badge').text(response.cart_count);
+                        // Cập nhật badge giỏ hàng trên header (nếu có)
+                        $('.cart-badge').text(response.cart_count);
 
-                    showNotification('Cập nhật giỏ hàng thành công!', 'success');
-                } else {
-                    console.log('Update failed:', response.message);
-                    showNotification(response.message, 'error');
-                    // Khôi phục giá trị cũ nếu có lỗi
+                        showNotification('Cập nhật giỏ hàng thành công!', 'success');
+                    } else {
+                        console.log('Update failed:', response.message);
+                        showNotification(response.message, 'error');
+                        // Khôi phục giá trị cũ nếu có lỗi
+                        location.reload();
+                    }
+                },
+                error: function(xhr, status, error) {
+                    console.error('Update error:', error);
+                    console.error('Status:', status);
+                    console.error('Response:', xhr.responseText);
+                    showNotification('Có lỗi xảy ra, vui lòng thử lại!', 'error');
                     location.reload();
                 }
-            },
-            error: function(xhr, status, error) {
-                console.error('Update error:', error);
-                console.error('Status:', status);
-                console.error('Response:', xhr.responseText);
-                showNotification('Có lỗi xảy ra, vui lòng thử lại!', 'error');
-                location.reload();
-            }
-        });
-    }
-
-    function removeCartItem(id) {
-        console.log('removeCartItem called with ID:', id);
-
-        $.ajax({
-            url: '/cart/remove',
-            method: 'POST',
-            data: {
-                _token: $('meta[name="csrf-token"]').attr('content'),
-                jewelry_id: id
-            },
-            beforeSend: function() {
-                console.log('Sending remove request for ID:', id);
-            },
-            success: function(response) {
-                console.log('Remove success response:', response);
-
-                if (response.success) {
-                    // Xóa dòng sản phẩm với hiệu ứng
-                    $(`.cart-item[data-id="${id}"]`).addClass('removing');
-                    setTimeout(function() {
-                        $(`.cart-item[data-id="${id}"]`).slideUp(300, function() {
-                            $(this).remove();
-
-                            // Kiểm tra nếu giỏ hàng trống
-                            if ($('.cart-item').length === 0) {
-                                console.log('Cart is empty, reloading...');
-                                location.reload();
-                            }
-                        });
-                    }, 200);
-
-                    // Cập nhật tổng giỏ hàng
-                    $('#cart-count').text(response.cart_count);
-                    $('#cart-subtotal').text(response.cart_total);
-                    $('#cart-total').text(response.cart_total);
-
-                    // Cập nhật badge giỏ hàng trên header
-                    $('.cart-badge').text(response.cart_count);
-
-                    showNotification(response.message, 'success');
-                } else {
-                    console.log('Remove failed:', response.message);
-                    showNotification(response.message, 'error');
-                }
-            },
-            error: function(xhr, status, error) {
-                console.error('Remove error:', error);
-                console.error('Status:', status);
-                console.error('Response:', xhr.responseText);
-                console.error('Response status:', xhr.status);
-                showNotification('Có lỗi xảy ra khi xóa sản phẩm!', 'error');
-            }
-        });
-    }
-
-    function clearCart() {
-        console.log('clearCart called');
-
-        $.ajax({
-            url: '/cart/clear',
-            method: 'POST',
-            data: {
-                _token: $('meta[name="csrf-token"]').attr('content')
-            },
-            beforeSend: function() {
-                console.log('Sending clear cart request...');
-            },
-            success: function(response) {
-                console.log('Clear cart success response:', response);
-
-                if (response.success) {
-                    showNotification(response.message, 'success');
-                    setTimeout(function() {
-                        location.reload();
-                    }, 1000);
-                } else {
-                    console.log('Clear cart failed:', response.message);
-                    showNotification('Có lỗi xảy ra!', 'error');
-                }
-            },
-            error: function(xhr, status, error) {
-                console.error('Clear cart error:', error);
-                console.error('Status:', status);
-                console.error('Response:', xhr.responseText);
-                showNotification('Có lỗi xảy ra khi xóa giỏ hàng!', 'error');
-            }
-        });
-    }
-
-    // Hàm hiển thị thông báo đẹp
-    function showNotification(message, type = 'info') {
-        console.log('Showing notification:', message, 'Type:', type);
-
-        // Xóa thông báo cũ nếu có
-        $('.custom-notification').remove();
-
-        // Xác định màu sắc và icon theo loại thông báo
-        let bgColor, textColor, icon;
-        switch (type) {
-            case 'success':
-                bgColor = '#28a745';
-                textColor = '#fff';
-                icon = '✓';
-                break;
-            case 'error':
-                bgColor = '#dc3545';
-                textColor = '#fff';
-                icon = '✗';
-                break;
-            case 'warning':
-                bgColor = '#ffc107';
-                textColor = '#000';
-                icon = '⚠';
-                break;
-            default:
-                bgColor = '#17a2b8';
-                textColor = '#fff';
-                icon = 'ℹ';
+            });
         }
 
-        // Tạo HTML thông báo
-        const notificationHtml = `
+        function removeCartItem(id) {
+            console.log('removeCartItem called with ID:', id);
+
+            $.ajax({
+                url: '/cart/remove',
+                method: 'POST',
+                data: {
+                    _token: $('meta[name="csrf-token"]').attr('content'),
+                    jewelry_id: id
+                },
+                beforeSend: function() {
+                    console.log('Sending remove request for ID:', id);
+                },
+                success: function(response) {
+                    console.log('Remove success response:', response);
+
+                    if (response.success) {
+                        // Xóa dòng sản phẩm với hiệu ứng
+                        $(`.cart-item[data-id="${id}"]`).addClass('removing');
+                        setTimeout(function() {
+                            $(`.cart-item[data-id="${id}"]`).slideUp(300, function() {
+                                $(this).remove();
+
+                                // Kiểm tra nếu giỏ hàng trống
+                                if ($('.cart-item').length === 0) {
+                                    console.log('Cart is empty, reloading...');
+                                    location.reload();
+                                }
+                            });
+                        }, 200);
+
+                        // Cập nhật tổng giỏ hàng
+                        $('#cart-count').text(response.cart_count);
+                        $('#cart-subtotal').text(response.cart_total);
+                        $('#cart-total').text(response.cart_total);
+
+                        // Cập nhật badge giỏ hàng trên header
+                        $('.cart-badge').text(response.cart_count);
+
+                        showNotification(response.message, 'success');
+                    } else {
+                        console.log('Remove failed:', response.message);
+                        showNotification(response.message, 'error');
+                    }
+                },
+                error: function(xhr, status, error) {
+                    console.error('Remove error:', error);
+                    console.error('Status:', status);
+                    console.error('Response:', xhr.responseText);
+                    console.error('Response status:', xhr.status);
+                    showNotification('Có lỗi xảy ra khi xóa sản phẩm!', 'error');
+                }
+            });
+        }
+
+        function clearCart() {
+            console.log('clearCart called');
+
+            $.ajax({
+                url: '/cart/clear',
+                method: 'POST',
+                data: {
+                    _token: $('meta[name="csrf-token"]').attr('content')
+                },
+                beforeSend: function() {
+                    console.log('Sending clear cart request...');
+                },
+                success: function(response) {
+                    console.log('Clear cart success response:', response);
+
+                    if (response.success) {
+                        showNotification(response.message, 'success');
+                        setTimeout(function() {
+                            location.reload();
+                        }, 1000);
+                    } else {
+                        console.log('Clear cart failed:', response.message);
+                        showNotification('Có lỗi xảy ra!', 'error');
+                    }
+                },
+                error: function(xhr, status, error) {
+                    console.error('Clear cart error:', error);
+                    console.error('Status:', status);
+                    console.error('Response:', xhr.responseText);
+                    showNotification('Có lỗi xảy ra khi xóa giỏ hàng!', 'error');
+                }
+            });
+        }
+
+        // Hàm hiển thị thông báo đẹp
+        function showNotification(message, type = 'info') {
+            console.log('Showing notification:', message, 'Type:', type);
+
+            // Xóa thông báo cũ nếu có
+            $('.custom-notification').remove();
+
+            // Xác định màu sắc và icon theo loại thông báo
+            let bgColor, textColor, icon;
+            switch (type) {
+                case 'success':
+                    bgColor = '#28a745';
+                    textColor = '#fff';
+                    icon = '✓';
+                    break;
+                case 'error':
+                    bgColor = '#dc3545';
+                    textColor = '#fff';
+                    icon = '✗';
+                    break;
+                case 'warning':
+                    bgColor = '#ffc107';
+                    textColor = '#000';
+                    icon = '⚠';
+                    break;
+                default:
+                    bgColor = '#17a2b8';
+                    textColor = '#fff';
+                    icon = 'ℹ';
+            }
+
+            // Tạo HTML thông báo
+            const notificationHtml = `
             <div class="custom-notification" style="
                 position: fixed;
                 top: 20px;
@@ -838,20 +838,20 @@ $(document).ready(function() {
             </div>
         `;
 
-        // Thêm thông báo vào DOM
-        $('body').append(notificationHtml);
+            // Thêm thông báo vào DOM
+            $('body').append(notificationHtml);
 
-        // Tự động ẩn sau 4 giây
-        setTimeout(function() {
-            $('.custom-notification').fadeOut(300, function() {
-                $(this).remove();
-            });
-        }, 4000);
-    }
+            // Tự động ẩn sau 4 giây
+            setTimeout(function() {
+                $('.custom-notification').fadeOut(300, function() {
+                    $(this).remove();
+                });
+            }, 4000);
+        }
 
-    // Test xem có bao nhiêu nút remove
-    console.log('Found remove buttons:', $('.remove-item').length);
-    console.log('Found cart items:', $('.cart-item').length);
-});
+        // Test xem có bao nhiêu nút remove
+        console.log('Found remove buttons:', $('.remove-item').length);
+        console.log('Found cart items:', $('.cart-item').length);
+    });
 </script>
 @endsection

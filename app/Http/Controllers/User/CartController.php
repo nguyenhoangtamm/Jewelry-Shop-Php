@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers\User;
 
+use App\Helpers\ImageHelper;
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Session;
@@ -17,7 +18,7 @@ class CartController extends Controller
         ]);
 
         $jewelry = Jewelry::findOrFail($request->jewelry_id);
-        
+
         // Kiểm tra số lượng tồn kho
         if ($request->quantity > $jewelry->stock) {
             return response()->json([
@@ -28,14 +29,14 @@ class CartController extends Controller
 
         // Lấy giỏ hàng từ session
         $cart = Session::get('cart', []);
-        
+
         $jewelryId = $request->jewelry_id;
         $quantity = $request->quantity;
 
         // Nếu sản phẩm đã có trong giỏ hàng
         if (isset($cart[$jewelryId])) {
             $newQuantity = $cart[$jewelryId]['quantity'] + $quantity;
-            
+
             // Kiểm tra tổng số lượng không vượt quá tồn kho
             if ($newQuantity > $jewelry->stock) {
                 return response()->json([
@@ -43,7 +44,7 @@ class CartController extends Controller
                     'message' => 'Tổng số lượng trong giỏ hàng sẽ vượt quá tồn kho!'
                 ]);
             }
-            
+
             $cart[$jewelryId]['quantity'] = $newQuantity;
         } else {
             // Thêm sản phẩm mới vào giỏ hàng
@@ -74,7 +75,11 @@ class CartController extends Controller
     {
         $cart = Session::get('cart', []);
         $cartInfo = $this->getCartInfo();
-        
+        foreach ($cart as $key => $item) {
+            $jewelry = Jewelry::find($item['id']);
+            $img = $jewelry ? ImageHelper::getMainImage($jewelry) : asset('images/no-image.jpg');
+            $cart[$key]['image'] = $img;
+        }
         return view('user.cart', [
             'cart' => $cart,
             'total_items' => $cartInfo['total_items'],
@@ -91,22 +96,22 @@ class CartController extends Controller
 
         $cart = Session::get('cart', []);
         $jewelryId = $request->jewelry_id;
-        
+
         if (isset($cart[$jewelryId])) {
             $jewelry = Jewelry::findOrFail($jewelryId);
-            
+
             if ($request->quantity > $jewelry->stock) {
                 return response()->json([
                     'success' => false,
                     'message' => 'Số lượng vượt quá tồn kho!'
                 ]);
             }
-            
+
             $cart[$jewelryId]['quantity'] = $request->quantity;
             Session::put('cart', $cart);
-            
+
             $cartInfo = $this->getCartInfo();
-            
+
             return response()->json([
                 'success' => true,
                 'cart_count' => $cartInfo['total_items'],
@@ -130,13 +135,13 @@ class CartController extends Controller
 
         $jewelryId = $request->jewelry_id;
         $cart = Session::get('cart', []);
-        
+
         if (isset($cart[$jewelryId])) {
             unset($cart[$jewelryId]);
             Session::put('cart', $cart);
-            
+
             $cartInfo = $this->getCartInfo();
-            
+
             return response()->json([
                 'success' => true,
                 'message' => 'Đã xóa sản phẩm khỏi giỏ hàng!',
@@ -154,7 +159,7 @@ class CartController extends Controller
     public function clear()
     {
         Session::forget('cart');
-        
+
         return response()->json([
             'success' => true,
             'message' => 'Đã xóa tất cả sản phẩm khỏi giỏ hàng!',
@@ -166,7 +171,7 @@ class CartController extends Controller
     public function getCartCount()
     {
         $cartInfo = $this->getCartInfo();
-        
+
         return response()->json([
             'cart_count' => $cartInfo['total_items']
         ]);
@@ -177,12 +182,12 @@ class CartController extends Controller
         $cart = Session::get('cart', []);
         $totalItems = 0;
         $totalAmount = 0;
-        
+
         foreach ($cart as $item) {
             $totalItems += $item['quantity'];
             $totalAmount += $item['price'] * $item['quantity'];
         }
-        
+
         return [
             'total_items' => $totalItems,
             'total_amount' => $totalAmount
@@ -192,11 +197,11 @@ class CartController extends Controller
     private function getJewelryImage($jewelry)
     {
         $jewelryFile = $jewelry->jewelryFiles()->with('file')->first();
-        
+
         if ($jewelryFile && $jewelryFile->file && $jewelryFile->file->is_deleted == 0) {
             return asset(ltrim($jewelryFile->file->path, '/'));
         }
-        
+
         return asset('images/no-image.jpg'); // Ảnh mặc định
     }
 }

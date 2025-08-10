@@ -287,7 +287,7 @@
     <div class="checkout-content">
         <!-- Form thông tin -->
         <div class="checkout-form">
-            <form id="checkoutForm" method="POST">
+            <form id="checkoutForm" method="POST" action="{{ route('checkout.store') }}">
                 @csrf
                 <input type="hidden" name="jewelry_id" value="{{ $jewelry_id }}">
                 <input type="hidden" name="quantity" value="{{ $quantity }}">
@@ -354,43 +354,43 @@
                                 <div style="font-size: 12px; color: #666;">Thanh toán bằng tiền mặt khi nhận hàng</div>
                             </div>
                         </label>
-                       <label class="payment-method">
-    <input type="radio" name="payment_method" value="bank_transfer">
-    <div class="payment-icon">🏦</div>
-    <div>
-        <div style="font-weight: 600;">Chuyển khoản ngân hàng</div>
-        <div style="font-size: 12px; color: #666;">Chuyển khoản qua tài khoản ngân hàng</div>
-    </div>
-</label>
+                        <label class="payment-method">
+                            <input type="radio" name="payment_method" value="bank_transfer">
+                            <div class="payment-icon">🏦</div>
+                            <div>
+                                <div style="font-weight: 600;">Chuyển khoản ngân hàng</div>
+                                <div style="font-size: 12px; color: #666;">Chuyển khoản qua tài khoản ngân hàng</div>
+                            </div>
+                        </label>
 
-<label class="payment-method">
-    <input type="radio" name="payment_method" value="cash">
-    <div class="payment-icon">💵</div>
-    <div>
-        <div style="font-weight: 600;">Thanh toán khi nhận hàng</div>
-        <div style="font-size: 12px; color: #666;">Thanh toán trực tiếp khi nhận hàng</div>
-    </div>
-</label>
+                        <label class="payment-method">
+                            <input type="radio" name="payment_method" value="cash">
+                            <div class="payment-icon">💵</div>
+                            <div>
+                                <div style="font-weight: 600;">Thanh toán khi nhận hàng</div>
+                                <div style="font-size: 12px; color: #666;">Thanh toán trực tiếp khi nhận hàng</div>
+                            </div>
+                        </label>
 
-<div id="bank-transfer-info" style="display: none; margin-top: 15px; border: 1px solid #ddd; padding: 15px; border-radius: 8px;">
-  
-    <div style="margin-top: 10px;">
-        <img src="https://img.vietqr.io/image/sacombank-070130092398-compact2.png?accountName=PHAM%20MY%20TIEN&amount=100000&addInfo=Thanh+toan+don+hang+1234" alt="QR code Sacombank" style="max-width: 150px;">
+                        <div id="bank-transfer-info" style="display: none; margin-top: 15px; border: 1px solid #ddd; padding: 15px; border-radius: 8px;">
 
-    </div>
-</div>
+                            <div style="margin-top: 10px;">
+                                <img src="https://img.vietqr.io/image/sacombank-070130092398-compact2.png?accountName=PHAM%20MY%20TIEN&amount=100000&addInfo=Thanh+toan+don+hang+1234" alt="QR code Sacombank" style="max-width: 150px;">
 
-<script>
-    $(document).ready(function() {
-        $('input[name="payment_method"]').on('change', function() {
-            if ($(this).val() === 'bank_transfer' && $(this).is(':checked')) {
-                $('#bank-transfer-info').slideDown();
-            } else {
-                $('#bank-transfer-info').slideUp();
-            }
-        });
-    });
-</script>
+                            </div>
+                        </div>
+
+                        <script>
+                            $(document).ready(function() {
+                                $('input[name="payment_method"]').on('change', function() {
+                                    if ($(this).val() === 'bank_transfer' && $(this).is(':checked')) {
+                                        $('#bank-transfer-info').slideDown();
+                                    } else {
+                                        $('#bank-transfer-info').slideUp();
+                                    }
+                                });
+                            });
+                        </script>
 
 
 
@@ -450,7 +450,54 @@
     </div>
 </div>
 <script>
-    // Xử lý chọn phương thức thanh toán và vận chuyển
-    // ... giữ nguyên script như bản PHP ...
+    $(document).ready(function() {
+        const subtotal = {
+            !!$total_amount!!
+        };
+
+        // Xử lý chọn phương thức vận chuyển
+        $('input[name="shipping_method"]').on('change', function() {
+            updateTotalAmount();
+
+            // Cập nhật UI cho phương thức được chọn
+            $('.payment-method').removeClass('selected');
+            $(this).closest('.payment-method').addClass('selected');
+        });
+
+        // Xử lý chọn phương thức thanh toán
+        $('input[name="payment_method"]').on('change', function() {
+            if ($(this).val() === 'bank_transfer' && $(this).is(':checked')) {
+                $('#bank-transfer-info').slideDown();
+            } else {
+                $('#bank-transfer-info').slideUp();
+            }
+
+            // Cập nhật UI cho phương thức được chọn
+            $('.payment-method').removeClass('selected');
+            $(this).closest('.payment-method').addClass('selected');
+        });
+
+        function updateTotalAmount() {
+            const shippingMethod = $('input[name="shipping_method"]:checked').val();
+            const shippingFee = shippingMethod === 'express' ? 50000 : 0;
+            const total = subtotal + shippingFee;
+
+            // Cập nhật hiển thị phí vận chuyển
+            if (shippingFee > 0) {
+                $('#shipping-fee').text(new Intl.NumberFormat('vi-VN').format(shippingFee) + '₫');
+            } else {
+                $('#shipping-fee').text('Miễn phí');
+            }
+
+            // Cập nhật tổng tiền
+            $('#total-amount').text(new Intl.NumberFormat('vi-VN').format(total) + '₫');
+
+            // Cập nhật input hidden
+            $('input[name="total_amount"]').val(total);
+        }
+
+        // Khởi tạo ban đầu
+        updateTotalAmount();
+    });
 </script>
 @endsection

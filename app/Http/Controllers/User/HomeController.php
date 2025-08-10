@@ -30,7 +30,9 @@ class HomeController extends Controller
 
         // Xử lý ảnh chính cho từng sản phẩm
         foreach ($newProducts as $product) {
-            $product->main_image = ImageHelper::getMainImage($product);
+            $img = ImageHelper::getMainImage($product);
+            $product->image_path = $img; // used by current views
+            $product->image = $img;      // alias for convenience
 
 
             // Thêm thông tin giả lập cho demo

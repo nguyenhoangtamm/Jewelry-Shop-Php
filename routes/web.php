@@ -17,6 +17,7 @@ use App\Http\Controllers\JewelryController;
 use App\Http\Controllers\UserController;
 use App\Http\Controllers\CategoryController;
 use App\Http\Controllers\OrderController;
+use App\Http\Controllers\User\OrderController as UserOrderController;
 use App\Http\Controllers\NewsController;
 
 // =============================
@@ -59,8 +60,11 @@ Route::middleware('auth')->group(function () {
     // Chi tiết sản phẩm
     Route::get('/detail/{id}', [ProductDetailController::class, 'show'])->name('product.detail');
 
-    // Thanh toán
-    Route::get('/checkout', [CheckoutController::class, 'show'])->name('checkout');
+    // Thanh toán - chỉ customer
+    Route::middleware('role:customer')->group(function () {
+        Route::get('/checkout', [CheckoutController::class, 'show'])->name('checkout');
+        Route::post('/checkout', [CheckoutController::class, 'store'])->name('checkout.store');
+    });
 
     // =============================
     // Admin routes - chỉ role admin được truy cập
@@ -124,6 +128,14 @@ Route::middleware('auth')->group(function () {
         Route::post('/remove', [CartController::class, 'remove'])->name('remove');
         Route::post('/clear', [CartController::class, 'clear'])->name('clear');
         Route::get('/count', [CartController::class, 'getCartCount'])->name('count');
+    });
+
+    // =============================
+    // User Orders routes - customer
+    // =============================
+    Route::prefix('orders')->name('user.orders.')->middleware('role:customer')->group(function () {
+        Route::get('/', [UserOrderController::class, 'index'])->name('index');
+        Route::get('/{id}', [UserOrderController::class, 'show'])->name('show');
     });
 
     // =============================

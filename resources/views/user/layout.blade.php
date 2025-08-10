@@ -279,6 +279,19 @@
             text-decoration: none;
         }
 
+        /* Avatar placeholder initial */
+        .user-avatar-btn .avatar-initial {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            width: 100%;
+            height: 100%;
+            border-radius: 50%;
+            background: rgba(26, 35, 126, 0.08);
+            color: var(--galaxy-blue);
+            font-weight: 700;
+        }
+
         .logout-btn {
             border-color: #dc3545;
             color: #dc3545;
@@ -723,15 +736,73 @@
                         </div>
                         <div class="col-md-6 col-xs-12">
                             <ul class="nav navbar-nav navbar-right hidden-xs" style="font-size: 15px;">
-                                <li><a href="kiem-tra-don-hang.html"><i class="fa fa-search"></i> Kiểm tra đơn hàng</a></li>
-                                <li>
-                                    <a href="{{ route('cart.show') }}">
-                                        <i class="fa fa-shopping-cart"></i> Giỏ hàng
-                                    </a>
+                                <li style="position:relative;">
+                                    <div style="position:relative;display:inline-block;">
+                                        <button type="button" class="btn btn-link" id="desktop-notification-btn" style="font-size:18px;padding:0 8px;position:relative;color:#e9ecef">
+                                            <i class="fa fa-bell"></i>
+                                            <span id="desktop-notification-badge" style="position:absolute;top:-2px;right:-2px;min-width:16px;height:16px;background:#ffb300;color:#fff;border-radius:8px;font-size:11px;line-height:16px;display:none;padding:0 4px;">0</span>
+                                        </button>
+                                        <div id="notificationDropdownNew" class="hidden" style="position:absolute;left:-110px;transform:translateX(-50%);top:36px;min-width:340px;max-width:400px;background:linear-gradient(135deg,#1a237e 0%,#3f51b5 100%);color:#fff;border-radius:14px;box-shadow:0 8px 32px rgba(26,35,126,0.18);z-index:1001;padding:24px 24px 18px 24px;">
+                                            <div style="position:absolute;top:-12px;left:87%;transform:translateX(-50%);width:0;height:0;border-left:10px solid transparent;border-right:10px solid transparent;border-bottom:12px solid #1a237e;filter:drop-shadow(0 2px 2px rgba(26,35,126,0.10));"></div>
+                                            <div style="display:flex;justify-content:space-between;align-items:flex-start;margin-bottom:16px;">
+                                                <h2 style="font-weight:800;font-size:1.15rem;line-height:1.2;margin:0;max-width:80%;">Thông báo</h2>
+                                                <button id="closeNotificationDropdownNew" aria-label="Đóng" style="background:none;border:none;color:#fff;font-size:20px;cursor:pointer;line-height:1;">
+                                                    <i class="fas fa-times"></i>
+                                                </button>
+                                            </div>
+                                            <ul style="padding-left:0;list-style:none;margin-bottom:16px;font-size:1rem;font-weight:500;line-height:1.6;">
+                                                <!-- Danh sách thông báo động giả lập -->
+                                                <li style="display:flex;align-items:flex-start;margin-bottom:14px;gap:10px;">
+                                                    <i class="fas fa-bolt" style="color:#ffd700;font-size:18px;margin-top:2px;"></i>
+                                                    <div>
+                                                        <div style="font-weight:600;">Flash Sale cuối tuần!</div>
+                                                        <div style="font-size:0.97em;opacity:0.85;">Giảm giá tới 30% cho bộ sưu tập mới.</div>
+                                                        <div style="font-size:0.85em;color:#ffe082;">2 phút trước</div>
+                                                    </div>
+                                                </li>
+                                                <li style="display:flex;align-items:flex-start;margin-bottom:14px;gap:10px;">
+                                                    <i class="fas fa-gift" style="color:#ffd700;font-size:18px;margin-top:2px;"></i>
+                                                    <div>
+                                                        <div style="font-weight:600;">Nhận quà tặng miễn phí</div>
+                                                        <div style="font-size:0.97em;opacity:0.85;">Tặng hộp đựng trang sức cho đơn hàng trên 2 triệu.</div>
+                                                        <div style="font-size:0.85em;color:#ffe082;">10 phút trước</div>
+                                                    </div>
+                                                </li>
+                                                <li style="display:flex;align-items:flex-start;margin-bottom:14px;gap:10px;">
+                                                    <i class="fas fa-truck" style="color:#ffd700;font-size:18px;margin-top:2px;"></i>
+                                                    <div>
+                                                        <div style="font-weight:600;">Đơn hàng #12345 đã giao thành công</div>
+                                                        <div style="font-size:0.97em;opacity:0.85;">Cảm ơn bạn đã mua sắm tại TVT Jewelry.</div>
+                                                        <div style="font-size:0.85em;color:#ffe082;">1 giờ trước</div>
+                                                    </div>
+                                                </li>
+                                                <li style="display:flex;align-items:flex-start;margin-bottom:14px;gap:10px;">
+                                                    <i class="fas fa-star" style="color:#ffd700;font-size:18px;margin-top:2px;"></i>
+                                                    <div>
+                                                        <div style="font-weight:600;">Đánh giá sản phẩm</div>
+                                                        <div style="font-size:0.97em;opacity:0.85;">Hãy để lại đánh giá cho sản phẩm bạn vừa nhận.</div>
+                                                        <div style="font-size:0.85em;color:#ffe082;">2 giờ trước</div>
+                                                    </div>
+                                                </li>
+                                                <li style="display:flex;align-items:flex-start;gap:10px;">
+                                                    <i class="fas fa-bullhorn" style="color:#ffd700;font-size:18px;margin-top:2px;"></i>
+                                                    <div>
+                                                        <div style="font-weight:600;">Chính sách đổi trả mới</div>
+                                                        <div style="font-size:0.97em;opacity:0.85;">Đổi trả dễ dàng trong 7 ngày cho mọi đơn hàng.</div>
+                                                        <div style="font-size:0.85em;color:#ffe082;">Hôm qua</div>
+                                                    </div>
+                                                </li>
+                                            </ul>
+                                            <p style="font-style:italic;font-size:0.95rem;line-height:1.5;max-width:95%;opacity:0.9;margin:0;">
+                                                Hãy khám phá bộ sưu tập trang sức mới nhất của TVT – tôn vinh vẻ đẹp và đẳng cấp của bạn!
+                                            </p>
+                                        </div>
+                                    </div>
                                 </li>
-
-                                <li><a href="dang-nhap.html"><i class="fa fa-sign-in"></i> Đăng nhập</a></li>
-                                <li><a href="dang-ky.html"><i class="fa fa-user-plus"></i> Đăng ký</a></li>
+                                @guest
+                                <li><a href="{{ route('login') }}"><i class="fa fa-sign-in"></i> Đăng nhập</a></li>
+                                <li><a href="{{ route('auth.registerView') }}"><i class="fa fa-user-plus"></i> Đăng ký</a></li>
+                                @endguest
                             </ul>
                             <!-- Mobile menu -->
                             <div class="visible-xs mobile-menu">
@@ -742,12 +813,14 @@
                                     <ul class="dropdown-menu" aria-labelledby="userMenu">
                                         @if(Auth::check())
                                         <li class="px-3 py-2 text-[#1a237e] font-semibold">Xin chào, {{ Auth::user()->username ?? Auth::user()->name ?? Auth::user()->email }}</li>
+                                        <li><a href="{{ route('profile.show', Auth::id()) }}"><i class="fa fa-user-circle"></i> Trang cá nhân</a></li>
+                                        <li role="separator" class="divider"></li>
                                         <li>
                                             <a href="#" id="logout-mobile-btn" class="text-red-600"><i class="fa fa-sign-out"></i> Đăng xuất</a>
                                         </li>
                                         @else
-                                        <li><a href="{{ url('dang-ky') }}"><i class="fa fa-user-plus"></i> Đăng ký</a></li>
-                                        <li><a href="{{ url('dang-nhap') }}"><i class="fa fa-sign-in"></i> Đăng nhập</a></li>
+                                        <li><a href="{{ route('auth.registerView') }}"><i class="fa fa-user-plus"></i> Đăng ký</a></li>
+                                        <li><a href="{{ route('login') }}"><i class="fa fa-sign-in"></i> Đăng nhập</a></li>
                                         @endif
                                     </ul>
                                 </div>
@@ -757,12 +830,6 @@
                                     </button>
                                     <ul class="dropdown-menu" aria-labelledby="quickMenu">
                                         <li><a href="kiem-tra-don-hang.html"><i class="fa fa-search"></i> Kiểm tra đơn hàng</a></li>
-                                        <li>
-                                            <a href="{{ route('cart.show') }}">
-                                                <i class="fa fa-shopping-cart"></i> Giỏ hàng
-                                            </a>
-                                        </li>
-
                                     </ul>
                                 </div>
                             </div>
@@ -795,7 +862,7 @@
                     <div class="col-xs-12 col-sm-3">
                         <div class="header-actions">
                             <!-- Cart -->
-                            <a href="gio-hang.html" class="cart-btn">
+                            <a href="{{ route('cart.show') }}" class="cart-btn">
                                 <i class="fa fa-shopping-bag"></i>
                                 <span class="cart-count">0</span>
                             </a>
@@ -803,12 +870,23 @@
                             <!-- User -->
                             <div class="user-info">
                                 @if(Auth::check())
-                                <span class="user-name hidden-xs">{{ Auth::user()->username ?? Auth::user()->name ?? Auth::user()->email }}</span>
-                                <a href="#" id="logout-desktop-btn" class="user-btn logout-btn" title="Đăng xuất">
-                                    <i class="fa fa-sign-out"></i>
-                                </a>
+                                <div class="dropdown user-dropdown">
+                                    <a href="#" class="user-btn user-avatar-btn dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false" title="Tài khoản">
+                                        @php($avatar = Auth::user()->avatar)
+                                        @if($avatar)
+                                        <img src="{{ asset('storage/avatars/' . $avatar) }}" alt="avatar" style="width:100%;height:100%;object-fit:cover;border-radius:50%">
+                                        @else
+                                        <span class="avatar-initial">{{ strtoupper(substr(Auth::user()->username ?? Auth::user()->fullname ?? Auth::user()->email,0,1)) }}</span>
+                                        @endif
+                                    </a>
+                                    <ul class="dropdown-menu pull-right">
+                                        <li><a href="{{ route('profile.show', Auth::id()) }}"><i class="fa fa-user-circle"></i> Trang cá nhân</a></li>
+                                        <li role="separator" class="divider"></li>
+                                        <li><a href="#" id="logout-desktop-btn"><i class="fa fa-sign-out"></i> Đăng xuất</a></li>
+                                    </ul>
+                                </div>
                                 @else
-                                <a href="{{ url('dang-nhap') }}" class="user-btn" title="Đăng nhập">
+                                <a href="{{ route('login') }}" class="user-btn" title="Đăng nhập">
                                     <i class="fa fa-user"></i>
                                 </a>
                                 @endif
@@ -858,7 +936,7 @@
                     <div id="introduce-box" class="row">
                         <div class="col-md-3">
                             <div id="address-box">
-                                <a href="index.htm"><img src="Uploads\shop2198\images\logo2.png" alt="logo"></a>
+                                <a href="index.htm"><img src="img/logo_2.png" alt="logo"></a>
                                 <div id="address-list">
                                     <div class="tit-name">Địa chỉ:</div>
                                     <div class="tit-contain">1005 Quang Trung, P.14, Q.Gò Vấp, Tp.HCM</div>
@@ -1055,6 +1133,7 @@
     <!-- Scripts -->
     <script src="https://cdn.jsdelivr.net/npm/swiper@10/swiper-bundle.min.js"></script>
     <script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>
     <script type="module" src="{{ asset('js/index.js') }}"></script>
     @stack('scripts')
 
@@ -1150,7 +1229,171 @@
             }
         `;
         document.head.appendChild(style);
+
+        // ================== CART: localStorage sync & header badge ==================
+        (function() {
+            const CART_KEY = 'jewelry_cart';
+            const EXPIRE_DAYS = 30;
+
+            function now() {
+                return Date.now();
+            }
+
+            function getExpireTime() {
+                return now() + EXPIRE_DAYS * 24 * 60 * 60 * 1000;
+            }
+
+            function getCartObj() {
+                try {
+                    const obj = JSON.parse(localStorage.getItem(CART_KEY));
+                    if (!obj || !obj.data) return {
+                        data: [],
+                        expires: 0
+                    };
+                    // Check expiration
+                    if (obj.expires && obj.expires < now()) {
+                        localStorage.removeItem(CART_KEY);
+                        return {
+                            data: [],
+                            expires: 0
+                        };
+                    }
+                    return obj;
+                } catch (e) {
+                    return {
+                        data: [],
+                        expires: 0
+                    };
+                }
+            }
+
+            function getCart() {
+                return getCartObj().data;
+            }
+
+            function saveCart(cart) {
+                localStorage.setItem(CART_KEY, JSON.stringify({
+                    data: cart,
+                    expires: getExpireTime()
+                }));
+                window.dispatchEvent(new CustomEvent('cart:changed', {
+                    detail: {
+                        count: getCartCount()
+                    }
+                }));
+            }
+
+            function getCartCount() {
+                return getCart().reduce(function(sum, item) {
+                    var q = parseInt(item.quantity) || 0;
+                    return sum + q;
+                }, 0);
+            }
+
+            function updateHeaderCartCount() {
+                var el = document.querySelector('.cart-count');
+                if (el) el.textContent = getCartCount();
+            }
+
+            // Initial update on load
+            document.addEventListener('DOMContentLoaded', updateHeaderCartCount);
+            // React to external updates if any
+            window.addEventListener('cart:changed', updateHeaderCartCount);
+
+            // Intercept generic add-to-cart clicks to mirror into localStorage
+            document.addEventListener('click', function(e) {
+                var btn = e.target.closest('.add-to-cart');
+                if (!btn) return;
+
+                var id = btn.getAttribute('data-id') || btn.dataset.id;
+                if (!id) return;
+
+                // Try to find a nearby quantity input, fallback to 1
+                var qty = 1;
+                var wrap = btn.closest('.product-item') || document;
+                var input = wrap.querySelector('.quantity');
+                if (input) {
+                    var parsed = parseInt(input.value);
+                    if (!isNaN(parsed) && parsed > 0) qty = parsed;
+                }
+
+                var cart = getCart();
+                var found = cart.find(function(i) {
+                    return String(i.id) === String(id);
+                });
+                if (found) {
+                    found.quantity = (parseInt(found.quantity) || 0) + qty;
+                } else {
+                    cart.push({
+                        id: id,
+                        quantity: qty
+                    });
+                }
+                saveCart(cart);
+                updateHeaderCartCount();
+            }, true);
+
+            // Expose minimal API if needed elsewhere
+            window.CartLS = {
+                get: getCart,
+                set: saveCart,
+                count: getCartCount,
+                updateBadge: updateHeaderCartCount
+            };
+        })();
+        // ================== NOTIFICATION DROPDOWN (dưới chuông, đơn giản, không xung đột) ==================
+        document.addEventListener('DOMContentLoaded', function() {
+            var dropdown = document.getElementById('notificationDropdownNew');
+            var openBtn = document.getElementById('desktop-notification-btn');
+            var closeBtn = document.getElementById('closeNotificationDropdownNew');
+            if (openBtn && dropdown) {
+                openBtn.addEventListener('click', function(e) {
+                    e.stopPropagation();
+                    dropdown.classList.toggle('hidden');
+                });
+            }
+            if (closeBtn && dropdown) {
+                closeBtn.addEventListener('click', function() {
+                    dropdown.classList.add('hidden');
+                });
+            }
+            // Ẩn dropdown khi click ra ngoài
+            document.addEventListener('click', function(e) {
+                if (dropdown && !dropdown.classList.contains('hidden')) {
+                    if (!dropdown.contains(e.target) && e.target.id !== 'desktop-notification-btn') {
+                        dropdown.classList.add('hidden');
+                    }
+                }
+            });
+        });
     </script>
+
+    <!-- Enhanced Popup container -->
+    <div id="notificationPopup"
+        class="fixed bottom-24 left-4 w-[380px] md:w-[420px] notification-popup p-8 text-white font-sans shadow-2xl z-30 hidden"
+        role="dialog" aria-modal="true" aria-labelledby="popup-title"
+        style="background:linear-gradient(135deg,#1a237e 0%,#3f51b5 100%);border-radius:18px;">
+        <div class="flex justify-between items-start mb-6">
+            <h2 id="popup-title" class="font-extrabold text-xl leading-tight max-w-[80%]">
+                Ưu điểm nổi bật của TVT Jewelry
+            </h2>
+            <button id="closePopup" aria-label="Close popup"
+                class="text-white text-2xl leading-none hover:opacity-80 transition"
+                style="background:none;border:none;cursor:pointer;">
+                <i class="fas fa-times"></i>
+            </button>
+        </div>
+        <ul class="space-y-4 mb-6 text-base font-medium leading-relaxed">
+            <li class="flex items-center"><i class="fas fa-gem mr-4" style="color:#ffd700"></i> Thiết kế tinh xảo, độc quyền</li>
+            <li class="flex items-center"><i class="fas fa-star mr-4" style="color:#ffd700"></i> Chất lượng vàng bạc đạt chuẩn</li>
+            <li class="flex items-center"><i class="fas fa-shipping-fast mr-4" style="color:#ffd700"></i> Giao hàng toàn quốc</li>
+            <li class="flex items-center"><i class="fas fa-sync-alt mr-4" style="color:#ffd700"></i> Đổi trả dễ dàng trong 48h</li>
+            <li class="flex items-center"><i class="fas fa-hand-holding-heart mr-4" style="color:#ffd700"></i> Bảo hành trọn đời sản phẩm</li>
+        </ul>
+        <p class="italic text-sm leading-relaxed max-w-[95%] opacity-90">
+            Hãy khám phá bộ sưu tập trang sức mới nhất của TVT – tôn vinh vẻ đẹp và đẳng cấp của bạn!
+        </p>
+    </div>
 </body>
 
 </html>
