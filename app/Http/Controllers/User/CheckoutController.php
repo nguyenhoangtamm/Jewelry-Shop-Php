@@ -106,7 +106,7 @@ class CheckoutController extends Controller
             $order = Order::create([
                 'user_id' => Auth::id(),
                 'total_amount' => $totalAmount,
-                'status' => 'pending',
+                'status' => 'chờ xử lý',
                 'notes' => $this->formatOrderNotes($request),
             ]);
 
