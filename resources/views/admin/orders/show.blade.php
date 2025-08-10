@@ -788,22 +788,42 @@
 
 /* Print Styles */
 @media print {
-    .page-header .header-actions,
+    /* Ẩn menu và các phần không cần in */
+    .sidebar,
+    .menu,
+    .sidebar-wrapper,
+    .page-header,
     .action-buttons {
         display: none !important;
     }
-    
+
+    /* Căn chỉnh toàn bộ nội dung */
     .order-detail-container {
-        background: white !important;
-        padding: 1rem !important;
+        margin: 0 !important;
+        padding: 0 !important;
+        width: 100% !important;
     }
-    
-    .info-card,
-    .products-card {
-        box-shadow: none !important;
-        border: 1px solid #ddd !important;
+
+    /* Giảm khoảng cách thừa để tiết kiệm không gian */
+    .detail-grid,
+    .products-card,
+    .order-summary {
+        margin: 0 !important;
+        padding: 5px !important;
+    }
+
+    /* Đảm bảo bảng và QR không bị ngắt trang */
+    table,
+    .order-summary {
+        page-break-inside: avoid;
+    }
+
+    /* Thu nhỏ nội dung nếu dài hơn 1 trang */
+    body {
+        zoom: 0.8; /* bạn có thể chỉnh 0.8 hoặc 0.9 tùy nội dung */
     }
 }
+
 
 /* Responsive Design */
 @media (max-width: 1024px) {
