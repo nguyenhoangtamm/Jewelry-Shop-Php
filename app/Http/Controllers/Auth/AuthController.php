@@ -69,49 +69,53 @@ class AuthController extends Controller
             ], 401);
         }
     }
-    public function register(Request $request)
-    {
-        try {
-            // Validate input
-            $data = $request->validate([
-                'fullname' => 'required|string|max:255',
-                'username' => 'required|string|max:255|unique:users,username',
-                'email' => 'required|string|email|max:255|unique:users,email',
-                'phone_number' => 'required|digits:10',
-                'date_of_birth' => 'required|date',
-                'address' => 'nullable|string|max:255',
-                'password' => 'required|string|min:8|confirmed',
-            ], [
-                'username.unique' => 'Tên đăng nhập đã được sử dụng.',
-                'email.unique' => 'Email đã được sử dụng.',
-                'password.min' => 'Mật khẩu phải có ít nhất 8 ký tự.',
-                'password.confirmed' => 'Xác nhận mật khẩu không khớp.',
-                'phone_number.digits' => 'Số điện thoại phải có đúng 10 chữ số.',
-            ]);
+public function register(Request $request)
+{
+    try {
+        // Validate input
+        $data = $request->validate([
+            'fullname' => 'required|string|max:255',
+            'username' => 'required|string|max:255|unique:users,username',
+            'email' => 'required|string|email|max:255|unique:users,email',
+            'phone_number' => 'required|digits:10',
+            'date_of_birth' => 'required|date',
+            'address' => 'nullable|string|max:255',
+            'password' => 'required|string|min:8|confirmed',
+        ], [
+            'username.unique' => 'Tên đăng nhập đã được sử dụng.',
+            'email.unique' => 'Email đã được sử dụng.',
+            'password.min' => 'Mật khẩu phải có ít nhất 8 ký tự.',
+            'password.confirmed' => 'Xác nhận mật khẩu không khớp.',
+            'phone_number.digits' => 'Số điện thoại phải có đúng 10 chữ số.',
+        ]);
 
-            // Hash password
-            $data['password'] = bcrypt($data['password']);
+        // Hash password
+        $data['password'] = bcrypt($data['password']);
 
-            // Create user
-            $user = User::create($data);
+        // Gán role mặc định cho user mới
+        $data['role'] = 'customer';
 
-            return response()->json([
-                'success' => true,
-                'message' => 'Đăng ký thành công! Bạn có thể đăng nhập ngay bây giờ.'
-            ]);
-        } catch (\Illuminate\Validation\ValidationException $e) {
-            return response()->json([
-                'success' => false,
-                'message' => 'Dữ liệu không hợp lệ.',
-                'errors' => $e->errors()
-            ], 422);
-        } catch (\Exception $e) {
-            return response()->json([
-                'success' => false,
-                'message' => 'Có lỗi xảy ra trong quá trình đăng ký. Vui lòng thử lại.'
-            ], 500);
-        }
+        // Create user
+        $user = User::create($data);
+
+        return response()->json([
+            'success' => true,
+            'message' => 'Đăng ký thành công! Bạn có thể đăng nhập ngay bây giờ.'
+        ]);
+    } catch (\Illuminate\Validation\ValidationException $e) {
+        return response()->json([
+            'success' => false,
+            'message' => 'Dữ liệu không hợp lệ.',
+            'errors' => $e->errors()
+        ], 422);
+    } catch (\Exception $e) {
+        return response()->json([
+            'success' => false,
+            'message' => 'Có lỗi xảy ra trong quá trình đăng ký. Vui lòng thử lại.'
+        ], 500);
     }
+}
+
 
     public function logout(Request $request)
     {
