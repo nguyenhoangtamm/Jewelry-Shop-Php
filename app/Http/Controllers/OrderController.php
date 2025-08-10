@@ -12,6 +12,7 @@ class OrderController extends Controller
         $orders = Order::with(['user', 'orderDetails'])
             ->where('is_deleted', 0)
             ->where('status', 'hoàn thành') // chỉ lấy đơn đã hoàn thành
+            ->orderBy('created_at', 'desc')
             ->paginate(5);
 
         // Tính tổng tiền nếu cần

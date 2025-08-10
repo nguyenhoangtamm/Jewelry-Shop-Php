@@ -18,7 +18,7 @@ class JewelryController extends Controller
             $query->where('name', 'like', "%$search%");
         }
 
-        $jewelries = $query->paginate(5);
+        $jewelries = $query->orderBy('created_at', 'desc')->paginate(5);
         $categories = Category::where('is_deleted', 0)->get();
 
         // Thêm ảnh chính cho từng jewelry
