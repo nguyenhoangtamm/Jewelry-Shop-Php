@@ -48,7 +48,7 @@
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.1/font/bootstrap-icons.css">
     <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;500;600;700&family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/swiper@10/swiper-bundle.min.css" />
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
+    <!-- <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css"> -->
     <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css">
     <script src="https://cdn.tailwindcss.com"></script>
     <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
@@ -306,7 +306,10 @@
         .main-nav {
             background: linear-gradient(135deg, var(--galaxy-blue-dark) 0%, var(--galaxy-blue) 50%, var(--galaxy-blue-light) 100%);
             position: relative;
-            overflow: hidden;
+            overflow: visible;
+            /* allow dropdowns to overflow */
+            z-index: 100;
+            /* ensure dropdown is above */
         }
 
         .main-nav::before {
@@ -332,9 +335,11 @@
         .nav-category {
             background: rgba(0, 0, 0, 0.2);
             backdrop-filter: blur(10px);
+            position: relative;
+            /* anchor dropdown */
         }
 
-        .nav-category a {
+        .nav-category>a {
             display: block;
             padding: 16px 30px;
             color: var(--white);
@@ -344,6 +349,27 @@
             font-size: 14px;
             transition: all 0.3s ease;
             text-decoration: none;
+        }
+
+        /* Dropdown menu styling under Categories */
+        .nav-category .dropdown-menu {
+            min-width: 220px;
+            padding: 8px 0;
+            border-radius: 10px;
+            border: 1px solid rgba(26, 35, 126, 0.15);
+            box-shadow: 0 10px 30px rgba(26, 35, 126, 0.2);
+            margin-top: 0;
+        }
+
+        .nav-category .dropdown-menu>li>a {
+            padding: 10px 16px;
+            color: #1a237e;
+            font-weight: 600;
+        }
+
+        .nav-category .dropdown-menu>li>a:hover {
+            background: rgba(26, 35, 126, 0.08);
+            color: #1a237e;
         }
 
         .nav-item a {
@@ -844,7 +870,7 @@
                     <!-- Logo -->
                     <div class="col-xs-12 col-sm-3 text-center">
                         <a href="index.htm" class="logo" title="Jewelry Store">
-                            <img src="{{ asset('img/logo_2.png') }}" alt="Jewelry Store">
+                            <img src="http://localhost:8000/img/logo_2.png" alt="Jewelry Store">
                         </a>
                     </div>
                     <!-- Search box -->
@@ -900,16 +926,25 @@
             <div class="main-nav">
                 <div class="container">
                     <ul class="nav-list">
-                        <li class="nav-category">
-                            <a href="#">
-                                {{-- <i class="fa fa-diamond"></i> DANH MỤC TRANG SỨC --}}
-                            </a>
-                        </li>
                         <li class="nav-item"><a href="{{ route('home') }}">Trang chủ</a></li>
-
-                        <li class="nav-item"><a href="{{ route('about') }}">Giới thiệu</a></li>
                         <li class="nav-item"><a href="{{ route('products.all') }}">Sản phẩm</a></li>
-
+                        <li class="nav-category dropdown">
+                            <a href="{{ route('products.all') }}" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false">
+                                <i class="fa fa-diamond"></i> Danh mục sản phẩm <span class="caret"></span>
+                            </a>
+                            @if(isset($navCategories) && $navCategories->count())
+                            <ul class="dropdown-menu">
+                                @foreach($navCategories as $category)
+                                <li>
+                                    <a href="{{ route('products.all', ['category' => $category->id]) }}">{{ $category->name }}</a>
+                                </li>
+                                @endforeach
+                                <li role="separator" class="divider"></li>
+                                <li><a href="{{ route('products.all') }}">Tất cả sản phẩm</a></li>
+                            </ul>
+                            @endif
+                        </li>
+                        <li class="nav-item"><a href="{{ route('about') }}">Giới thiệu</a></li>
 
                         <li class="nav-item">
                             <a href="{{ route('news.index') }}">Tin tức</a>
@@ -918,7 +953,6 @@
 
                         <li class="nav-item"><a href="{{ route('contact.show') }}">Liên hệ</a></li>
 
-                    </ul>
                     </ul>
                 </div>
             </div>
@@ -1043,16 +1077,16 @@
                                 <div class="introduce-title">Kết nối với chúng tôi</div>
                                 <div class="social-link">
                                     <a href="#" title="Facebook">
-                                        <i class="fa fa-facebook"></i>
+                                        <i class="fa-brands fa-facebook-f"></i>
                                     </a>
                                     <a href="#" title="Instagram">
-                                        <i class="fa fa-instagram"></i>
+                                        <i class="fa-brands fa-instagram"></i>
                                     </a>
                                     <a href="#" title="Youtube">
-                                        <i class="fa fa-youtube"></i>
+                                        <i class="fa-brands fa-youtube"></i>
                                     </a>
                                     <a href="#" title="Zalo">
-                                        <i class="fa fa-phone"></i>
+                                        <i class="fa-solid fa-phone"></i>
                                     </a>
                                 </div>
                             </div>
