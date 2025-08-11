@@ -13,6 +13,7 @@ return new class extends Migration
             $table->unsignedBigInteger('user_id');
             $table->unsignedBigInteger('jewelry_id');
             $table->timestamps();
+            
 
             $table->unique(['user_id', 'jewelry_id']);
             $table->foreign('user_id')->references('id')->on('users')->onDelete('cascade');
