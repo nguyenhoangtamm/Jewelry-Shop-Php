@@ -27,48 +27,61 @@ class AuthController extends Controller
         return view('auth.register');
     }
     public function login(Request $request)
-    {
-        // Validate input
-        $request->validate([
-            'login_field' => 'required|string',
-            'password' => 'required|string',
-        ]);
+{
+    // Validate input
+    $request->validate([
+        'login_field' => 'required|string',
+        'password' => 'required|string',
+    ]);
 
-        $credentials = $request->only('login_field', 'password');
+    $credentials = $request->only('login_field', 'password');
 
-        // Determine if login_field is email or username
-        if (filter_var($credentials['login_field'], FILTER_VALIDATE_EMAIL)) {
-            $credentials['email'] = $credentials['login_field'];
-            unset($credentials['login_field']);
-        } else {
-            $credentials['username'] = $credentials['login_field'];
-            unset($credentials['login_field']);
-        }
-
-        if (Auth::attempt($credentials, $request->filled('remember'))) {
-            // Authentication passed
-            $request->session()->regenerate();
-            $user = Auth::user();
-
-            return response()->json([
-                'success' => true,
-                'message' => 'Đăng nhập thành công!',
-                'user' => [
-                    'id' => $user->id,
-                    'username' => $user->username,
-                    'email' => $user->email,
-                    'fullname' => $user->fullname,
-                    'role' => $user->role ?? 'user'
-                ]
-            ]);
-        } else {
-            // Authentication failed
-            return response()->json([
-                'success' => false,
-                'message' => 'Thông tin đăng nhập không chính xác.'
-            ], 401);
-        }
+    // Determine if login_field is email or username
+    if (filter_var($credentials['login_field'], FILTER_VALIDATE_EMAIL)) {
+        $credentials['email'] = $credentials['login_field'];
+        unset($credentials['login_field']);
+    } else {
+        $credentials['username'] = $credentials['login_field'];
+        unset($credentials['login_field']);
     }
+
+    // Lấy user từ DB
+    $user = User::where(isset($credentials['email']) ? 'email' : 'username', 
+                        isset($credentials['email']) ? $credentials['email'] : $credentials['username'])
+                ->first();
+
+    // Kiểm tra có tồn tại và có bị khóa không
+    if ($user && $user->is_locked) {
+        return response()->json([
+            'success' => false,
+            'message' => 'Tài khoản của bạn đã bị khóa. Vui lòng liên hệ quản trị viên.'
+        ], 403);
+    }
+
+    // Thực hiện đăng nhập
+    if (Auth::attempt($credentials, $request->filled('remember'))) {
+        $request->session()->regenerate();
+        $user = Auth::user();
+
+        return response()->json([
+            'success' => true,
+            'message' => 'Đăng nhập thành công!',
+            'user' => [
+                'id' => $user->id,
+                'username' => $user->username,
+                'email' => $user->email,
+                'fullname' => $user->fullname,
+                'role' => $user->role ?? 'user'
+            ]
+        ]);
+    }
+
+    return response()->json([
+        'success' => false,
+        'message' => 'Thông tin đăng nhập không chính xác.'
+    ], 401);
+}
+
 public function register(Request $request)
 {
     try {
@@ -115,6 +128,7 @@ public function register(Request $request)
         ], 500);
     }
 }
+
 
 
     public function logout(Request $request)
