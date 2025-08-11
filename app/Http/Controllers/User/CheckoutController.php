@@ -8,12 +8,144 @@ use Illuminate\Http\Request;
 use App\Models\Jewelry;
 use App\Models\Order;
 use App\Models\OrderDetail;
+use App\Models\Cart;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Session;
 use Illuminate\Support\Facades\Validator;
+use Illuminate\Support\Facades\DB;
 
 class CheckoutController extends Controller
 {
+    /**
+     * Hiển thị trang checkout từ cart
+     */
+    public function index()
+    {
+        if (!Auth::check()) {
+            return redirect()->route('login');
+        }
+
+        $cartItems = Cart::getUserCart(Auth::id());
+        $total = Cart::getCartTotal(Auth::id());
+
+        if ($cartItems->isEmpty()) {
+            return redirect()->route('cart.index')->with('error', 'Giỏ hàng của bạn đang trống');
+        }
+
+        return view('user.checkout.index', compact('cartItems', 'total'));
+    }
+
+    /**
+     * Xử lý thanh toán từ giỏ hàng
+     */
+    public function store(Request $request)
+    {
+        if (!Auth::check()) {
+            if ($request->ajax()) {
+                return response()->json([
+                    'success' => false,
+                    'message' => 'Vui lòng đăng nhập để đặt hàng!',
+                    'redirect' => route('login'),
+                ], 401);
+            }
+            return redirect()->route('login')->with('error', 'Vui lòng đăng nhập để đặt hàng!');
+        }
+
+        $rules = [
+            'fullname' => 'required|string|max:255',
+            'phone' => 'required|string|max:20',
+            'email' => 'nullable|email|max:255',
+            'address' => 'required|string|max:500',
+            'note' => 'nullable|string|max:1000',
+            'payment_method' => 'required|in:cod,bank_transfer'
+        ];
+
+        $validator = Validator::make($request->all(), $rules);
+        if ($validator->fails()) {
+            if ($request->ajax()) {
+                return response()->json([
+                    'success' => false,
+                    'message' => 'Dữ liệu không hợp lệ',
+                    'errors' => $validator->errors()
+                ], 422);
+            }
+            return back()->withErrors($validator)->withInput();
+        }
+
+        $user = Auth::user();
+        $cartItems = Cart::getUserCart($user->id);
+
+        if ($cartItems->isEmpty()) {
+            if ($request->ajax()) {
+                return response()->json([
+                    'success' => false,
+                    'message' => 'Giỏ hàng của bạn đang trống'
+                ]);
+            }
+            return redirect()->route('cart.index')->with('error', 'Giỏ hàng của bạn đang trống');
+        }
+
+        $totalAmount = Cart::getCartTotal($user->id);
+
+        DB::beginTransaction();
+        try {
+            // Tạo đơn hàng
+            $order = Order::create([
+                'user_id' => $user->id,
+                'total_amount' => $totalAmount,
+                'status' => 'chờ xử lý',
+                'notes' => $this->formatCheckoutNotes($request),
+            ]);
+
+            // Tạo chi tiết đơn hàng
+            foreach ($cartItems as $item) {
+                OrderDetail::create([
+                    'order_id' => $order->id,
+                    'jewelry_id' => $item->jewelry_id,
+                    'quantity' => $item->quantity,
+                    'unit_price' => $item->price,
+                ]);
+
+                // Giảm số lượng tồn kho (nếu có field stock)
+                $jewelry = Jewelry::find($item->jewelry_id);
+                if ($jewelry && isset($jewelry->stock)) {
+                    $jewelry->stock = max(0, $jewelry->stock - $item->quantity);
+                    $jewelry->save();
+                }
+            }
+
+            // Xóa toàn bộ giỏ hàng sau khi đặt hàng thành công
+            Cart::clearCart($user->id);
+
+            DB::commit();
+
+            if ($request->ajax()) {
+                return response()->json([
+                    'success' => true,
+                    'message' => 'Đặt hàng thành công! Cảm ơn bạn đã mua sắm tại cửa hàng.',
+                    'order_id' => $order->id,
+                    'redirect' => route('home')
+                ]);
+            }
+
+            return redirect()->route('home')->with('success', 'Đặt hàng thành công! Cảm ơn bạn đã mua sắm tại cửa hàng.');
+        } catch (\Exception $e) {
+            DB::rollback();
+
+            if ($request->ajax()) {
+                return response()->json([
+                    'success' => false,
+                    'message' => 'Có lỗi xảy ra khi đặt hàng. Vui lòng thử lại.'
+                ], 500);
+            }
+
+            return back()->with('error', 'Có lỗi xảy ra khi đặt hàng. Vui lòng thử lại.')->withInput();
+        }
+    }
+
+    /**
+     * Hiển thị trang checkout cho sản phẩm đơn lẻ (mua ngay)
+     */
     public function show(Request $request)
     {
         $jewelry_id = $request->query('jewelry');
@@ -34,118 +166,23 @@ class CheckoutController extends Controller
 
         return view('user.checkout', compact('jewelry', 'image', 'quantity', 'total_amount', 'user', 'jewelry_id'));
     }
-    public function store(Request $request)
+
+    private function formatCheckoutNotes($request)
     {
-        // Kiểm tra đăng nhập
-        if (!Auth::check()) {
-            if ($request->ajax()) {
-                return response()->json([
-                    'status' => 'unauthenticated',
-                    'message' => 'Vui lòng đăng nhập để đặt hàng!',
-                    'redirect_url' => route('login'),
-                ], 401);
-            }
-            return redirect()->route('login')->with('error', 'Vui lòng đăng nhập để đặt hàng!');
+        $notes = [];
+        $notes[] = "Họ tên: " . $request->fullname;
+        $notes[] = "SĐT: " . $request->phone;
+        if ($request->email) {
+            $notes[] = "Email: " . $request->email;
         }
-        $rules = [
-            'jewelry_id' => 'required|exists:jewelries,id',
-            'quantity' => 'required|integer|min:1',
-            'fullname' => 'required|string|max:255',
-            'phone_number' => 'required|string|max:20',
-            'email' => 'nullable|email|max:255',
-            'address' => 'required|string|max:500',
-            'shipping_method' => 'required|in:standard,express',
-            'payment_method' => 'required|in:cod,bank_transfer,cash',
-            'note' => 'nullable|string|max:1000',
-            'total_amount' => 'required|numeric|min:0'
-        ];
+        $notes[] = "Địa chỉ: " . $request->address;
+        $notes[] = "Thanh toán: " . $this->getPaymentMethodText($request->payment_method);
 
-        if ($request->ajax()) {
-            $validator = Validator::make($request->all(), $rules);
-            if ($validator->fails()) {
-                return response()->json([
-                    'status' => 'validation_error',
-                    'errors' => $validator->errors(),
-                ], 422);
-            }
-        } else {
-            $request->validate($rules);
+        if ($request->note) {
+            $notes[] = "Ghi chú: " . $request->note;
         }
 
-        try {
-            $jewelry = Jewelry::findOrFail($request->jewelry_id);
-
-            // Kiểm tra tồn kho
-            if ($request->quantity > $jewelry->stock) {
-                if ($request->ajax()) {
-                    return response()->json([
-                        'status' => 'error',
-                        'message' => 'Số lượng sản phẩm không đủ trong kho!',
-                    ], 409);
-                }
-                return back()->with('error', 'Số lượng sản phẩm không đủ trong kho!');
-            }
-
-            // Tính toán tổng tiền (bao gồm phí vận chuyển)
-            $subtotal = $jewelry->price * $request->quantity;
-            $shippingFee = $request->shipping_method === 'express' ? 50000 : 0;
-            $totalAmount = $subtotal + $shippingFee;
-
-            // Kiểm tra tổng tiền từ form có khớp không
-            if (abs($totalAmount - $request->total_amount) > 1) {
-                if ($request->ajax()) {
-                    return response()->json([
-                        'status' => 'error',
-                        'message' => 'Có lỗi trong tính toán giá tiền!',
-                    ], 422);
-                }
-                return back()->with('error', 'Có lỗi trong tính toán giá tiền!');
-            }
-
-            // Tạo đơn hàng
-            $order = Order::create([
-                'user_id' => Auth::id(),
-                'total_amount' => $totalAmount,
-                'status' => 'chờ xử lý',
-                'notes' => $this->formatOrderNotes($request),
-            ]);
-
-            // Tạo chi tiết đơn hàng
-            OrderDetail::create([
-                'order_id' => $order->id,
-                'jewelry_id' => $request->jewelry_id,
-                'quantity' => $request->quantity,
-                'unit_price' => $jewelry->price,
-            ]);
-
-            // Giảm tồn kho
-            $jewelry->decrement('stock', $request->quantity);
-
-            // Xóa sản phẩm khỏi giỏ hàng (nếu có)
-            $this->removeFromCart($request->jewelry_id);
-
-            if ($request->ajax()) {
-                // Không chắc route chi tiết đơn hàng tồn tại, trả về trang chủ làm mặc định
-                $redirectUrl = route('home', absolute: false) ?? url('/');
-                return response()->json([
-                    'status' => 'success',
-                    'message' => 'Đặt hàng thành công! Mã đơn hàng: #' . $order->id,
-                    'order_id' => $order->id,
-                    'redirect_url' => $redirectUrl,
-                ]);
-            }
-            // Fallback điều hướng truyền thống (nếu có route lịch sử đơn hàng)
-            return redirect()->back()->with('success', 'Đặt hàng thành công! Mã đơn hàng: #' . $order->id);
-        } catch (\Exception $e) {
-            if ($request->ajax()) {
-                return response()->json([
-                    'status' => 'error',
-                    'message' => 'Có lỗi xảy ra khi đặt hàng. Vui lòng thử lại!',
-                    'error_detail' => $e->getMessage(),
-                ], 500);
-            }
-            return back()->with('error', 'Có lỗi xảy ra khi đặt hàng. Vui lòng thử lại!');
-        }
+        return implode("\n", $notes);
     }
 
     private function formatOrderNotes($request)

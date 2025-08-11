@@ -888,9 +888,15 @@
                     <div class="col-xs-12 col-sm-3">
                         <div class="header-actions">
                             <!-- Cart -->
-                            <a href="{{ route('cart.show') }}" class="cart-btn">
+                            <a href="{{ route('cart.index') }}" class="cart-btn">
                                 <i class="fa fa-shopping-bag"></i>
-                                <span class="cart-count">0</span>
+                                <span class="cart-count" id="cart-count">
+                                    @if(Auth::check())
+                                    {{ \App\Models\Cart::getCartCount(Auth::id()) }}
+                                    @else
+                                    0
+                                    @endif
+                                </span>
                             </a>
 
                             <!-- User -->
@@ -1263,118 +1269,132 @@
             }
         `;
         document.head.appendChild(style);
+    </script>
 
-        // ================== CART: localStorage sync & header badge ==================
+    <!-- Cart Management Script -->
+    <script>
+        // ================== CART: Database sync & header badge ==================
         (function() {
-            const CART_KEY = 'jewelry_cart';
-            const EXPIRE_DAYS = 30;
-
-            function now() {
-                return Date.now();
-            }
-
-            function getExpireTime() {
-                return now() + EXPIRE_DAYS * 24 * 60 * 60 * 1000;
-            }
-
-            function getCartObj() {
-                try {
-                    const obj = JSON.parse(localStorage.getItem(CART_KEY));
-                    if (!obj || !obj.data) return {
-                        data: [],
-                        expires: 0
-                    };
-                    // Check expiration
-                    if (obj.expires && obj.expires < now()) {
-                        localStorage.removeItem(CART_KEY);
-                        return {
-                            data: [],
-                            expires: 0
-                        };
-                    }
-                    return obj;
-                } catch (e) {
-                    return {
-                        data: [],
-                        expires: 0
-                    };
+            var isLoggedIn = {
+                {
+                    Auth::check() ? 'true' : 'false'
                 }
-            }
+            };
+            var loginUrl = '{{ route("login") }}';
+            var addCartUrl = '{{ route("cart.add") }}';
+            var cartCountUrl = '{{ route("cart.count") }}';
+            var csrfToken = '{{ csrf_token() }}';
 
-            function getCart() {
-                return getCartObj().data;
-            }
-
-            function saveCart(cart) {
-                localStorage.setItem(CART_KEY, JSON.stringify({
-                    data: cart,
-                    expires: getExpireTime()
-                }));
-                window.dispatchEvent(new CustomEvent('cart:changed', {
-                    detail: {
-                        count: getCartCount()
-                    }
-                }));
-            }
-
-            function getCartCount() {
-                return getCart().reduce(function(sum, item) {
-                    var q = parseInt(item.quantity) || 0;
-                    return sum + q;
-                }, 0);
-            }
-
-            function updateHeaderCartCount() {
+            function updateHeaderCartCount(count) {
                 var el = document.querySelector('.cart-count');
-                if (el) el.textContent = getCartCount();
+                if (el) el.textContent = count || 0;
             }
 
-            // Initial update on load
-            document.addEventListener('DOMContentLoaded', updateHeaderCartCount);
-            // React to external updates if any
-            window.addEventListener('cart:changed', updateHeaderCartCount);
+            function addToCart(jewelryId, quantity) {
+                quantity = quantity || 1;
 
-            // Intercept generic add-to-cart clicks to mirror into localStorage
+                if (!isLoggedIn) {
+                    alert('Vui lòng đăng nhập để thêm sản phẩm vào giỏ hàng');
+                    window.location.href = loginUrl;
+                    return;
+                }
+
+                fetch(addCartUrl, {
+                        method: 'POST',
+                        headers: {
+                            'Content-Type': 'application/json',
+                            'X-CSRF-TOKEN': csrfToken,
+                            'Accept': 'application/json'
+                        },
+                        body: JSON.stringify({
+                            jewelry_id: jewelryId,
+                            quantity: quantity
+                        })
+                    })
+                    .then(function(response) {
+                        return response.json();
+                    })
+                    .then(function(data) {
+                        if (data.success) {
+                            updateHeaderCartCount(data.cartCount);
+                            showNotification(data.message, 'success');
+                        } else {
+                            showNotification(data.message, 'error');
+                        }
+                    })
+                    .catch(function(error) {
+                        console.error('Error:', error);
+                        showNotification('Có lỗi xảy ra khi thêm sản phẩm vào giỏ hàng', 'error');
+                    });
+            }
+
+            function showNotification(message, type) {
+                // Tạo thông báo toast
+                var toast = document.createElement('div');
+                toast.className = 'fixed top-4 right-4 p-4 rounded-lg shadow-lg z-50 text-white';
+                toast.className += type === 'success' ? ' bg-green-500' : ' bg-red-500';
+                toast.innerHTML = '<div class="flex items-center">' +
+                    '<i class="fas ' + (type === 'success' ? 'fa-check-circle' : 'fa-exclamation-circle') + ' mr-2"></i>' +
+                    '<span>' + message + '</span>' +
+                    '</div>';
+
+                document.body.appendChild(toast);
+
+                // Tự động ẩn sau 3 giây
+                setTimeout(function() {
+                    if (toast.parentNode) {
+                        toast.parentNode.removeChild(toast);
+                    }
+                }, 3000);
+            }
+
+            // Load cart count on page load
+            document.addEventListener('DOMContentLoaded', function() {
+                if (isLoggedIn) {
+                    fetch(cartCountUrl)
+                        .then(function(response) {
+                            return response.json();
+                        })
+                        .then(function(data) {
+                            updateHeaderCartCount(data.count);
+                        })
+                        .catch(function(error) {
+                            console.error('Error loading cart count:', error);
+                        });
+                }
+            });
+
+            // Intercept generic add-to-cart clicks
             document.addEventListener('click', function(e) {
                 var btn = e.target.closest('.add-to-cart');
                 if (!btn) return;
+
+                e.preventDefault();
 
                 var id = btn.getAttribute('data-id') || btn.dataset.id;
                 if (!id) return;
 
                 // Try to find a nearby quantity input, fallback to 1
                 var qty = 1;
-                var wrap = btn.closest('.product-item') || document;
-                var input = wrap.querySelector('.quantity');
+                var wrap = btn.closest('.product-item') || btn.closest('.product-detail') || document;
+                var input = wrap.querySelector('.quantity') || wrap.querySelector('input[name="quantity"]');
                 if (input) {
                     var parsed = parseInt(input.value);
                     if (!isNaN(parsed) && parsed > 0) qty = parsed;
                 }
 
-                var cart = getCart();
-                var found = cart.find(function(i) {
-                    return String(i.id) === String(id);
-                });
-                if (found) {
-                    found.quantity = (parseInt(found.quantity) || 0) + qty;
-                } else {
-                    cart.push({
-                        id: id,
-                        quantity: qty
-                    });
-                }
-                saveCart(cart);
-                updateHeaderCartCount();
-            }, true);
+                addToCart(id, qty);
+            });
 
-            // Expose minimal API if needed elsewhere
-            window.CartLS = {
-                get: getCart,
-                set: saveCart,
-                count: getCartCount,
+            // Expose API for other scripts
+            window.Cart = {
+                add: addToCart,
                 updateBadge: updateHeaderCartCount
             };
         })();
+    </script>
+
+    <script>
         // ================== NOTIFICATION DROPDOWN (dưới chuông, đơn giản, không xung đột) ==================
         document.addEventListener('DOMContentLoaded', function() {
             var dropdown = document.getElementById('notificationDropdownNew');

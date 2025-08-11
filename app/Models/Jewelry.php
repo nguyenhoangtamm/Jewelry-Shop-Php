@@ -59,6 +59,21 @@ class Jewelry extends Model
         return $this->hasMany(OrderDetail::class);
     }
 
+    public function files()
+    {
+        return $this->hasMany(JewelryFile::class)->with('file');
+    }
+
+    public function favorites()
+    {
+        return $this->hasMany(Favorite::class);
+    }
+
+    public function cartItems()
+    {
+        return $this->hasMany(Cart::class);
+    }
+
     // Phương thức để lấy cả record đã xóa
     public static function withDeleted()
     {
@@ -82,5 +97,4 @@ class Jewelry extends Model
     {
         return $this->update(['is_deleted' => false]);
     }
-
 }

@@ -78,6 +78,16 @@ class User extends Authenticatable
         return $this->hasMany(Review::class);
     }
 
+    public function favorites()
+    {
+        return $this->hasMany(Favorite::class);
+    }
+
+    public function cartItems()
+    {
+        return $this->hasMany(Cart::class);
+    }
+
     // Phương thức để lấy cả record đã xóa
     public static function withDeleted()
     {

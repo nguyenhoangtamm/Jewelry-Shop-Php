@@ -73,6 +73,7 @@ Route::middleware('auth')->group(function () {
     // Thanh toán - chỉ customer
     Route::middleware('role:customer')->group(function () {
         Route::get('/checkout', [CheckoutController::class, 'show'])->name('checkout');
+        Route::get('/checkout/cart', [CheckoutController::class, 'index'])->name('checkout.index');
         Route::post('/checkout', [CheckoutController::class, 'store'])->name('checkout.store');
     });
 
@@ -132,12 +133,13 @@ Route::middleware('auth')->group(function () {
     // Cart routes - customer
     // =============================
     Route::prefix('cart')->name('cart.')->middleware('role:customer')->group(function () {
-        Route::get('/', [CartController::class, 'show'])->name('show');
-        Route::post('/add', [CartController::class, 'add'])->name('add');
-        Route::post('/update', [CartController::class, 'update'])->name('update');
-        Route::post('/remove', [CartController::class, 'remove'])->name('remove');
-        Route::post('/clear', [CartController::class, 'clear'])->name('clear');
-        Route::get('/count', [CartController::class, 'getCartCount'])->name('count');
+        Route::get('/', [\App\Http\Controllers\CartController::class, 'index'])->name('index');
+        Route::post('/add', [\App\Http\Controllers\CartController::class, 'add'])->name('add');
+        Route::post('/update', [\App\Http\Controllers\CartController::class, 'update'])->name('update');
+        Route::post('/remove', [\App\Http\Controllers\CartController::class, 'remove'])->name('remove');
+        Route::post('/clear', [\App\Http\Controllers\CartController::class, 'clear'])->name('clear');
+        Route::get('/count', [\App\Http\Controllers\CartController::class, 'getCartCount'])->name('count');
+        Route::get('/data', [\App\Http\Controllers\CartController::class, 'getCartData'])->name('data');
     });
 
     // =============================
