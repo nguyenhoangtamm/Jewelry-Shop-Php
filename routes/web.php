@@ -3,6 +3,7 @@
 
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\Auth\AuthController;
+use App\Http\Controllers\Auth\ForgotPasswordController;
 use App\Http\Controllers\Home\HomeController;
 use App\Http\Controllers\ContactController;
 use App\Http\Controllers\User\HomeController as UserHomeController;
@@ -35,6 +36,12 @@ Route::get('/login', [AuthController::class, 'loginView'])->name('login');
 Route::post('/login', [AuthController::class, 'login'])->name('auth.login');
 Route::get('/register', [AuthController::class, 'registerView'])->name('auth.registerView');
 Route::post('/register', [AuthController::class, 'register'])->name('auth.register');
+
+// Forgot Password
+Route::get('/forgot-password', [ForgotPasswordController::class, 'showForgotForm'])->name('password.request');
+Route::post('/forgot-password', [ForgotPasswordController::class, 'sendResetLinkEmail'])->name('password.email');
+Route::get('/reset-password/{token}', [ForgotPasswordController::class, 'showResetForm'])->name('password.reset');
+Route::post('/reset-password', [ForgotPasswordController::class, 'reset'])->name('password.update');
 
 // Giới thiệu, liên hệ
 Route::get('/gioi-thieu', [HomeController::class, 'about'])->name('about');

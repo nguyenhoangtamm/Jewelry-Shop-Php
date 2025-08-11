@@ -38,7 +38,7 @@
             <p>or use your account</p>
             <input type="text" name="login_field" placeholder="Email hoặc tên đăng nhập" required>
             <input type="password" name="password" placeholder="Mật khẩu" required>
-            <a href="forgot-password.php">Quên mật khẩu?</a>
+            <a href="{{ route('password.request') }}">Quên mật khẩu?</a>
             <button type="submit">Đăng nhập</button>
         </form>
     </div>
