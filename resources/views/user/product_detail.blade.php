@@ -5,6 +5,508 @@
 <link rel="stylesheet" href="{{ asset('css/chi_tiet_sp_new.css') }}">
 
 <style>
+    /* Review Section Styles */
+    .review-section {
+        max-width: 1200px;
+        margin: 0;
+        background: none;
+        border-radius: 20px;
+        box-shadow: 0 10px 30px rgba(0, 0, 0, 0.08);
+        overflow: hidden;
+    }
+
+    .review-header {
+        background: none;
+        color: #222;
+        padding: 30px 40px;
+        text-align: left;
+        position: relative;
+        overflow: hidden;
+    }
+
+    .review-header::before {
+        content: '';
+        position: absolute;
+        top: -50%;
+        left: -50%;
+        width: 200%;
+        height: 200%;
+        background: radial-gradient(circle, rgba(255, 255, 255, 0.1) 0%, transparent 70%);
+        animation: rotate 20s linear infinite;
+    }
+
+    @keyframes rotate {
+        0% {
+            transform: rotate(0deg);
+        }
+
+        100% {
+            transform: rotate(360deg);
+        }
+    }
+
+    .review-title {
+        font-size: 2rem;
+        font-weight: 700;
+        margin-bottom: 10px;
+        position: relative;
+        z-index: 2;
+    }
+
+    .review-subtitle {
+        font-size: 1.1rem;
+        opacity: 0.9;
+        position: relative;
+        z-index: 2;
+    }
+
+    /* Rating Summary */
+    .review-summary {
+        display: grid;
+        grid-template-columns: 1fr 2fr;
+        gap: 30px;
+        padding: 30px 40px;
+        background: none;
+        border-bottom: 1px solid #e2e8f0;
+    }
+
+    .rating-overview {
+        text-align: left;
+        padding: 25px;
+        background: none;
+        border-radius: 15px;
+        color: #222;
+        box-shadow: none;
+    }
+
+    .rating-score {
+        font-size: 3rem;
+        font-weight: 800;
+        margin-bottom: 10px;
+        text-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
+    }
+
+    .rating-stars {
+        font-size: 2rem;
+        margin-bottom: 15px;
+        color: #ffd700;
+        text-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
+    }
+
+    .total-reviews {
+        font-size: 1.2rem;
+        opacity: 0.95;
+    }
+
+    .rating-breakdown {
+        display: flex;
+        flex-direction: column;
+        gap: 15px;
+        justify-content: center;
+    }
+
+    .rating-bar {
+        display: flex;
+        align-items: center;
+        gap: 15px;
+        padding: 10px 0;
+    }
+
+    .rating-label {
+        font-weight: 600;
+        color: #374151;
+        min-width: 60px;
+        display: flex;
+        align-items: center;
+        gap: 5px;
+    }
+
+    .rating-progress {
+        flex: 1;
+        height: 12px;
+        background: #e5e7eb;
+        border-radius: 20px;
+        overflow: hidden;
+        position: relative;
+    }
+
+    .rating-fill {
+        height: 100%;
+        background: linear-gradient(90deg, #fbbf24 0%, #f59e0b 100%);
+        border-radius: 20px;
+        transition: width 1s ease-in-out;
+        position: relative;
+        overflow: hidden;
+    }
+
+    .rating-fill::after {
+        content: '';
+        position: absolute;
+        top: 0;
+        left: -100%;
+        width: 100%;
+        height: 100%;
+        background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.3), transparent);
+        animation: shimmer 2s infinite;
+    }
+
+    @keyframes shimmer {
+        0% {
+            left: -100%;
+        }
+
+        100% {
+            left: 100%;
+        }
+    }
+
+    .rating-count {
+        font-weight: 600;
+        color: #6b7280;
+        min-width: 40px;
+        text-align: right;
+    }
+
+    /* Add Review Form */
+    .add-review-section {
+        padding: 30px 40px;
+        background: none;
+        margin: 0;
+        border-radius: 0;
+        box-shadow: none;
+        border-bottom: 1px solid #e2e8f0;
+    }
+
+    .add-review-title {
+        font-size: 1.5rem;
+        font-weight: 700;
+        color: #7c2d12;
+        margin-bottom: 20px;
+        text-align: left;
+    }
+
+    .review-form {
+        max-width: 100%;
+        margin: 0;
+    }
+
+    .rating-input {
+        margin-bottom: 20px;
+        text-align: left;
+    }
+
+    .rating-input label {
+        display: block;
+        font-weight: 600;
+        color: #7c2d12;
+        margin-bottom: 15px;
+        font-size: 1.1rem;
+    }
+
+    .star-rating {
+        display: flex;
+        justify-content: flex-start;
+        gap: 5px;
+        margin: 15px 0;
+    }
+
+    .star-rating input {
+        display: none;
+    }
+
+    .star-rating label {
+        font-size: 2.5rem;
+        color: #d1d5db;
+        cursor: pointer;
+        transition: all 0.3s ease;
+        margin: 0;
+    }
+
+    .star-rating label:hover,
+    .star-rating input:checked~label,
+    .star-rating label:hover~label {
+        color: #fbbf24;
+        transform: scale(1.1);
+    }
+
+    .star-rating input:checked+label {
+        color: #f59e0b;
+    }
+
+    .comment-input {
+        margin-bottom: 25px;
+    }
+
+    .comment-input label {
+        display: block;
+        font-weight: 600;
+        color: #7c2d12;
+        margin-bottom: 10px;
+        font-size: 1.1rem;
+    }
+
+    .comment-input textarea {
+        width: 100%;
+        padding: 15px;
+        border: 2px solid #fed7aa;
+        border-radius: 12px;
+        font-size: 1rem;
+        resize: vertical;
+        transition: all 0.3s ease;
+        background: rgba(255, 255, 255, 0.8);
+    }
+
+    .comment-input textarea:focus {
+        outline: none;
+        border-color: #f97316;
+        box-shadow: 0 0 0 3px rgba(249, 115, 22, 0.1);
+        background: white;
+    }
+
+    .btn-submit {
+        background: linear-gradient(135deg, #f97316 0%, #ea580c 100%);
+        color: white;
+        padding: 15px 40px;
+        border: none;
+        border-radius: 12px;
+        font-size: 1.1rem;
+        font-weight: 600;
+        cursor: pointer;
+        transition: all 0.3s ease;
+        display: block;
+        margin: 0 auto;
+        box-shadow: 0 4px 15px rgba(249, 115, 22, 0.3);
+    }
+
+    .btn-submit:hover {
+        transform: translateY(-2px);
+        box-shadow: 0 6px 20px rgba(249, 115, 22, 0.4);
+    }
+
+    /* Review Filters */
+    .review-filters {
+        padding: 30px 40px;
+        background: none;
+        border-bottom: 1px solid #e2e8f0;
+    }
+
+    .filter-buttons {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 12px;
+        justify-content: center;
+    }
+
+    .filter-btn {
+        padding: 12px 24px;
+        border: 2px solid #e5e7eb;
+        background: white;
+        border-radius: 25px;
+        cursor: pointer;
+        transition: all 0.3s ease;
+        font-weight: 600;
+        color: #6b7280;
+    }
+
+    .filter-btn:hover {
+        border-color: #3b82f6;
+        color: #3b82f6;
+        transform: translateY(-1px);
+        box-shadow: 0 4px 12px rgba(59, 130, 246, 0.15);
+    }
+
+    .filter-btn.active {
+        background: linear-gradient(135deg, #3b82f6 0%, #1d4ed8 100%);
+        border-color: #3b82f6;
+        color: white;
+        box-shadow: 0 4px 15px rgba(59, 130, 246, 0.3);
+    }
+
+    /* Reviews List */
+    .reviews-list {
+        padding: 40px;
+        display: flex;
+        flex-direction: column;
+        gap: 30px;
+        min-height: 60px;
+    }
+
+    .review-item {
+        background: none;
+        border-radius: 20px;
+        box-shadow: none;
+        padding: 30px;
+        border: 1px solid #f1f5f9;
+        transition: all 0.3s ease;
+        position: relative;
+        overflow: hidden;
+    }
+
+    .review-item::before {
+        content: '';
+        position: absolute;
+        top: 0;
+        left: 0;
+        width: 4px;
+        height: 100%;
+        background: linear-gradient(to bottom, #3b82f6, #06b6d4);
+        transform: scaleY(0);
+        transition: transform 0.3s ease;
+    }
+
+    .review-item:hover {
+        transform: translateY(-3px);
+        box-shadow: 0 12px 35px rgba(0, 0, 0, 0.1);
+    }
+
+    .review-item:hover::before {
+        transform: scaleY(1);
+    }
+
+    .reviewer-header {
+        display: flex;
+        align-items: center;
+        gap: 20px;
+        margin-bottom: 20px;
+    }
+
+    .reviewer-avatar {
+        width: 60px;
+        height: 60px;
+        background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+        color: white;
+        border-radius: 50%;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 24px;
+        font-weight: bold;
+        box-shadow: 0 4px 15px rgba(102, 126, 234, 0.3);
+        border: 3px solid white;
+    }
+
+    .reviewer-info {
+        flex: 1;
+    }
+
+    .reviewer-name {
+        font-weight: 700;
+        color: #1e293b;
+        font-size: 1.2rem;
+        margin-bottom: 5px;
+    }
+
+    .review-date {
+        color: #64748b;
+        font-size: 0.9rem;
+    }
+
+    .review-rating {
+        display: flex;
+        align-items: center;
+        gap: 10px;
+    }
+
+    .review-stars {
+        font-size: 1.4rem;
+        color: #fbbf24;
+    }
+
+    .review-content {
+        font-size: 1.1rem;
+        color: #374151;
+        line-height: 1.7;
+        background: none;
+        border-radius: 15px;
+        padding: 25px;
+        margin-left: 80px;
+        border-left: 4px solid #e2e8f0;
+        position: relative;
+    }
+
+    .review-content::before {
+        content: '"';
+        position: absolute;
+        top: -10px;
+        left: 15px;
+        font-size: 4rem;
+        color: #cbd5e1;
+        font-family: serif;
+    }
+
+    .no-reviews {
+        text-align: center;
+        padding: 80px 40px;
+        color: #64748b;
+    }
+
+    .no-reviews-icon {
+        font-size: 4rem;
+        color: #cbd5e1;
+        margin-bottom: 20px;
+    }
+
+    .no-reviews h3 {
+        font-size: 1.5rem;
+        margin-bottom: 10px;
+        color: #475569;
+    }
+
+    .no-reviews p {
+        font-size: 1.1rem;
+        color: #64748b;
+    }
+
+    /* Responsive Design */
+    @media (max-width: 768px) {
+        .review-summary {
+            grid-template-columns: 1fr;
+            gap: 20px;
+            padding: 20px;
+        }
+
+        .rating-overview {
+            padding: 20px;
+        }
+
+        .rating-score {
+            font-size: 3rem;
+        }
+
+        .add-review-section {
+            margin: 10px;
+            padding: 20px;
+        }
+
+        .review-item {
+            padding: 20px;
+        }
+
+        .reviewer-header {
+            gap: 15px;
+        }
+
+        .reviewer-avatar {
+            width: 50px;
+            height: 50px;
+            font-size: 20px;
+        }
+
+        .review-content {
+            margin-left: 0;
+            padding: 20px;
+        }
+
+        .filter-buttons {
+            gap: 8px;
+        }
+
+        .filter-btn {
+            padding: 8px 16px;
+            font-size: 0.9rem;
+        }
+    }
+
     .product-description {
         margin: 20px 0;
         font-size: 16px;
@@ -291,177 +793,185 @@
         <!-- Tab đánh giá sản phẩm -->
         <div class="tab-content" id="reviews">
             <div class="review-section">
-                <!-- Tổng quan đánh giá -->
+                <!-- Header -->
+                <div class="review-header">
+                    <h2 class="review-title">Đánh giá sản phẩm</h2>
+                    <p class="review-subtitle">Chia sẻ trải nghiệm của bạn với cộng đồng</p>
+                </div>
+
+                <!-- Summary -->
                 <div class="review-summary">
                     <div class="rating-overview">
-                        <div class="rating-score"><?php echo $averageRating ?></div>
-                        <div class="rating-stars">
-                            <?php
-                            for ($i = 1; $i <= 5; $i++) {
-                                if ($i <= $averageRating) {
-                                    echo '★';
-                                } else {
-                                    echo '☆';
-                                }
-                            }
-                            ?>
+                        <div class="rating-score" id="average-rating">{{ $averageRating }}</div>
+                        <div class="rating-stars" id="average-stars">
+                            @for($i = 1; $i <= 5; $i++)
+                                {!! $i <=$averageRating ? '★' : '☆' !!}
+                                @endfor
+                                </div>
+                                <div class="total-reviews" id="total-reviews">{{ $totalReviews }} đánh giá</div>
                         </div>
-                        <div class="total-reviews"><?php echo $totalReviews ?> đánh giá</div>
-                    </div>
 
-                    <div class="rating-breakdown">
-                        <?php for ($i = 5; $i >= 1; $i--): ?>
+                        <div class="rating-breakdown">
+                            @for($rating = 5; $rating >= 1; $rating--)
                             <div class="rating-bar">
-                                <div class="rating-label"><?php echo $i ?> Sao</div>
+                                <div class="rating-label">
+                                    <i class="fas fa-star"></i> {{ $rating }}
+                                </div>
                                 <div class="rating-progress">
-                                    <div class="rating-fill"
-                                        style="width: <?php echo $totalReviews > 0 ? ($ratingCounts[$i] / $totalReviews * 100) : 0 ?>%">
-                                    </div>
+                                    <div class="rating-fill" style="width: {{ $totalReviews > 0 ? ($ratingCounts[$rating] / $totalReviews * 100) : 0 }}%" data-rating="{{ $rating }}"></div>
                                 </div>
-                                <div class="rating-count"><?php echo $ratingCounts[$i] ?></div>
+                                <div class="rating-count" data-rating="{{ $rating }}">{{ $ratingCounts[$rating] }}</div>
                             </div>
-                        <?php endfor; ?>
-                    </div>
-                </div>
-
-                <!-- Form thêm đánh giá -->
-                @if(session('user_id'))
-                <div class="add-review-section">
-                    <h4>Viết đánh giá của bạn</h4>
-                    <form class="review-form" id="reviewForm">
-                        <div class="rating-input">
-                            <label>Đánh giá của bạn:</label>
-                            <div class="star-rating">
-                                <input type="radio" name="rating" value="5" id="star5">
-                                <label for="star5" title="5 sao">★</label>
-                                <input type="radio" name="rating" value="4" id="star4">
-                                <label for="star4" title="4 sao">★</label>
-                                <input type="radio" name="rating" value="3" id="star3">
-                                <label for="star3" title="3 sao">★</label>
-                                <input type="radio" name="rating" value="2" id="star2">
-                                <label for="star2" title="2 sao">★</label>
-                                <input type="radio" name="rating" value="1" id="star1">
-                                <label for="star1" title="1 sao">★</label>
-                            </div>
-                        </div>
-                        <div class="comment-input">
-                            <label for="reviewContent">Nhận xét:</label>
-                            <textarea id="reviewContent" name="content"
-                                placeholder="Chia sẻ trải nghiệm của bạn về sản phẩm này..." rows="4"
-                                required></textarea>
-                        </div>
-                        <button type="submit" class="btn btn-primary">Gửi đánh giá</button>
-                    </form>
-                </div>
-                @else
-                <div class="login-prompt">
-                </div>
-                @endif
-
-                <!-- Bộ lọc đánh giá -->
-                <div class="review-filters">
-                    <button class="filter-btn active" data-rating="all">Tất cả</button>
-                    <button class="filter-btn" data-rating="5">5 Sao (<?php echo $ratingCounts[5] ?>)</button>
-                    <button class="filter-btn" data-rating="4">4 Sao (<?php echo $ratingCounts[4] ?>)</button>
-                    <button class="filter-btn" data-rating="3">3 Sao (<?php echo $ratingCounts[3] ?>)</button>
-                    <button class="filter-btn" data-rating="2">2 Sao (<?php echo $ratingCounts[2] ?>)</button>
-                    <button class="filter-btn" data-rating="1">1 Sao (<?php echo $ratingCounts[1] ?>)</button>
-                </div>
-
-                <!-- Danh sách đánh giá -->
-                <div class="reviews-list">
-                    @if($reviews->count())
-                    @foreach($reviews as $review)
-                    <div class="review-item" data-rating="{{ $review->rating }}">
-                        <div class="review-header">
-                            <div class="reviewer-avatar">
-                                {{ strtoupper(substr($review->user->username ?? 'Ẩn danh', 0, 1)) }}
-                            </div>
-                            <div class="reviewer-info">
-                                <div class="reviewer-name">{{ $review->user->username ?? 'Ẩn danh' }}</div>
-                                <div class="review-date">
-                                    @if($review->created_at)
-                                    {{ $review->created_at->format('d/m/Y H:i') }}
-                                    @else
-                                    N/A
-                                    @endif
-                                </div>
-                            </div>
-                            <div class="review-rating">
-                                @for($i = 1; $i <= 5; $i++) {!! $i <=$review->rating ? '★' : '☆' !!}
-                                    @endfor
-                            </div>
-                        </div>
-                        <div class="review-content">
-                            <p>{{ $review->content }}</p>
+                            @endfor
                         </div>
                     </div>
-                    @endforeach
+
+                    <!-- Add Review Form -->
+                    @auth
+                    <div class="add-review-section">
+                        <h3 class="add-review-title">
+                            <i class="fas fa-edit"></i> Viết đánh giá của bạn
+                        </h3>
+                        <form class="review-form" id="review-form">
+                            @csrf
+                            <input type="hidden" name="jewelry_id" value="{{ $jewelry->id }}">
+                            <div class="rating-input">
+                                <label>Đánh giá của bạn:</label>
+                                <div class="star-rating">
+                                    <input type="radio" name="rating" value="5" id="star5">
+                                    <label for="star5" title="5 sao">★</label>
+                                    <input type="radio" name="rating" value="4" id="star4">
+                                    <label for="star4" title="4 sao">★</label>
+                                    <input type="radio" name="rating" value="3" id="star3">
+                                    <label for="star3" title="3 sao">★</label>
+                                    <input type="radio" name="rating" value="2" id="star2">
+                                    <label for="star2" title="2 sao">★</label>
+                                    <input type="radio" name="rating" value="1" id="star1">
+                                    <label for="star1" title="1 sao">★</label>
+                                </div>
+                            </div>
+                            <div class="comment-input">
+                                <label for="reviewContent">
+                                    <i class="fas fa-comment"></i> Nhận xét của bạn:
+                                </label>
+                                <textarea
+                                    id="reviewContent"
+                                    name="content"
+                                    placeholder="Chia sẻ trải nghiệm của bạn về sản phẩm này. Điều gì làm bạn hài lòng? Có điều gì cần cải thiện không?"
+                                    rows="5"
+                                    required></textarea>
+                            </div>
+                            <button type="submit" class="btn-submit">
+                                <i class="fas fa-paper-plane"></i> Gửi đánh giá
+                            </button>
+                        </form>
+                    </div>
                     @else
-                    <div class="no-reviews">
-                        <p>Chưa có đánh giá nào cho sản phẩm này.</p>
-                        <p>Hãy là người đầu tiên đánh giá sản phẩm!</p>
-                    </div>
-                    @endif
-                </div>
-            </div>
-        </div>
-
-        <div class="tab-content" id="faq">
-            <div class="faq-container">
-                <h3>Câu hỏi thường gặp</h3>
-
-                <div class="faq-item">
-                    <button class="faq-question">
-                        <span>Sản phẩm có bảo hành không?</span>
-                        <span class="faq-icon">⌄</span>
-                    </button>
-                    <div class="faq-answer">
-                        <p>{{ !empty($jewelry->after_sales_policy) ? $jewelry->after_sales_policy : 'Sản phẩm được bảo hành theo chính sách của cửa hàng.' }}
+                    <div class="add-review-section">
+                        <h3 class="add-review-title">
+                            <i class="fas fa-sign-in-alt"></i> Đăng nhập để viết đánh giá
+                        </h3>
+                        <p style="text-align: center; margin: 0;">
+                            <a href="{{ route('login') }}" class="btn-submit" style="display: inline-block; text-decoration: none;">
+                                <i class="fas fa-sign-in-alt"></i> Đăng nhập ngay
+                            </a>
                         </p>
                     </div>
-                </div>
+                    @endauth
 
-                <div class="faq-item">
-                    <button class="faq-question">
-                        <span>Có thể đổi trả sản phẩm không?</span>
-                        <span class="faq-icon">⌄</span>
-                    </button>
-                    <div class="faq-answer">
-                        <p>Khách hàng có thể đổi trả sản phẩm trong vòng 7 ngày kể từ ngày mua hàng với điều kiện
-                            sản phẩm còn nguyên vẹn.</p>
+                    <!-- Filters -->
+                    <div class="review-filters">
+                        <div class="filter-buttons">
+                            <button class="filter-btn active" data-rating="all">
+                                <i class="fas fa-list"></i> Tất cả (<span id="filter-all-count">{{ $totalReviews }}</span>)
+                            </button>
+                            @for($rating = 5; $rating >= 1; $rating--)
+                            <button class="filter-btn" data-rating="{{ $rating }}">
+                                <i class="fas fa-star"></i> {{ $rating }} Sao (<span id="filter-{{ $rating }}-count">{{ $ratingCounts[$rating] }}</span>)
+                            </button>
+                            @endfor
+                        </div>
                     </div>
-                </div>
 
-                <div class="faq-item">
-                    <button class="faq-question">
-                        <span>Thời gian giao hàng?</span>
-                        <span class="faq-icon">⌄</span>
-                    </button>
-                    <div class="faq-answer">
-                        <p>Thời gian giao hàng từ 1-3 ngày làm việc đối với nội thành và 3-7 ngày đối với các tỉnh
-                            thành khác.</p>
+                    <!-- Reviews List -->
+                    <div class="reviews-list" id="reviews-list">
+                        <!-- Reviews will be loaded here via JavaScript -->
                     </div>
-                </div>
 
-                <div class="faq-item">
-                    <button class="faq-question">
-                        <span>Mua Online có ưu đãi gì đặc biệt cho tôi?</span>
-                        <span class="faq-icon">⌄</span>
-                    </button>
-                    <div class="faq-answer">
-                        <p>PNJ mang đến nhiều trải nghiệm mua sắm hiện đại khi mua Online: Ưu đãi độc quyền Online
-                            với hình thức thanh toán đa dạng, đặt giữ hàng Online nhận tại cửa hàng, miễn phí giao
-                            hàng từ 1-7 ngày trên toàn quốc và giao hàng trong 3 giờ tại một số khu vực trung tâm.
-                        </p>
+                    <!-- Loading indicator -->
+                    <div id="review-loading" style="text-align: center; padding: 40px; display: none;">
+                        <div style="font-size: 2rem; color: #cbd5e1; margin-bottom: 10px;">
+                            <i class="fas fa-spinner fa-spin"></i>
+                        </div>
+                        <p style="color: #64748b;">Đang tải đánh giá...</p>
+                    </div>
+
+                    <!-- No reviews message -->
+                    <div id="no-reviews" class="no-reviews" style="display: none;">
+                        <div class="no-reviews-icon">
+                            <i class="fas fa-comment-slash"></i>
+                        </div>
+                        <h3>Chưa có đánh giá nào</h3>
+                        <p>Hãy trở thành người đầu tiên đánh giá sản phẩm này!</p>
                     </div>
                 </div>
             </div>
+
+            <div class="tab-content" id="faq">
+                <div class="faq-container">
+                    <h3>Câu hỏi thường gặp</h3>
+
+                    <div class="faq-item">
+                        <button class="faq-question">
+                            <span>Sản phẩm có bảo hành không?</span>
+                            <span class="faq-icon">⌄</span>
+                        </button>
+                        <div class="faq-answer">
+                            <p>{{ !empty($jewelry->after_sales_policy) ? $jewelry->after_sales_policy : 'Sản phẩm được bảo hành theo chính sách của cửa hàng.' }}
+                            </p>
+                        </div>
+                    </div>
+
+                    <div class="faq-item">
+                        <button class="faq-question">
+                            <span>Có thể đổi trả sản phẩm không?</span>
+                            <span class="faq-icon">⌄</span>
+                        </button>
+                        <div class="faq-answer">
+                            <p>Khách hàng có thể đổi trả sản phẩm trong vòng 7 ngày kể từ ngày mua hàng với điều kiện
+                                sản phẩm còn nguyên vẹn.</p>
+                        </div>
+                    </div>
+
+                    <div class="faq-item">
+                        <button class="faq-question">
+                            <span>Thời gian giao hàng?</span>
+                            <span class="faq-icon">⌄</span>
+                        </button>
+                        <div class="faq-answer">
+                            <p>Thời gian giao hàng từ 1-3 ngày làm việc đối với nội thành và 3-7 ngày đối với các tỉnh
+                                thành khác.</p>
+                        </div>
+                    </div>
+
+                    <div class="faq-item">
+                        <button class="faq-question">
+                            <span>Mua Online có ưu đãi gì đặc biệt cho tôi?</span>
+                            <span class="faq-icon">⌄</span>
+                        </button>
+                        <div class="faq-answer">
+                            <p>PNJ mang đến nhiều trải nghiệm mua sắm hiện đại khi mua Online: Ưu đãi độc quyền Online
+                                với hình thức thanh toán đa dạng, đặt giữ hàng Online nhận tại cửa hàng, miễn phí giao
+                                hàng từ 1-7 ngày trên toàn quốc và giao hàng trong 3 giờ tại một số khu vực trung tâm.
+                            </p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            {{-- end chi tiết sản phẩm --}}
+
         </div>
-
-        {{-- end chi tiết sản phẩm --}}
-
-    </div>
 </section>
 <!-- DETAILS END -->
 
@@ -566,21 +1076,178 @@
             this.classList.add('active');
 
             const rating = this.dataset.rating;
-            const filter = this.dataset.filter;
-
-            // Show/hide reviews based on filter
-            document.querySelectorAll('.review-item').forEach(item => {
-                if (rating === 'all') {
-                    item.style.display = 'block';
-                } else if (rating) {
-                    if (item.dataset.rating === rating) {
-                        item.style.display = 'block';
-                    } else {
-                        item.style.display = 'none';
-                    }
-                }
-            });
+            loadReviews(rating);
         });
+    });
+
+    // Load reviews function
+    function loadReviews(rating = 'all') {
+        const reviewsList = document.getElementById('reviews-list');
+        const loading = document.getElementById('review-loading');
+        const noReviews = document.getElementById('no-reviews');
+
+        // Show loading
+        loading.style.display = 'block';
+        reviewsList.style.display = 'none';
+        noReviews.style.display = 'none';
+
+        // AJAX request to load reviews
+        $.ajax({
+            url: '/api/reviews/{{ $jewelry->id }}',
+            method: 'GET',
+            data: {
+                rating: rating
+            },
+            success: function(response) {
+                loading.style.display = 'none';
+                if (response.reviews && response.reviews.length > 0) {
+                    reviewsList.innerHTML = '';
+                    response.reviews.forEach(review => {
+                        const reviewHtml = createReviewHTML(review);
+                        reviewsList.innerHTML += reviewHtml;
+                    });
+                    reviewsList.style.display = 'flex';
+                } else {
+                    reviewsList.innerHTML = '';
+                    noReviews.style.display = 'block';
+                }
+            },
+            error: function() {
+                loading.style.display = 'none';
+                reviewsList.innerHTML = '';
+                noReviews.style.display = 'block';
+                showNotification('Có lỗi khi tải đánh giá!', 'error');
+            }
+        });
+    }
+
+    // Create review HTML
+    function createReviewHTML(review) {
+        const stars = '★'.repeat(review.rating) + '☆'.repeat(5 - review.rating);
+        const avatar = review.user_name ? review.user_name.charAt(0).toUpperCase() : '?';
+        let date = '';
+        if (review.created_at) {
+            try {
+                const d = new Date(review.created_at);
+                if (!isNaN(d.getTime())) {
+                    date = d.toLocaleDateString('vi-VN', {
+                        year: 'numeric',
+                        month: '2-digit',
+                        day: '2-digit',
+                        hour: '2-digit',
+                        minute: '2-digit'
+                    });
+                }
+            } catch (e) {
+                date = '';
+            }
+        }
+        return `
+            <div class="review-item" data-rating="${review.rating}">
+                <div class="reviewer-header">
+                    <div class="reviewer-avatar">${avatar}</div>
+                    <div class="reviewer-info">
+                        <div class="reviewer-name">${review.user_name || 'Ẩn danh'}</div>
+                        <div class="review-date">
+                            <i class="far fa-calendar"></i> ${date}
+                        </div>
+                    </div>
+                    <div class="review-rating">
+                        <div class="review-stars">${stars}</div>
+                    </div>
+                </div>
+                <div class="review-content">
+                    ${review.content}
+                </div>
+            </div>
+        `;
+    }
+
+    // Submit review form
+    $('#review-form').on('submit', function(e) {
+        e.preventDefault();
+
+        const formData = {
+            _token: $('meta[name="csrf-token"]').attr('content'),
+            jewelry_id: $('input[name="jewelry_id"]').val(),
+            rating: $('input[name="rating"]:checked').val(),
+            content: $('#reviewContent').val()
+        };
+
+        if (!formData.rating) {
+            showNotification('Vui lòng chọn số sao đánh giá!', 'warning');
+            return;
+        }
+
+        if (!formData.content.trim()) {
+            showNotification('Vui lòng nhập nội dung đánh giá!', 'warning');
+            return;
+        }
+
+        const submitBtn = $('.btn-submit');
+        submitBtn.prop('disabled', true).html('<i class="fas fa-spinner fa-spin"></i> Đang gửi...');
+
+        $.ajax({
+            url: '/api/reviews',
+            method: 'POST',
+            data: formData,
+            success: function(response) {
+                if (response.success) {
+                    showNotification(response.message, 'success');
+
+                    // Reset form
+                    $('#review-form')[0].reset();
+                    $('input[name="rating"]').prop('checked', false);
+
+                    // Reload reviews and update summary
+                    loadReviews();
+                    updateReviewSummary(response.summary);
+                } else {
+                    showNotification(response.message, 'error');
+                }
+
+                submitBtn.prop('disabled', false).html('<i class="fas fa-paper-plane"></i> Gửi đánh giá');
+            },
+            error: function(xhr) {
+                let message = 'Có lỗi xảy ra, vui lòng thử lại!';
+
+                if (xhr.responseJSON && xhr.responseJSON.message) {
+                    message = xhr.responseJSON.message;
+                } else if (xhr.responseJSON && xhr.responseJSON.errors) {
+                    const errors = Object.values(xhr.responseJSON.errors).flat();
+                    message = errors.join(', ');
+                }
+
+                showNotification(message, 'error');
+                submitBtn.prop('disabled', false).html('<i class="fas fa-paper-plane"></i> Gửi đánh giá');
+            }
+        });
+    });
+
+    // Update review summary
+    function updateReviewSummary(summary) {
+        $('#average-rating').text(summary.averageRating);
+        $('#total-reviews').text(summary.totalReviews + ' đánh giá');
+        $('#filter-all-count').text(summary.totalReviews);
+
+        // Update stars display
+        const stars = '★'.repeat(Math.floor(summary.averageRating)) + '☆'.repeat(5 - Math.floor(summary.averageRating));
+        $('#average-stars').html(stars);
+
+        // Update breakdown
+        for (let rating = 1; rating <= 5; rating++) {
+            const count = summary.ratingCounts[rating] || 0;
+            const percentage = summary.totalReviews > 0 ? (count / summary.totalReviews * 100) : 0;
+
+            $(`.rating-fill[data-rating="${rating}"]`).css('width', percentage + '%');
+            $(`.rating-count[data-rating="${rating}"]`).text(count);
+            $(`#filter-${rating}-count`).text(count);
+        }
+    }
+
+    // Load reviews when page loads
+    $(document).ready(function() {
+        loadReviews();
     });
 
     //cau hoi thuong gap

@@ -973,11 +973,11 @@
                                 <a href="index.htm"><img src="http://localhost:8000/img/logo_2.png" alt="logo"></a>
                                 <div id="address-list">
                                     <div class="tit-name">Địa chỉ:</div>
-                                    <div class="tit-contain">1005 Quang Trung, P.14, Q.Gò Vấp, Tp.HCM</div>
+                                    <div class="tit-contain">Đại học đồng tháp</div>
                                     <div class="tit-name">Điện thoại:</div>
                                     <div class="tit-contain">(08) 66 85 85 38</div>
                                     <div class="tit-name">Email:</div>
-                                    <div class="tit-contain">run02@runtime.vn</div>
+                                    <div class="tit-contain">lythanhvinh@gmail.com.vn</div>
                                 </div>
                             </div>
                         </div>
