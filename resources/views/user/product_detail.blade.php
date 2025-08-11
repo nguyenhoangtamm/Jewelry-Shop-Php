@@ -789,95 +789,72 @@
                 </div>
             </div>
         </div>
-
-        <!-- Tab đánh giá sản phẩm -->
-        <div class="tab-content" id="reviews">
-            <div class="review-section">
-                <!-- Header -->
-                <div class="review-header">
-                    <h2 class="review-title">Đánh giá sản phẩm</h2>
-                    <p class="review-subtitle">Chia sẻ trải nghiệm của bạn với cộng đồng</p>
+<!-- Tab đánh giá sản phẩm -->
+<div class="tab-content" id="reviews">
+    <div class="review-section">
+        <!-- Tổng quan đánh giá -->
+        <div class="review-summary">
+            <div class="rating-overview">
+                <div class="rating-score">{{ $averageRating }}</div>
+                <div class="rating-stars">
+                    @for ($i = 1; $i <= 5; $i++)
+                        @if ($i <= $averageRating)
+                            ★
+                        @else
+                            ☆
+                        @endif
+                    @endfor
                 </div>
+                <div class="total-reviews">{{ $totalReviews }} đánh giá</div>
+            </div>
 
-                <!-- Summary -->
-                <div class="review-summary">
-                    <div class="rating-overview">
-                        <div class="rating-score" id="average-rating">{{ $averageRating }}</div>
-                        <div class="rating-stars" id="average-stars">
-                            @for($i = 1; $i <= 5; $i++)
-                                {!! $i <=$averageRating ? '★' : '☆' !!}
-                                @endfor
-                                </div>
-                                <div class="total-reviews" id="total-reviews">{{ $totalReviews }} đánh giá</div>
-                        </div>
-
-                        <div class="rating-breakdown">
-                            @for($rating = 5; $rating >= 1; $rating--)
-                            <div class="rating-bar">
-                                <div class="rating-label">
-                                    <i class="fas fa-star"></i> {{ $rating }}
-                                </div>
-                                <div class="rating-progress">
-                                    <div class="rating-fill" style="width: {{ $totalReviews > 0 ? ($ratingCounts[$rating] / $totalReviews * 100) : 0 }}%" data-rating="{{ $rating }}"></div>
-                                </div>
-                                <div class="rating-count" data-rating="{{ $rating }}">{{ $ratingCounts[$rating] }}</div>
+            <div class="rating-breakdown">
+                @for ($i = 5; $i >= 1; $i--)
+                    <div class="rating-bar">
+                        <div class="rating-label">{{ $i }} Sao</div>
+                        <div class="rating-progress">
+                            <div class="rating-fill"
+                                style="width: {{ $totalReviews > 0 ? ($ratingCounts[$i] / $totalReviews * 100) : 0 }}%">
                             </div>
+                        </div>
+                        <div class="rating-count">{{ $ratingCounts[$i] }}</div>
+                    </div>
+                @endfor
+            </div>
+        </div>
+
+        <!-- Form thêm đánh giá -->
+        @if(Auth::check())
+            <div class="add-review-section">
+                <h4>Viết đánh giá của bạn</h4>
+                <form action="{{ route('products.reviews.store', $jewelry->id) }}" method="POST" class="review-form">
+                    @csrf
+                    <div class="rating-input">
+                        <label>Đánh giá của bạn:</label>
+                        <div class="star-rating">
+                            @for($i = 5; $i >= 1; $i--)
+                                <input type="radio" name="rating" value="{{ $i }}" id="star{{ $i }}">
+                                <label for="star{{ $i }}" title="{{ $i }} sao">★</label>
                             @endfor
                         </div>
                     </div>
+                    <div class="comment-input">
+                        <label for="reviewContent">Nhận xét:</label>
+                        <textarea id="reviewContent" name="content"
+                            placeholder="Chia sẻ trải nghiệm của bạn về sản phẩm này..." rows="4"
+                            required></textarea>
+                    </div>
+                    <button type="submit" class="btn btn-primary">Gửi đánh giá</button>
+                </form>
+            </div>
+        @else
+            <div class="login-prompt">
+                <p>Bạn cần <a href="{{ route('login') }}">đăng nhập</a> để viết đánh giá.</p>
+            </div>
+        @endif
+    </div>
+</div>
 
-                    <!-- Add Review Form -->
-                    @auth
-                    <div class="add-review-section">
-                        <h3 class="add-review-title">
-                            <i class="fas fa-edit"></i> Viết đánh giá của bạn
-                        </h3>
-                        <form class="review-form" id="review-form">
-                            @csrf
-                            <input type="hidden" name="jewelry_id" value="{{ $jewelry->id }}">
-                            <div class="rating-input">
-                                <label>Đánh giá của bạn:</label>
-                                <div class="star-rating">
-                                    <input type="radio" name="rating" value="5" id="star5">
-                                    <label for="star5" title="5 sao">★</label>
-                                    <input type="radio" name="rating" value="4" id="star4">
-                                    <label for="star4" title="4 sao">★</label>
-                                    <input type="radio" name="rating" value="3" id="star3">
-                                    <label for="star3" title="3 sao">★</label>
-                                    <input type="radio" name="rating" value="2" id="star2">
-                                    <label for="star2" title="2 sao">★</label>
-                                    <input type="radio" name="rating" value="1" id="star1">
-                                    <label for="star1" title="1 sao">★</label>
-                                </div>
-                            </div>
-                            <div class="comment-input">
-                                <label for="reviewContent">
-                                    <i class="fas fa-comment"></i> Nhận xét của bạn:
-                                </label>
-                                <textarea
-                                    id="reviewContent"
-                                    name="content"
-                                    placeholder="Chia sẻ trải nghiệm của bạn về sản phẩm này. Điều gì làm bạn hài lòng? Có điều gì cần cải thiện không?"
-                                    rows="5"
-                                    required></textarea>
-                            </div>
-                            <button type="submit" class="btn-submit">
-                                <i class="fas fa-paper-plane"></i> Gửi đánh giá
-                            </button>
-                        </form>
-                    </div>
-                    @else
-                    <div class="add-review-section">
-                        <h3 class="add-review-title">
-                            <i class="fas fa-sign-in-alt"></i> Đăng nhập để viết đánh giá
-                        </h3>
-                        <p style="text-align: center; margin: 0;">
-                            <a href="{{ route('login') }}" class="btn-submit" style="display: inline-block; text-decoration: none;">
-                                <i class="fas fa-sign-in-alt"></i> Đăng nhập ngay
-                            </a>
-                        </p>
-                    </div>
-                    @endauth
 
                     <!-- Filters -->
                     <div class="review-filters">
