@@ -4,6 +4,60 @@
 <meta name="csrf-token" content="{{ csrf_token() }}">
 <link rel="stylesheet" href="{{ asset('css/chi_tiet_sp_new.css') }}">
 
+<style>
+    .product-description {
+        margin: 20px 0;
+        font-size: 16px;
+        line-height: 1.6;
+        color: #333;
+    }
+
+    .product-description h1,
+    .product-description h2,
+    .product-description h3 {
+        color: #2c3e50;
+        margin: 15px 0 10px 0;
+    }
+
+    .product-description p {
+        margin-bottom: 10px;
+    }
+
+    .product-description ul,
+    .product-description ol {
+        margin: 10px 0;
+        padding-left: 30px;
+    }
+
+    .product-description li {
+        margin-bottom: 5px;
+    }
+
+    .product-description img {
+        max-width: 100%;
+        height: auto;
+        border-radius: 8px;
+        margin: 10px 0;
+    }
+
+    .product-description strong {
+        font-weight: 600;
+    }
+
+    .product-description em {
+        font-style: italic;
+    }
+
+    .product-description a {
+        color: #3498db;
+        text-decoration: none;
+    }
+
+    .product-description a:hover {
+        text-decoration: underline;
+    }
+</style>
+
 <!-- SCROLL PAGE START -->
 <div class="scroll__page">
     <a href="#header">
@@ -169,6 +223,11 @@
             <div style="padding: 20px;">
                 <h3>Mô tả sản phẩm</h3>
 
+                @if($jewelry->description)
+                <div class="product-description">
+                    {!! $jewelry->description !!}
+                </div>
+                @else
                 <div class="product__features">
                     <h4>Đặc điểm nổi bật:</h4>
                     <ul>
@@ -179,6 +238,7 @@
                         <li>Bảo hành chính hãng</li>
                     </ul>
                 </div>
+                @endif
 
                 <div class="care__instructions">
                     <h4>Hướng dẫn bảo quản:</h4>
@@ -251,15 +311,15 @@
 
                     <div class="rating-breakdown">
                         <?php for ($i = 5; $i >= 1; $i--): ?>
-                        <div class="rating-bar">
-                            <div class="rating-label"><?php echo $i ?> Sao</div>
-                            <div class="rating-progress">
-                                <div class="rating-fill"
-                                    style="width: <?php echo $totalReviews > 0 ? ($ratingCounts[$i] / $totalReviews * 100) : 0 ?>%">
+                            <div class="rating-bar">
+                                <div class="rating-label"><?php echo $i ?> Sao</div>
+                                <div class="rating-progress">
+                                    <div class="rating-fill"
+                                        style="width: <?php echo $totalReviews > 0 ? ($ratingCounts[$i] / $totalReviews * 100) : 0 ?>%">
+                                    </div>
                                 </div>
+                                <div class="rating-count"><?php echo $ratingCounts[$i] ?></div>
                             </div>
-                            <div class="rating-count"><?php echo $ratingCounts[$i] ?></div>
-                        </div>
                         <?php endfor; ?>
                     </div>
                 </div>
@@ -408,302 +468,302 @@
 <script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
 <script type="module" src="./js/details.js"></script>
 <script>
-// Gallery functionality
-function changeMainImage(imagePath, thumbnailElement) {
-    const mainImage = document.getElementById('mainImage');
+    // Gallery functionality
+    function changeMainImage(imagePath, thumbnailElement) {
+        const mainImage = document.getElementById('mainImage');
 
-    // Add fade effect
-    mainImage.style.opacity = '0.7';
+        // Add fade effect
+        mainImage.style.opacity = '0.7';
 
-    setTimeout(() => {
-        // Update main image
-        mainImage.src = imagePath;
-        mainImage.style.opacity = '1';
-        mainImage.classList.add('fade-in');
-
-        // Remove active class from all thumbnails
-        document.querySelectorAll('.thumbnail').forEach(t => t.classList.remove('active'));
-
-        // Add active class to clicked thumbnail
-        thumbnailElement.classList.add('active');
-
-        // Remove animation class after animation completes
         setTimeout(() => {
-            mainImage.classList.remove('fade-in');
-        }, 300);
-    }, 150);
-}
+            // Update main image
+            mainImage.src = imagePath;
+            mainImage.style.opacity = '1';
+            mainImage.classList.add('fade-in');
 
-// Thumbnail scroll functionality
-function scrollThumbnails(direction) {
-    const thumbnailList = document.querySelector('.thumbnail-list');
-    const scrollAmount = 90; // Thumbnail height + gap
+            // Remove active class from all thumbnails
+            document.querySelectorAll('.thumbnail').forEach(t => t.classList.remove('active'));
 
-    if (direction === 'up') {
-        thumbnailList.scrollTop -= scrollAmount;
-    } else {
-        thumbnailList.scrollTop += scrollAmount;
+            // Add active class to clicked thumbnail
+            thumbnailElement.classList.add('active');
+
+            // Remove animation class after animation completes
+            setTimeout(() => {
+                mainImage.classList.remove('fade-in');
+            }, 300);
+        }, 150);
     }
 
-    // Update navigation button states
-    updateNavigationButtons();
-}
+    // Thumbnail scroll functionality
+    function scrollThumbnails(direction) {
+        const thumbnailList = document.querySelector('.thumbnail-list');
+        const scrollAmount = 90; // Thumbnail height + gap
 
-// Update navigation button states based on scroll position
-function updateNavigationButtons() {
-    const thumbnailList = document.querySelector('.thumbnail-list');
-    const upBtn = document.querySelector('.thumbnail-nav.up');
-    const downBtn = document.querySelector('.thumbnail-nav.down');
+        if (direction === 'up') {
+            thumbnailList.scrollTop -= scrollAmount;
+        } else {
+            thumbnailList.scrollTop += scrollAmount;
+        }
 
-    if (thumbnailList && upBtn && downBtn) {
-        const isAtTop = thumbnailList.scrollTop <= 0;
-        const isAtBottom = thumbnailList.scrollTop >= thumbnailList.scrollHeight - thumbnailList.clientHeight;
-
-        upBtn.style.opacity = isAtTop ? '0.5' : '1';
-        downBtn.style.opacity = isAtBottom ? '0.5' : '1';
-        upBtn.style.pointerEvents = isAtTop ? 'none' : 'auto';
-        downBtn.style.pointerEvents = isAtBottom ? 'none' : 'auto';
+        // Update navigation button states
+        updateNavigationButtons();
     }
-}
 
-// Initialize on page load
-document.addEventListener('DOMContentLoaded', function() {
-    updateNavigationButtons();
+    // Update navigation button states based on scroll position
+    function updateNavigationButtons() {
+        const thumbnailList = document.querySelector('.thumbnail-list');
+        const upBtn = document.querySelector('.thumbnail-nav.up');
+        const downBtn = document.querySelector('.thumbnail-nav.down');
 
-    // Add scroll listener to thumbnail list
-    const thumbnailList = document.querySelector('.thumbnail-list');
-    if (thumbnailList) {
-        thumbnailList.addEventListener('scroll', updateNavigationButtons);
+        if (thumbnailList && upBtn && downBtn) {
+            const isAtTop = thumbnailList.scrollTop <= 0;
+            const isAtBottom = thumbnailList.scrollTop >= thumbnailList.scrollHeight - thumbnailList.clientHeight;
+
+            upBtn.style.opacity = isAtTop ? '0.5' : '1';
+            downBtn.style.opacity = isAtBottom ? '0.5' : '1';
+            upBtn.style.pointerEvents = isAtTop ? 'none' : 'auto';
+            downBtn.style.pointerEvents = isAtBottom ? 'none' : 'auto';
+        }
     }
-});
 
-// Tab functionality
-document.querySelectorAll('.tab').forEach(tab => {
-    tab.addEventListener('click', function() {
-        const tabName = this.dataset.tab;
+    // Initialize on page load
+    document.addEventListener('DOMContentLoaded', function() {
+        updateNavigationButtons();
 
-        // Remove active class from all tabs
-        document.querySelectorAll('.tab').forEach(t => t.classList.remove('active'));
-        // Add active class to clicked tab
-        this.classList.add('active');
-
-        // Hide all tab contents
-        document.querySelectorAll('.tab-content').forEach(content => {
-            content.classList.remove('active');
-        });
-
-        // Show corresponding tab content
-        document.getElementById(tabName).classList.add('active');
+        // Add scroll listener to thumbnail list
+        const thumbnailList = document.querySelector('.thumbnail-list');
+        if (thumbnailList) {
+            thumbnailList.addEventListener('scroll', updateNavigationButtons);
+        }
     });
-});
 
-// Review filter functionality
-document.querySelectorAll('.filter-btn').forEach(btn => {
-    btn.addEventListener('click', function() {
-        // Remove active class from all filter buttons
-        document.querySelectorAll('.filter-btn').forEach(b => b.classList.remove('active'));
-        // Add active class to clicked button
-        this.classList.add('active');
+    // Tab functionality
+    document.querySelectorAll('.tab').forEach(tab => {
+        tab.addEventListener('click', function() {
+            const tabName = this.dataset.tab;
 
-        const rating = this.dataset.rating;
-        const filter = this.dataset.filter;
+            // Remove active class from all tabs
+            document.querySelectorAll('.tab').forEach(t => t.classList.remove('active'));
+            // Add active class to clicked tab
+            this.classList.add('active');
 
-        // Show/hide reviews based on filter
-        document.querySelectorAll('.review-item').forEach(item => {
-            if (rating === 'all') {
-                item.style.display = 'block';
-            } else if (rating) {
-                if (item.dataset.rating === rating) {
-                    item.style.display = 'block';
-                } else {
-                    item.style.display = 'none';
-                }
-            }
-        });
-    });
-});
-
-//cau hoi thuong gap
-// FAQ Accordion functionality
-document.addEventListener('DOMContentLoaded', function() {
-    const faqQuestions = document.querySelectorAll('.faq-question');
-
-    faqQuestions.forEach(question => {
-        question.addEventListener('click', function() {
-            const answer = this.nextElementSibling;
-            const isActive = this.classList.contains('active');
-
-            // Đóng tất cả các FAQ khác
-            faqQuestions.forEach(q => {
-                q.classList.remove('active');
-                q.nextElementSibling.classList.remove('active');
+            // Hide all tab contents
+            document.querySelectorAll('.tab-content').forEach(content => {
+                content.classList.remove('active');
             });
 
-            // Nếu câu hỏi hiện tại chưa được mở, mở nó
-            if (!isActive) {
-                this.classList.add('active');
-                answer.classList.add('active');
-            }
+            // Show corresponding tab content
+            document.getElementById(tabName).classList.add('active');
         });
     });
 
-    // Sự kiện chuyển trang khi bấm 'Mua ngay'
-    const buyNowBtn = document.querySelector('.btn.buy-now');
-    if (buyNowBtn) {
-        buyNowBtn.addEventListener('click', function(e) {
-            e.preventDefault();
-            window.location.href = '/checkout?jewelry={{ $jewelry->id }}&quantity=' + (document
-                .querySelector('.quantity')?.value || 1);
+    // Review filter functionality
+    document.querySelectorAll('.filter-btn').forEach(btn => {
+        btn.addEventListener('click', function() {
+            // Remove active class from all filter buttons
+            document.querySelectorAll('.filter-btn').forEach(b => b.classList.remove('active'));
+            // Add active class to clicked button
+            this.classList.add('active');
+
+            const rating = this.dataset.rating;
+            const filter = this.dataset.filter;
+
+            // Show/hide reviews based on filter
+            document.querySelectorAll('.review-item').forEach(item => {
+                if (rating === 'all') {
+                    item.style.display = 'block';
+                } else if (rating) {
+                    if (item.dataset.rating === rating) {
+                        item.style.display = 'block';
+                    } else {
+                        item.style.display = 'none';
+                    }
+                }
+            });
         });
-    }
-});
-//Thêm vao giỏ hàng và mua ngay
-// Xử lý thêm vào giỏ hàng
-$('.add-to-cart').on('click', function(e) {
-    e.preventDefault();
+    });
 
-    const jewelryId = $(this).data('id');
-    const quantity = parseInt($('.quantity').val()) || 1;
-    const button = $(this);
+    //cau hoi thuong gap
+    // FAQ Accordion functionality
+    document.addEventListener('DOMContentLoaded', function() {
+        const faqQuestions = document.querySelectorAll('.faq-question');
 
-    // Hiển thị loading
-    button.prop('disabled', true).text('Đang thêm...');
+        faqQuestions.forEach(question => {
+            question.addEventListener('click', function() {
+                const answer = this.nextElementSibling;
+                const isActive = this.classList.contains('active');
 
-    $.ajax({
-        url: '/cart/add',
-        method: 'POST',
-        data: {
-            _token: $('meta[name="csrf-token"]').attr('content'),
-            jewelry_id: jewelryId,
-            quantity: quantity
-        },
-        success: function(response) {
-            if (response.success) {
-                // Hiển thị thông báo thành công
-                showNotification(response.message, 'success');
+                // Đóng tất cả các FAQ khác
+                faqQuestions.forEach(q => {
+                    q.classList.remove('active');
+                    q.nextElementSibling.classList.remove('active');
+                });
 
-                // Cập nhật số lượng giỏ hàng trên header
-                updateCartBadge(response.cart_count);
+                // Nếu câu hỏi hiện tại chưa được mở, mở nó
+                if (!isActive) {
+                    this.classList.add('active');
+                    answer.classList.add('active');
+                }
+            });
+        });
 
-                // Reset button
-                button.prop('disabled', false).html(
-                    '<i class="fas fa-shopping-cart"></i> Thêm vào giỏ hàng');
-
-                // Reset quantity về 1
-                $('.quantity').val(1);
-            } else {
-                showNotification(response.message, 'error');
-                button.prop('disabled', false).html(
-                    '<i class="fas fa-shopping-cart"></i> Thêm vào giỏ hàng');
-            }
-        },
-        error: function(xhr) {
-            let message = 'Có lỗi xảy ra, vui lòng thử lại!';
-
-            if (xhr.responseJSON && xhr.responseJSON.message) {
-                message = xhr.responseJSON.message;
-            }
-
-            showNotification(message, 'error');
-            button.prop('disabled', false).html(
-                '<i class="fas fa-shopping-cart"></i> Thêm vào giỏ hàng');
+        // Sự kiện chuyển trang khi bấm 'Mua ngay'
+        const buyNowBtn = document.querySelector('.btn.buy-now');
+        if (buyNowBtn) {
+            buyNowBtn.addEventListener('click', function(e) {
+                e.preventDefault();
+                window.location.href = '/checkout?jewelry={{ $jewelry->id }}&quantity=' + (document
+                    .querySelector('.quantity')?.value || 1);
+            });
         }
     });
-});
+    //Thêm vao giỏ hàng và mua ngay
+    // Xử lý thêm vào giỏ hàng
+    $('.add-to-cart').on('click', function(e) {
+        e.preventDefault();
 
-// Tăng/giảm số lượng
-$('.quantity-btn').on('click', function() {
-    const action = $(this).data('action');
-    const quantityInput = $('.quantity');
-    let currentQuantity = parseInt(quantityInput.val()) || 1;
-    const maxStock = parseInt(quantityInput.attr('max')) || 999;
+        const jewelryId = $(this).data('id');
+        const quantity = parseInt($('.quantity').val()) || 1;
+        const button = $(this);
 
-    if (action === 'increase' && currentQuantity < maxStock) {
-        quantityInput.val(currentQuantity + 1);
-    } else if (action === 'decrease' && currentQuantity > 1) {
-        quantityInput.val(currentQuantity - 1);
-    }
-});
+        // Hiển thị loading
+        button.prop('disabled', true).text('Đang thêm...');
 
-// Kiểm tra số lượng nhập vào
-$('.quantity').on('change', function() {
-    const maxStock = parseInt($(this).attr('max')) || 999;
-    let quantity = parseInt($(this).val()) || 1;
+        $.ajax({
+            url: '/cart/add',
+            method: 'POST',
+            data: {
+                _token: $('meta[name="csrf-token"]').attr('content'),
+                jewelry_id: jewelryId,
+                quantity: quantity
+            },
+            success: function(response) {
+                if (response.success) {
+                    // Hiển thị thông báo thành công
+                    showNotification(response.message, 'success');
 
-    if (quantity < 1) {
-        $(this).val(1);
-    } else if (quantity > maxStock) {
-        $(this).val(maxStock);
-        showNotification('Số lượng không được vượt quá ' + maxStock, 'warning');
-    }
-});
+                    // Cập nhật số lượng giỏ hàng trên header
+                    updateCartBadge(response.cart_count);
 
-// Mua ngay
-$('.buy-now').on('click', function(e) {
-    e.preventDefault();
+                    // Reset button
+                    button.prop('disabled', false).html(
+                        '<i class="fas fa-shopping-cart"></i> Thêm vào giỏ hàng');
 
-    const jewelryId = $(this).data('id');
-    const quantity = parseInt($('.quantity').val()) || 1;
-    const button = $(this);
+                    // Reset quantity về 1
+                    $('.quantity').val(1);
+                } else {
+                    showNotification(response.message, 'error');
+                    button.prop('disabled', false).html(
+                        '<i class="fas fa-shopping-cart"></i> Thêm vào giỏ hàng');
+                }
+            },
+            error: function(xhr) {
+                let message = 'Có lỗi xảy ra, vui lòng thử lại!';
 
-    button.prop('disabled', true).text('Đang xử lý...');
+                if (xhr.responseJSON && xhr.responseJSON.message) {
+                    message = xhr.responseJSON.message;
+                }
 
-    // Thêm vào giỏ hàng trước
-    $.ajax({
-        url: '/cart/add',
-        method: 'POST',
-        data: {
-            _token: $('meta[name="csrf-token"]').attr('content'),
-            jewelry_id: jewelryId,
-            quantity: quantity
-        },
-        success: function(response) {
-            if (response.success) {
-                // Chuyển đến trang giỏ hàng
-                window.location.href = '/cart';
-            } else {
-                showNotification(response.message, 'error');
+                showNotification(message, 'error');
+                button.prop('disabled', false).html(
+                    '<i class="fas fa-shopping-cart"></i> Thêm vào giỏ hàng');
+            }
+        });
+    });
+
+    // Tăng/giảm số lượng
+    $('.quantity-btn').on('click', function() {
+        const action = $(this).data('action');
+        const quantityInput = $('.quantity');
+        let currentQuantity = parseInt(quantityInput.val()) || 1;
+        const maxStock = parseInt(quantityInput.attr('max')) || 999;
+
+        if (action === 'increase' && currentQuantity < maxStock) {
+            quantityInput.val(currentQuantity + 1);
+        } else if (action === 'decrease' && currentQuantity > 1) {
+            quantityInput.val(currentQuantity - 1);
+        }
+    });
+
+    // Kiểm tra số lượng nhập vào
+    $('.quantity').on('change', function() {
+        const maxStock = parseInt($(this).attr('max')) || 999;
+        let quantity = parseInt($(this).val()) || 1;
+
+        if (quantity < 1) {
+            $(this).val(1);
+        } else if (quantity > maxStock) {
+            $(this).val(maxStock);
+            showNotification('Số lượng không được vượt quá ' + maxStock, 'warning');
+        }
+    });
+
+    // Mua ngay
+    $('.buy-now').on('click', function(e) {
+        e.preventDefault();
+
+        const jewelryId = $(this).data('id');
+        const quantity = parseInt($('.quantity').val()) || 1;
+        const button = $(this);
+
+        button.prop('disabled', true).text('Đang xử lý...');
+
+        // Thêm vào giỏ hàng trước
+        $.ajax({
+            url: '/cart/add',
+            method: 'POST',
+            data: {
+                _token: $('meta[name="csrf-token"]').attr('content'),
+                jewelry_id: jewelryId,
+                quantity: quantity
+            },
+            success: function(response) {
+                if (response.success) {
+                    // Chuyển đến trang giỏ hàng
+                    window.location.href = '/cart';
+                } else {
+                    showNotification(response.message, 'error');
+                    button.prop('disabled', false).html('<i class="fas fa-bolt"></i> Mua ngay');
+                }
+            },
+            error: function() {
+                showNotification('Có lỗi xảy ra, vui lòng thử lại!', 'error');
                 button.prop('disabled', false).html('<i class="fas fa-bolt"></i> Mua ngay');
             }
-        },
-        error: function() {
-            showNotification('Có lỗi xảy ra, vui lòng thử lại!', 'error');
-            button.prop('disabled', false).html('<i class="fas fa-bolt"></i> Mua ngay');
-        }
+        });
     });
-});
 
-// Hàm hiển thị thông báo đơn giản (không cần Bootstrap JS)
-function showNotification(message, type = 'info') {
-    // Xóa thông báo cũ nếu có
-    $('.custom-notification').remove();
+    // Hàm hiển thị thông báo đơn giản (không cần Bootstrap JS)
+    function showNotification(message, type = 'info') {
+        // Xóa thông báo cũ nếu có
+        $('.custom-notification').remove();
 
-    // Xác định màu sắc và icon theo loại thông báo
-    let bgColor, textColor, icon;
-    switch (type) {
-        case 'success':
-            bgColor = '#28a745';
-            textColor = '#fff';
-            icon = '✓';
-            break;
-        case 'error':
-            bgColor = '#dc3545';
-            textColor = '#fff';
-            icon = '✗';
-            break;
-        case 'warning':
-            bgColor = '#ffc107';
-            textColor = '#000';
-            icon = '⚠';
-            break;
-        default:
-            bgColor = '#17a2b8';
-            textColor = '#fff';
-            icon = 'ℹ';
-    }
+        // Xác định màu sắc và icon theo loại thông báo
+        let bgColor, textColor, icon;
+        switch (type) {
+            case 'success':
+                bgColor = '#28a745';
+                textColor = '#fff';
+                icon = '✓';
+                break;
+            case 'error':
+                bgColor = '#dc3545';
+                textColor = '#fff';
+                icon = '✗';
+                break;
+            case 'warning':
+                bgColor = '#ffc107';
+                textColor = '#000';
+                icon = '⚠';
+                break;
+            default:
+                bgColor = '#17a2b8';
+                textColor = '#fff';
+                icon = 'ℹ';
+        }
 
-    // Tạo HTML thông báo
-    const notificationHtml = `
+        // Tạo HTML thông báo
+        const notificationHtml = `
         <div class="custom-notification" style="
             position: fixed;
             top: 20px;
@@ -733,9 +793,9 @@ function showNotification(message, type = 'info') {
         </div>
     `;
 
-    // Thêm CSS animation nếu chưa có
-    if ($('#notification-styles').length === 0) {
-        $('head').append(`
+        // Thêm CSS animation nếu chưa có
+        if ($('#notification-styles').length === 0) {
+            $('head').append(`
             <style id="notification-styles">
                 @keyframes slideInRight {
                     from {
@@ -760,37 +820,37 @@ function showNotification(message, type = 'info') {
                 }
             </style>
         `);
-    }
-
-    // Thêm thông báo vào DOM
-    $('body').append(notificationHtml);
-
-    // Tự động ẩn sau 4 giây
-    setTimeout(function() {
-        $('.custom-notification').fadeOut(300, function() {
-            $(this).remove();
-        });
-    }, 4000);
-}
-
-// Cập nhật badge số lượng giỏ hàng
-function updateCartBadge(count) {
-    const badge = $('.cart-badge');
-    if (badge.length > 0) {
-        badge.text(count).show();
-    }
-}
-
-// Load số lượng giỏ hàng khi tải trang
-$(document).ready(function() {
-    $.ajax({
-        url: '/cart/count',
-        method: 'GET',
-        success: function(response) {
-            updateCartBadge(response.cart_count);
         }
+
+        // Thêm thông báo vào DOM
+        $('body').append(notificationHtml);
+
+        // Tự động ẩn sau 4 giây
+        setTimeout(function() {
+            $('.custom-notification').fadeOut(300, function() {
+                $(this).remove();
+            });
+        }, 4000);
+    }
+
+    // Cập nhật badge số lượng giỏ hàng
+    function updateCartBadge(count) {
+        const badge = $('.cart-badge');
+        if (badge.length > 0) {
+            badge.text(count).show();
+        }
+    }
+
+    // Load số lượng giỏ hàng khi tải trang
+    $(document).ready(function() {
+        $.ajax({
+            url: '/cart/count',
+            method: 'GET',
+            success: function(response) {
+                updateCartBadge(response.cart_count);
+            }
+        });
     });
-});
 </script>
 
 

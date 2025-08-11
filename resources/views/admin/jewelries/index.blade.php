@@ -2,6 +2,10 @@
 @section('title', 'Quản lý Trang sức')
 @section('content')
 
+<!-- Quill Rich Text Editor -->
+<link href="https://cdn.quilljs.com/1.3.6/quill.snow.css" rel="stylesheet">
+<script src="https://cdn.quilljs.com/1.3.6/quill.min.js"></script>
+
 <style>
     :root {
         --galaxy-primary: #1e3a8a;
@@ -204,10 +208,10 @@
         font-size: 12px;
     }
 
-    
 
 
-    
+
+
 
     /* Pagination */
     .pagination {
@@ -729,12 +733,25 @@
                     <td class="jewelry-main-stone">{{ ucfirst(strtolower($jewelry->main_stone ?? 'Không rõ')) }}</td>
 
                     <td class="jewelry-stock">{{ $jewelry->stock ?? '0' }}</td>
-<td>
-    <img src="{{ \App\Helpers\ImageHelper::getMainImage($jewelry) }}" width="100" alt="Ảnh">
-</td>
+                    <td>
+                        <img src="{{ \App\Helpers\ImageHelper::getMainImage($jewelry) }}" width="100" alt="Ảnh">
+                    </td>
 
 
-                    <td class="jewelry-description">{{ $jewelry->description ?? '' }}</td>
+                    <td class="jewelry-description" style="max-width:350px; white-space:normal; overflow:hidden; text-overflow:ellipsis;">
+                        @php
+                        $plain = strip_tags($jewelry->description ?? '');
+                        $words = str_word_count($plain, 2);
+                        if(count($words) > 60) {
+                        $wordKeys = array_keys($words);
+                        $cutPos = $wordKeys[59] + strlen($words[$wordKeys[59]]);
+                        $short = mb_substr($plain, 0, $cutPos) . '...';
+                        } else {
+                        $short = $plain;
+                        }
+                        @endphp
+                        {{ $short }}
+                    </td>
                     <td>
                         <button type="button" class="fa-solid fa-pen icon-change js-changeJewelry"
                             data-id="{{ $jewelry->id }}"
@@ -831,36 +848,37 @@
                     <span class="stock-addJewelry-error check-error"></span>
                 </label>
                 </label>
-             <label for="edit-jewelry-image" class="modal-label">
-    Hình ảnh
-    <input type="file" name="image" id="edit-jewelry-image" class="modal-input" onchange="previewImage(event)">
+                <label for="edit-jewelry-image" class="modal-label">
+                    Hình ảnh
+                    <input type="file" name="image" id="edit-jewelry-image" class="modal-input" onchange="previewImage(event)">
 
-    {{-- Ảnh hiện tại --}}
-    <img id="imagePreview" 
-         src="{{ \App\Helpers\ImageHelper::getMainImage($jewelry) }}" 
-         alt="Ảnh xem trước" 
-         style="max-width: 200px; margin-top: 10px; display:block;">
+                    {{-- Ảnh hiện tại --}}
+                    <img id="imagePreview"
+                        src="{{ \App\Helpers\ImageHelper::getMainImage($jewelry) }}"
+                        alt="Ảnh xem trước"
+                        style="max-width: 200px; margin-top: 10px; display:block;">
 
-    <span class="image-changeJewelry-error check-error"></span>
-</label>
+                    <span class="image-changeJewelry-error check-error"></span>
+                </label>
 
-<script>
-function previewImage(event) {
-    const file = event.target.files[0];
-    if (file) {
-        const reader = new FileReader();
-        reader.onload = function(e) {
-            document.getElementById('imagePreview').src = e.target.result;
-        }
-        reader.readAsDataURL(file);
-    }
-}
-</script>
+                <script>
+                    function previewImage(event) {
+                        const file = event.target.files[0];
+                        if (file) {
+                            const reader = new FileReader();
+                            reader.onload = function(e) {
+                                document.getElementById('imagePreview').src = e.target.result;
+                            }
+                            reader.readAsDataURL(file);
+                        }
+                    }
+                </script>
             </div>
 
             <label for="jewelry-description" class="modal-label">
                 Mô tả
-                <textarea id="jewelry-description" name="description" rows="3" class="modal-input"
+                <div id="jewelry-description-editor" style="height: 200px; border: 2px solid #e2e8f0; border-radius: 12px;"></div>
+                <textarea id="jewelry-description" name="description" style="display: none;" class="modal-input"
                     placeholder="Mô tả chi tiết..."></textarea>
                 <span class="description-addJewelry-error check-error"></span>
             </label>
@@ -967,37 +985,38 @@ function previewImage(event) {
                         placeholder="Số lượng tồn..." min="0" required>
                     <span class="stock-changeJewelry-error check-error"></span>
                 </label>
-             <label for="edit-jewelry-image" class="modal-label">
-    Hình ảnh
-    <input type="file" name="image" id="edit-jewelry-image" class="modal-input" onchange="previewImage(event)">
+                <label for="edit-jewelry-image" class="modal-label">
+                    Hình ảnh
+                    <input type="file" name="image" id="edit-jewelry-image" class="modal-input" onchange="previewImage(event)">
 
-    {{-- Ảnh hiện tại --}}
-    <img id="imagePreview" 
-         src="{{ \App\Helpers\ImageHelper::getMainImage($jewelry) }}" 
-         alt="Ảnh xem trước" 
-         style="max-width: 200px; margin-top: 10px; display:block;">
+                    {{-- Ảnh hiện tại --}}
+                    <img id="imagePreview"
+                        src="{{ \App\Helpers\ImageHelper::getMainImage($jewelry) }}"
+                        alt="Ảnh xem trước"
+                        style="max-width: 200px; margin-top: 10px; display:block;">
 
-    <span class="image-changeJewelry-error check-error"></span>
-</label>
+                    <span class="image-changeJewelry-error check-error"></span>
+                </label>
 
-<script>
-function previewImage(event) {
-    const file = event.target.files[0];
-    if (file) {
-        const reader = new FileReader();
-        reader.onload = function(e) {
-            document.getElementById('imagePreview').src = e.target.result;
-        }
-        reader.readAsDataURL(file);
-    }
-}
-</script>
+                <script>
+                    function previewImage(event) {
+                        const file = event.target.files[0];
+                        if (file) {
+                            const reader = new FileReader();
+                            reader.onload = function(e) {
+                                document.getElementById('imagePreview').src = e.target.result;
+                            }
+                            reader.readAsDataURL(file);
+                        }
+                    }
+                </script>
 
             </div>
 
             <label for="edit-jewelry-description" class="modal-label">
                 Mô tả
-                <textarea id="edit-jewelry-description" name="description" rows="3" class="modal-input"
+                <div id="edit-jewelry-description-editor" style="height: 200px; border: 2px solid #e2e8f0; border-radius: 12px;"></div>
+                <textarea id="edit-jewelry-description" name="description" style="display: none;" class="modal-input"
                     placeholder="Mô tả chi tiết..."></textarea>
                 <span class="description-changeJewelry-error check-error"></span>
             </label>
@@ -1126,23 +1145,6 @@ function previewImage(event) {
         const editForm = document.querySelector('.js-modal-changeJewelry-container');
         const editCloseBtn = document.querySelector('.js-modal-changeJewelry-close');
 
-        editBtns.forEach(btn => {
-            btn.addEventListener('click', () => {
-                const id = btn.getAttribute('data-id');
-                editForm.action = `/admin/jewelries/${id}`;
-                document.getElementById('edit-jewelry-name').value = btn.getAttribute('data-name') || '';
-                document.getElementById('edit-jewelry-price').value = btn.getAttribute('data-price') || '';
-                document.getElementById('edit-jewelry-category').value = btn.getAttribute('data-category') || '';
-                document.getElementById('edit-jewelry-main-stone').value = btn.getAttribute('data-main_stone') || '';
-                document.getElementById('edit-jewelry-stock').value = btn.getAttribute('data-stock') || '';
-                document.getElementById('edit-jewelry-description').value = btn.getAttribute('data-description') || '';
-                document.getElementById('edit-jewelry-weight').value = btn.getAttribute('data-weight') || '';
-                document.getElementById('edit-jewelry-policy').value = btn.getAttribute('data-policy') || '';
-                editModal.style.display = 'flex';
-                document.body.style.overflow = 'hidden';
-            });
-        });
-
         if (editCloseBtn) {
             editCloseBtn.addEventListener('click', () => {
                 editModal.style.display = 'none';
@@ -1237,10 +1239,14 @@ function previewImage(event) {
                     document.querySelector('.image-addJewelry-error').textContent = 'Vui lòng chọn ảnh';
                     isValid = false;
                 }
-                if (!description.value.trim()) {
+
+                // Kiểm tra nội dung mô tả từ Quill editor
+                const descriptionText = quillAdd ? quillAdd.getText().trim() : description.value.trim();
+                if (!descriptionText) {
                     document.querySelector('.description-addJewelry-error').textContent = 'Mô tả không được để trống';
                     isValid = false;
                 }
+
                 if (!weight.value || weight.value <= 0) {
                     document.querySelector('.weight-addJewelry-error').textContent = 'Khối lượng phải lớn hơn 0';
                     isValid = false;
@@ -1260,8 +1266,110 @@ function previewImage(event) {
                         });
                     }
                 } else {
+                    // Đồng bộ nội dung Quill vào textarea trước khi submit
+                    if (quillAdd) {
+                        document.getElementById('jewelry-description').value = quillAdd.root.innerHTML;
+                    }
                     submitBtn.innerHTML = '<i class="fa-solid fa-spinner fa-spin"></i> Đang xử lý...';
                     submitBtn.disabled = true;
+                }
+            });
+        }
+
+        // ===== QUILL RICH TEXT EDITORS =====
+        let quillAdd, quillEdit;
+
+        // Khởi tạo Quill cho form thêm
+        if (document.getElementById('jewelry-description-editor')) {
+            quillAdd = new Quill('#jewelry-description-editor', {
+                theme: 'snow',
+                modules: {
+                    toolbar: [
+                        [{
+                            'header': [1, 2, 3, false]
+                        }],
+                        ['bold', 'italic', 'underline'],
+                        [{
+                            'list': 'ordered'
+                        }, {
+                            'list': 'bullet'
+                        }],
+                        ['link', 'image'],
+                        [{
+                            'align': []
+                        }],
+                        ['clean']
+                    ]
+                }
+            });
+
+            // Đồng bộ nội dung với textarea ẩn
+            quillAdd.on('text-change', function() {
+                document.getElementById('jewelry-description').value = quillAdd.root.innerHTML;
+            });
+        }
+
+        // Khởi tạo Quill cho form edit
+        if (document.getElementById('edit-jewelry-description-editor')) {
+            quillEdit = new Quill('#edit-jewelry-description-editor', {
+                theme: 'snow',
+                modules: {
+                    toolbar: [
+                        [{
+                            'header': [1, 2, 3, false]
+                        }],
+                        ['bold', 'italic', 'underline'],
+                        [{
+                            'list': 'ordered'
+                        }, {
+                            'list': 'bullet'
+                        }],
+                        ['link', 'image'],
+                        [{
+                            'align': []
+                        }],
+                        ['clean']
+                    ]
+                }
+            });
+
+            // Đồng bộ nội dung với textarea ẩn
+            quillEdit.on('text-change', function() {
+                document.getElementById('edit-jewelry-description').value = quillEdit.root.innerHTML;
+            });
+        }
+
+        // Cập nhật script edit để load nội dung vào Quill
+        editBtns.forEach(btn => {
+            btn.addEventListener('click', () => {
+                const id = btn.getAttribute('data-id');
+                editForm.action = `/admin/jewelries/${id}`;
+                document.getElementById('edit-jewelry-name').value = btn.getAttribute('data-name') || '';
+                document.getElementById('edit-jewelry-price').value = btn.getAttribute('data-price') || '';
+                document.getElementById('edit-jewelry-category').value = btn.getAttribute('data-category') || '';
+                document.getElementById('edit-jewelry-main-stone').value = btn.getAttribute('data-main_stone') || '';
+                document.getElementById('edit-jewelry-stock').value = btn.getAttribute('data-stock') || '';
+
+                // Load nội dung mô tả vào Quill editor
+                const description = btn.getAttribute('data-description') || '';
+                document.getElementById('edit-jewelry-description').value = description;
+                if (quillEdit) {
+                    quillEdit.root.innerHTML = description;
+                }
+
+                document.getElementById('edit-jewelry-weight').value = btn.getAttribute('data-weight') || '';
+                document.getElementById('edit-jewelry-policy').value = btn.getAttribute('data-policy') || '';
+                editModal.style.display = 'flex';
+                document.body.style.overflow = 'hidden';
+            });
+        });
+
+        // ===== FORM EDIT SUBMIT HANDLER =====
+        if (editForm) {
+            editForm.addEventListener('submit', function(e) {
+                // Đồng bộ nội dung Quill vào textarea trước khi submit
+                if (quillEdit) {
+                    document.getElementById('edit-jewelry-description').value = quillEdit.root.innerHTML;
                 }
             });
         }

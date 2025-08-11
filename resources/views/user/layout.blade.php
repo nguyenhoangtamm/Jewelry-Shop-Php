@@ -970,7 +970,7 @@
                     <div id="introduce-box" class="row">
                         <div class="col-md-3">
                             <div id="address-box">
-                                <a href="index.htm"><img src="img/logo_2.png" alt="logo"></a>
+                                <a href="index.htm"><img src="http://localhost:8000/img/logo_2.png" alt="logo"></a>
                                 <div id="address-list">
                                     <div class="tit-name">Địa chỉ:</div>
                                     <div class="tit-contain">1005 Quang Trung, P.14, Q.Gò Vấp, Tp.HCM</div>
