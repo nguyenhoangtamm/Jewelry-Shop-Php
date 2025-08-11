@@ -30,13 +30,34 @@ body {
     top: 0;
     left: 0;
     bottom: 0;
-    width: 290px;
+    width: 70px;
+    /* mặc định thu gọn */
     height: 100vh;
-    padding: 0 1.7rem;
+    padding: 0 0.5rem;
     color: var(--wrapper-color);
     overflow: hidden;
     background: var(--primary-color);
+    transition: width 0.3s ease;
+    /* hiệu ứng mượt */
 }
+
+/* Khi hover vào sidebar thì mở rộng */
+.sidebar:hover {
+    width: 290px;
+    padding: 0 1.7rem;
+}
+
+/* Ẩn text khi thu gọn */
+.sidebar:not(:hover) .menu a span {
+    display: none;
+}
+
+/* Canh icon giữa khi thu gọn */
+.sidebar:not(:hover) .menu a {
+    justify-content: center;
+    gap: 0;
+}
+
 
 .menu {
     height: 88%;
@@ -958,7 +979,7 @@ input[type="date"] {
     color: #ff623d;
 }
 
-.toast + .toast {
+.toast+.toast {
     margin-top: 24px;
 }
 
