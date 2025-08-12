@@ -2,6 +2,9 @@
 
 namespace App\Http\Controllers;
 
+use Illuminate\Support\Facades\Auth;
+
+
 use Illuminate\Http\Request;
 use App\Models\Order;
 
@@ -80,4 +83,31 @@ class OrderController extends Controller
         $order = Order::with(['user', 'orderDetails.jewelry'])->findOrFail($id);
         return view('admin.orders.show', compact('order'));
     }
+    public function cancel($id)
+{
+   $order = Order::where('id', $id)
+    ->where('user_id', Auth::id())
+    ->where('status', 'pending')
+    ->firstOrFail();
+
+    $order->status = 'cancelled';
+    $order->save();
+
+    return redirect()->route('user.orders.index')
+        ->with('success', 'Đơn hàng đã được hủy thành công.');
+}
+public function bulkApprove(Request $request)
+{
+    $orderIds = $request->input('order_ids', []);
+
+    if (empty($orderIds)) {
+        return redirect()->back()->with('error', 'Không có đơn hàng nào được chọn.');
+    }
+
+    // Cập nhật sang trạng thái "hoàn thành" giống như approve() đơn lẻ
+    Order::whereIn('id', $orderIds)->update(['status' => 'hoàn thành']);
+
+    return redirect()->route('admin.orders.index')
+        ->with('success', 'Đã duyệt ' . count($orderIds) . ' đơn hàng.');
+}
 }
