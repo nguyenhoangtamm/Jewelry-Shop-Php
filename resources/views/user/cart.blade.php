@@ -123,7 +123,7 @@
                             VNĐ</span>
                     </div>
                     <button type="button" class="btn-checkout"
-                        onclick="window.location='{{ route('checkout', ['jewelry' => $item['id'], 'quantity' => $item['quantity']]) }}'">
+                        onclick="window.location='{{ route('checkout.index') }}'">
                         <i class="fas fa-credit-card me-2"></i>
                         Tiến hành thanh toán
                     </button>
@@ -565,84 +565,54 @@
     }
 </style>
 
+@endsection
+@section('scripts')
+
 <script>
-    $(document).ready(function() {
-        console.log('Cart JavaScript loaded successfully');
-
-        // Test nếu jQuery hoạt động
-        console.log('jQuery version:', $.fn.jquery);
-
-        // Test CSRF token
-        console.log('CSRF Token:', $('meta[name="csrf-token"]').attr('content'));
-
+    $(function() {
+        // Kiểm tra jQuery
+        if (typeof $ === 'undefined') {
+            alert('jQuery chưa được load!');
+            return;
+        }
         // Tăng/giảm số lượng
-        $('.quantity-btn').on('click', function() {
-            console.log('Quantity button clicked');
+        $(document).on('click', '.quantity-btn', function() {
             const action = $(this).data('action');
             const id = $(this).data('id');
             const input = $(`.quantity-input[data-id="${id}"]`);
             let quantity = parseInt(input.val());
-
-            console.log('Action:', action, 'ID:', id, 'Current quantity:', quantity);
-
-            if (action === 'increase') {
-                quantity++;
-            } else if (action === 'decrease' && quantity > 1) {
-                quantity--;
-            }
-
+            if (action === 'increase') quantity++;
+            else if (action === 'decrease' && quantity > 1) quantity--;
             input.val(quantity);
             updateCartItem(id, quantity);
         });
-
         // Thay đổi số lượng trực tiếp
-        $('.quantity-input').on('change', function() {
-            console.log('Quantity input changed');
+        $(document).on('change', '.quantity-input', function() {
             const id = $(this).data('id');
             const quantity = parseInt($(this).val());
-
-            console.log('Input change - ID:', id, 'Quantity:', quantity);
-
             if (quantity < 1) {
                 $(this).val(1);
                 return;
             }
-
             updateCartItem(id, quantity);
         });
-
-        // Xóa sản phẩm - THÊM DEBUG
-        $('.remove-item').on('click', function(e) {
+        // Xóa sản phẩm (event delegation)
+        $(document).on('click', '.remove-item', function(e) {
             e.preventDefault();
-            console.log('Remove button clicked!');
-
             const id = $(this).data('id');
-            console.log('Product ID to remove:', id);
-
             if (confirm('Bạn có chắc muốn xóa sản phẩm này khỏi giỏ hàng?')) {
-                console.log('User confirmed removal');
                 removeCartItem(id);
-            } else {
-                console.log('User cancelled removal');
             }
         });
-
-        // Xóa tất cả
-        $('#clear-cart').on('click', function(e) {
+        // Xóa tất cả (event delegation)
+        $(document).on('click', '#clear-cart', function(e) {
             e.preventDefault();
-            console.log('Clear cart button clicked!');
-
             if (confirm('Bạn có chắc muốn xóa tất cả sản phẩm trong giỏ hàng?')) {
-                console.log('User confirmed clear cart');
                 clearCart();
-            } else {
-                console.log('User cancelled clear cart');
             }
         });
-
+        // ...giữ nguyên các function updateCartItem, removeCartItem, clearCart, showNotification...
         function updateCartItem(id, quantity) {
-            console.log('updateCartItem called with ID:', id, 'Quantity:', quantity);
-
             $.ajax({
                 url: '/cart/update',
                 method: 'POST',
@@ -651,36 +621,20 @@
                     jewelry_id: id,
                     quantity: quantity
                 },
-                beforeSend: function() {
-                    console.log('Sending update request...');
-                },
                 success: function(response) {
-                    console.log('Update success response:', response);
-
                     if (response.success) {
-                        // Cập nhật tổng tiền của sản phẩm
                         $(`.cart-item[data-id="${id}"] .item-total`).text(response.item_total);
-
-                        // Cập nhật tổng giỏ hàng
                         $('#cart-count').text(response.cart_count);
                         $('#cart-subtotal').text(response.cart_total);
                         $('#cart-total').text(response.cart_total);
-
-                        // Cập nhật badge giỏ hàng trên header (nếu có)
                         $('.cart-badge').text(response.cart_count);
-
                         showNotification('Cập nhật giỏ hàng thành công!', 'success');
                     } else {
-                        console.log('Update failed:', response.message);
                         showNotification(response.message, 'error');
-                        // Khôi phục giá trị cũ nếu có lỗi
                         location.reload();
                     }
                 },
-                error: function(xhr, status, error) {
-                    console.error('Update error:', error);
-                    console.error('Status:', status);
-                    console.error('Response:', xhr.responseText);
+                error: function() {
                     showNotification('Có lỗi xảy ra, vui lòng thử lại!', 'error');
                     location.reload();
                 }
@@ -688,8 +642,6 @@
         }
 
         function removeCartItem(id) {
-            console.log('removeCartItem called with ID:', id);
-
             $.ajax({
                 url: '/cart/remove',
                 method: 'POST',
@@ -697,93 +649,55 @@
                     _token: $('meta[name="csrf-token"]').attr('content'),
                     jewelry_id: id
                 },
-                beforeSend: function() {
-                    console.log('Sending remove request for ID:', id);
-                },
                 success: function(response) {
-                    console.log('Remove success response:', response);
-
                     if (response.success) {
-                        // Xóa dòng sản phẩm với hiệu ứng
                         $(`.cart-item[data-id="${id}"]`).addClass('removing');
                         setTimeout(function() {
                             $(`.cart-item[data-id="${id}"]`).slideUp(300, function() {
                                 $(this).remove();
-
-                                // Kiểm tra nếu giỏ hàng trống
-                                if ($('.cart-item').length === 0) {
-                                    console.log('Cart is empty, reloading...');
-                                    location.reload();
-                                }
+                                if ($('.cart-item').length === 0) location.reload();
                             });
                         }, 200);
-
-                        // Cập nhật tổng giỏ hàng
                         $('#cart-count').text(response.cart_count);
                         $('#cart-subtotal').text(response.cart_total);
                         $('#cart-total').text(response.cart_total);
-
-                        // Cập nhật badge giỏ hàng trên header
                         $('.cart-badge').text(response.cart_count);
-
                         showNotification(response.message, 'success');
                     } else {
-                        console.log('Remove failed:', response.message);
                         showNotification(response.message, 'error');
                     }
                 },
-                error: function(xhr, status, error) {
-                    console.error('Remove error:', error);
-                    console.error('Status:', status);
-                    console.error('Response:', xhr.responseText);
-                    console.error('Response status:', xhr.status);
+                error: function() {
                     showNotification('Có lỗi xảy ra khi xóa sản phẩm!', 'error');
                 }
             });
         }
 
         function clearCart() {
-            console.log('clearCart called');
-
             $.ajax({
                 url: '/cart/clear',
                 method: 'POST',
                 data: {
                     _token: $('meta[name="csrf-token"]').attr('content')
                 },
-                beforeSend: function() {
-                    console.log('Sending clear cart request...');
-                },
                 success: function(response) {
-                    console.log('Clear cart success response:', response);
-
                     if (response.success) {
                         showNotification(response.message, 'success');
                         setTimeout(function() {
                             location.reload();
                         }, 1000);
                     } else {
-                        console.log('Clear cart failed:', response.message);
                         showNotification('Có lỗi xảy ra!', 'error');
                     }
                 },
-                error: function(xhr, status, error) {
-                    console.error('Clear cart error:', error);
-                    console.error('Status:', status);
-                    console.error('Response:', xhr.responseText);
+                error: function() {
                     showNotification('Có lỗi xảy ra khi xóa giỏ hàng!', 'error');
                 }
             });
         }
 
-        // Hàm hiển thị thông báo đẹp
         function showNotification(message, type = 'info') {
-            console.log('Showing notification:', message, 'Type:', type);
-
-            // Xóa thông báo cũ nếu có
             $('.custom-notification').remove();
-
-            // Xác định màu sắc và icon theo loại thông báo
             let bgColor, textColor, icon;
             switch (type) {
                 case 'success':
@@ -806,8 +720,6 @@
                     textColor = '#fff';
                     icon = 'ℹ';
             }
-
-            // Tạo HTML thông báo
             const notificationHtml = `
             <div class="custom-notification" style="
                 position: fixed;
@@ -837,21 +749,13 @@
                 </div>
             </div>
         `;
-
-            // Thêm thông báo vào DOM
             $('body').append(notificationHtml);
-
-            // Tự động ẩn sau 4 giây
             setTimeout(function() {
                 $('.custom-notification').fadeOut(300, function() {
                     $(this).remove();
                 });
             }, 4000);
         }
-
-        // Test xem có bao nhiêu nút remove
-        console.log('Found remove buttons:', $('.remove-item').length);
-        console.log('Found cart items:', $('.cart-item').length);
     });
 </script>
 @endsection

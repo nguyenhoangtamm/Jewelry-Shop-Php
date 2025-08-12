@@ -4,237 +4,232 @@ namespace App\Http\Controllers\User;
 
 use App\Helpers\ImageHelper;
 use App\Http\Controllers\Controller;
-use Illuminate\Http\Request;
-use Illuminate\Support\Facades\Session;
+use App\Models\Cart;
 use App\Models\Jewelry;
+use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
 
 class CartController extends Controller
 {
+    /**
+     * Hiển thị giỏ hàng
+     */
+    public function index()
+    {
+        if (!Auth::check()) {
+            return redirect()->route('login');
+        }
+
+        $cartItems = Cart::getUserCart(Auth::id());
+        $total = Cart::getCartTotal(Auth::id());
+        foreach ($cartItems as $item) {
+            $item->main_image = ImageHelper::getMainImage($item->jewelry);
+        }
+
+        return view('user.cart.index', compact('cartItems', 'total'));
+    }
+
+    /**
+     * Thêm sản phẩm vào giỏ hàng
+     */
     public function add(Request $request)
     {
-        $request->validate([
-            'jewelry_id' => 'required|exists:jewelries,id',
-            'quantity' => 'required|integer|min:1'
-        ]);
-
-        $jewelry = Jewelry::findOrFail($request->jewelry_id);
-
-        // Kiểm tra số lượng tồn kho
-        if ($request->quantity > $jewelry->stock) {
+        if (!Auth::check()) {
             return response()->json([
                 'success' => false,
-                'message' => 'Số lượng yêu cầu vượt quá tồn kho hiện có!'
+                'message' => 'Vui lòng đăng nhập để thêm sản phẩm vào giỏ hàng'
             ]);
         }
 
-        // Lấy giỏ hàng từ session
-        $cart = Session::get('cart', []);
-
-        $jewelryId = $request->jewelry_id;
-        $quantity = $request->quantity;
-
-        // Nếu sản phẩm đã có trong giỏ hàng
-        if (isset($cart[$jewelryId])) {
-            $newQuantity = $cart[$jewelryId]['quantity'] + $quantity;
-
-            // Kiểm tra tổng số lượng không vượt quá tồn kho
-            if ($newQuantity > $jewelry->stock) {
-                return response()->json([
-                    'success' => false,
-                    'message' => 'Tổng số lượng trong giỏ hàng sẽ vượt quá tồn kho!'
-                ]);
-            }
-
-            $cart[$jewelryId]['quantity'] = $newQuantity;
-        } else {
-            // Thêm sản phẩm mới vào giỏ hàng
-            $cart[$jewelryId] = [
-                'id' => $jewelry->id,
-                'name' => $jewelry->name,
-                'price' => $jewelry->price,
-                'quantity' => $quantity,
-                'image' => $this->getJewelryImage($jewelry)
-            ];
-        }
-
-        // Lưu giỏ hàng vào session
-        Session::put('cart', $cart);
-
-        // Tính tổng số lượng và tổng tiền
-        $cartInfo = $this->getCartInfo();
-
-        return response()->json([
-            'success' => true,
-            'message' => 'Đã thêm sản phẩm vào giỏ hàng!',
-            'cart_count' => $cartInfo['total_items'],
-            'cart_total' => number_format($cartInfo['total_amount'], 0, ',', '.') . ' VNĐ'
-        ]);
-    }
-
-    public function show()
-    {
-        $cart = Session::get('cart', []);
-        $cartInfo = $this->getCartInfo();
-        foreach ($cart as $key => $item) {
-            $jewelry = Jewelry::find($item['id']);
-            $img = $jewelry ? ImageHelper::getMainImage($jewelry) : asset('images/no-image.jpg');
-            $cart[$key]['image'] = $img;
-        }
-        return view('user.cart', [
-            'cart' => $cart,
-            'total_items' => $cartInfo['total_items'],
-            'total_amount' => $cartInfo['total_amount']
-        ]);
-    }
-
-    public function update(Request $request)
-    {
         $request->validate([
             'jewelry_id' => 'required|exists:jewelries,id',
             'quantity' => 'required|integer|min:1'
         ]);
 
-        $cart = Session::get('cart', []);
-        $jewelryId = $request->jewelry_id;
+        $jewelry = Jewelry::find($request->jewelry_id);
+        if (!$jewelry) {
+            return response()->json([
+                'success' => false,
+                'message' => 'Sản phẩm không tồn tại'
+            ]);
+        }
 
-        if (isset($cart[$jewelryId])) {
-            $jewelry = Jewelry::findOrFail($jewelryId);
+        $cartItem = Cart::addItem(
+            Auth::id(),
+            $request->jewelry_id,
+            $request->quantity
+        );
 
-            if ($request->quantity > $jewelry->stock) {
-                return response()->json([
-                    'success' => false,
-                    'message' => 'Số lượng vượt quá tồn kho!'
-                ]);
-            }
-
-            $cart[$jewelryId]['quantity'] = $request->quantity;
-            Session::put('cart', $cart);
-
-            $cartInfo = $this->getCartInfo();
-
+        if ($cartItem) {
+            $cartCount = Cart::getCartCount(Auth::id());
             return response()->json([
                 'success' => true,
-                'cart_count' => $cartInfo['total_items'],
-                'cart_total' => number_format($cartInfo['total_amount'], 0, ',', '.') . ' VNĐ',
-                'item_total' => number_format($cart[$jewelryId]['price'] * $cart[$jewelryId]['quantity'], 0, ',', '.') . ' VNĐ'
+                'message' => 'Đã thêm sản phẩm vào giỏ hàng',
+                'cartCount' => $cartCount
             ]);
         }
 
         return response()->json([
             'success' => false,
-            'message' => 'Sản phẩm không tồn tại trong giỏ hàng!'
+            'message' => 'Có lỗi xảy ra khi thêm sản phẩm'
         ]);
     }
 
+    /**
+     * Cập nhật số lượng sản phẩm trong giỏ hàng
+     */
+    public function update(Request $request)
+    {
+        if (!Auth::check()) {
+            return response()->json([
+                'success' => false,
+                'message' => 'Vui lòng đăng nhập'
+            ]);
+        }
+
+        $request->validate([
+            'jewelry_id' => 'required|exists:jewelries,id',
+            'quantity' => 'required|integer|min:0'
+        ]);
+
+        $result = Cart::updateQuantity(
+            Auth::id(),
+            $request->jewelry_id,
+            $request->quantity
+        );
+
+        if ($result !== false) {
+            $cartCount = Cart::getCartCount(Auth::id());
+            $cartTotal = Cart::getCartTotal(Auth::id());
+
+            return response()->json([
+                'success' => true,
+                'message' => 'Đã cập nhật giỏ hàng',
+                'cartCount' => $cartCount,
+                'cartTotal' => number_format($cartTotal, 0, ',', '.') . ' VNĐ'
+            ]);
+        }
+
+        return response()->json([
+            'success' => false,
+            'message' => 'Có lỗi xảy ra khi cập nhật giỏ hàng'
+        ]);
+    }
+
+    /**
+     * Xóa sản phẩm khỏi giỏ hàng
+     */
     public function remove(Request $request)
     {
-        // Thêm validation
+        if (!Auth::check()) {
+            return response()->json([
+                'success' => false,
+                'message' => 'Vui lòng đăng nhập'
+            ]);
+        }
+
         $request->validate([
-            'jewelry_id' => 'required|integer'
+            'jewelry_id' => 'required|exists:jewelries,id'
         ]);
 
-        $jewelryId = $request->jewelry_id;
-        $cart = Session::get('cart', []);
+        $removed = Cart::removeItem(Auth::id(), $request->jewelry_id);
 
-        if (isset($cart[$jewelryId])) {
-            unset($cart[$jewelryId]);
-            Session::put('cart', $cart);
-
-            $cartInfo = $this->getCartInfo();
+        if ($removed) {
+            $cartCount = Cart::getCartCount(Auth::id());
+            $cartTotal = Cart::getCartTotal(Auth::id());
 
             return response()->json([
                 'success' => true,
-                'message' => 'Đã xóa sản phẩm khỏi giỏ hàng!',
-                'cart_count' => $cartInfo['total_items'],
-                'cart_total' => number_format($cartInfo['total_amount'], 0, ',', '.') . ' VNĐ'
+                'message' => 'Đã xóa sản phẩm khỏi giỏ hàng',
+                'cartCount' => $cartCount,
+                'cartTotal' => number_format($cartTotal, 0, ',', '.') . ' VNĐ'
             ]);
         }
 
         return response()->json([
             'success' => false,
-            'message' => 'Sản phẩm không tồn tại trong giỏ hàng!'
+            'message' => 'Có lỗi xảy ra khi xóa sản phẩm'
         ]);
     }
 
+    /**
+     * Xóa toàn bộ giỏ hàng
+     */
     public function clear()
     {
-        Session::forget('cart');
+        if (!Auth::check()) {
+            return response()->json([
+                'success' => false,
+                'message' => 'Vui lòng đăng nhập'
+            ]);
+        }
+
+        $cleared = Cart::clearCart(Auth::id());
+
+        if ($cleared) {
+            return response()->json([
+                'success' => true,
+                'message' => 'Đã xóa toàn bộ giỏ hàng',
+                'cartCount' => 0,
+                'cartTotal' => '0 VNĐ'
+            ]);
+        }
 
         return response()->json([
-            'success' => true,
-            'message' => 'Đã xóa tất cả sản phẩm khỏi giỏ hàng!',
-            'cart_count' => 0,
-            'cart_total' => '0 VNĐ'
+            'success' => false,
+            'message' => 'Có lỗi xảy ra khi xóa giỏ hàng'
         ]);
     }
 
+    /**
+     * Lấy số lượng sản phẩm trong giỏ hàng (cho AJAX)
+     */
     public function getCartCount()
     {
-        $cartInfo = $this->getCartInfo();
+        if (!Auth::check()) {
+            return response()->json(['count' => 0]);
+        }
 
-        return response()->json([
-            'cart_count' => $cartInfo['total_items']
-        ]);
+        $count = Cart::getCartCount(Auth::id());
+        return response()->json(['count' => $count]);
     }
 
+    /**
+     * Lấy thông tin giỏ hàng chi tiết (cho AJAX)
+     */
     public function getCartData()
     {
-        $cartInfo = $this->getCartInfo();
-        
+        if (!Auth::check()) {
+            return response()->json([
+                'success' => false,
+                'message' => 'Vui lòng đăng nhập'
+            ]);
+        }
+
+        $items = [];
+        $total = 0;
+        $cartItems = Cart::with('jewelry')->where('user_id', Auth::id())->get();
+        $count = $cartItems->count();
+        foreach ($cartItems as $item) {
+            $jewelry = $item->jewelry;
+            $img = $jewelry ? ImageHelper::getMainImage($jewelry) : asset('images/no-image.jpg');
+            $items[] = [
+                'id' => $item->jewelry_id,
+                'name' => $jewelry ? $jewelry->name : 'Sản phẩm',
+                'price' => $item->price,
+                'quantity' => $item->quantity,
+                'image' => $img,
+                'formatted_price' => number_format($item->price, 0, ',', '.') . ' VNĐ',
+                'item_total' => number_format($item->price * $item->quantity, 0, ',', '.') . ' VNĐ'
+            ];
+            $total += $item->price * $item->quantity;
+        }
         return response()->json([
             'success' => true,
-            'cart_count' => $cartInfo['total_items'],
-            'cart_total' => number_format($cartInfo['total_amount'], 0, ',', '.') . ' VNĐ',
-            'cart_items' => $this->getCartItemsForDropdown()
+            'items' => $items,
+            'total' => $total,
+            'count' => $count,
+            'formattedTotal' => number_format($total, 0, ',', '.') . ' VNĐ'
         ]);
-    }
-    
-    private function getCartInfo()
-    {
-        $cart = Session::get('cart', []);
-        $totalItems = 0;
-        $totalAmount = 0;
-
-        foreach ($cart as $item) {
-            $totalItems += $item['quantity'];
-            $totalAmount += $item['price'] * $item['quantity'];
-        }
-
-        return [
-            'total_items' => $totalItems,
-            'total_amount' => $totalAmount
-        ];
-    }
-
-    // Thêm method mới để format dữ liệu cho dropdown
-    private function getCartItemsForDropdown()
-    {
-        $cart = Session::get('cart', []);
-        $items = [];
-        
-        foreach ($cart as $item) {
-            $items[] = [
-                'id' => $item['id'],
-                'name' => $item['name'],
-                'price' => $item['price'],
-                'quantity' => $item['quantity'],
-                'image' => $item['image'],
-                'formatted_price' => number_format($item['price'], 0, ',', '.') . ' VNĐ',
-                'item_total' => number_format($item['price'] * $item['quantity'], 0, ',', '.') . ' VNĐ'
-            ];
-        }
-        
-        return $items;
-    }
-    
-    private function getJewelryImage($jewelry)
-    {
-        $jewelryFile = $jewelry->jewelryFiles()->with('file')->first();
-
-        if ($jewelryFile && $jewelryFile->file && $jewelryFile->file->is_deleted == 0) {
-            return asset(ltrim($jewelryFile->file->path, '/'));
-        }
-
-        return asset('images/no-image.jpg'); // Ảnh mặc định
     }
 }

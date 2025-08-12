@@ -1121,7 +1121,7 @@
                 <div class="row" style="align-items: center; display: flex;">
                     <!-- Logo -->
                     <div class="col-xs-12 col-sm-3 text-center">
-                        <a href="index.htm" class="logo" title="Jewelry Store">
+                        <a href="/home" class="logo" title="Jewelry Store">
                             <img src="http://localhost:8000/img/logo_2.png" alt="Jewelry Store">
                         </a>
                     </div>
@@ -1236,6 +1236,7 @@
 
         <main>
             @yield('content')
+            @yield('scripts')
         </main>
 
         <!-- Footer -->
@@ -1246,7 +1247,7 @@
                     <div id="introduce-box" class="row">
                         <div class="col-md-3">
                             <div id="address-box">
-                                <a href="index.htm"><img src="http://localhost:8000/img/logo_2.png" alt="logo"></a>
+                                <a href="/home"><img src="http://localhost:8000/img/logo_2.png" alt="logo"></a>
                                 <div id="address-list">
                                     <div class="tit-name">Địa chỉ:</div>
                                     <div class="tit-contain">Đại học đồng tháp</div>
@@ -1465,7 +1466,6 @@
     <script src="https://cdn.jsdelivr.net/npm/swiper@10/swiper-bundle.min.js"></script>
     <script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
     <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>
-    <script type="module" src="{{ asset('js/index.js') }}"></script>
     @stack('scripts')
 
     <script type="text/javascript">
@@ -1702,7 +1702,6 @@
         // Cart Dropdown Functions
         function loadCartDropdown() {
             console.log('Loading cart dropdown...');
-
             $.ajax({
                 url: '/cart/data',
                 method: 'GET',
@@ -1710,8 +1709,8 @@
                     console.log('Cart data loaded:', response);
 
                     if (response.success) {
-                        updateCartBadges(response.cart_count);
-                        updateCartDropdown(response.cart_items, response.cart_total);
+                        updateCartBadges(response.count);
+                        updateCartDropdown(response.items, response.total);
                     }
                 },
                 error: function(xhr, status, error) {
@@ -1724,6 +1723,7 @@
         }
 
         function updateCartBadges(count) {
+            console.log('Updating cart badges:', count);
             $('.cart-count').text(count);
 
             if (count > 0) {
@@ -1766,7 +1766,7 @@
             </div>
             <div class="dropdown-actions">
                 <a href="{{ route('cart.index') }}" class="btn-view-cart">Xem giỏ hàng</a>
-                <a href="#" class="btn-checkout">Thanh toán</a>
+                <a href="{{ route('checkout.index') }}" class="btn-checkout">Thanh toán</a>
             </div>
         `);
             } else {
@@ -1796,7 +1796,7 @@
 
         // Initialize cart dropdown when page loads
         $(document).ready(function() {
-            // Load cart data on page load
+            // Load cart data via AJAX
             loadCartDropdown();
         });
 

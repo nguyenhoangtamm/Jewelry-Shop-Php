@@ -130,16 +130,16 @@ Route::middleware('auth')->group(function () {
     });
 
     // =============================
-    // Cart routes - customer
+    // Cart routes - customer (using session-based cart)
     // =============================
-    Route::prefix('cart')->name('cart.')->middleware('role:customer')->group(function () {
-        Route::get('/', [\App\Http\Controllers\CartController::class, 'index'])->name('index');
-        Route::post('/add', [\App\Http\Controllers\CartController::class, 'add'])->name('add');
-        Route::post('/update', [\App\Http\Controllers\CartController::class, 'update'])->name('update');
-        Route::post('/remove', [\App\Http\Controllers\CartController::class, 'remove'])->name('remove');
-        Route::post('/clear', [\App\Http\Controllers\CartController::class, 'clear'])->name('clear');
-        Route::get('/count', [\App\Http\Controllers\CartController::class, 'getCartCount'])->name('count');
-        Route::get('/data', [\App\Http\Controllers\CartController::class, 'getCartData'])->name('data');
+    Route::prefix('cart')->name('cart.')->group(function () {
+        Route::get('/', [CartController::class, 'index'])->name('index');
+        Route::post('/add', [CartController::class, 'add'])->name('add');
+        Route::post('/update', [CartController::class, 'update'])->name('update');
+        Route::post('/remove', [CartController::class, 'remove'])->name('remove');
+        Route::post('/clear', [CartController::class, 'clear'])->name('clear');
+        Route::get('/count', [CartController::class, 'getCartCount'])->name('count');
+        Route::get('/data', [CartController::class, 'getCartData'])->name('data');
     });
 
     // =============================
