@@ -178,4 +178,11 @@ Route::middleware('auth')->group(function () {
     // =============================
     Route::get('/products/all', [ProductController::class, 'showAll'])->middleware('role:customer,admin')->name('products.all');
     Route::get('/tin-tuc', [NewsController::class, 'index'])->middleware('role:customer,admin')->name('news.index');
+
+    Route::put('/orders/{order}/cancel', [OrderController::class, 'cancel'])
+        ->name('user.orders.cancel');
+
+    Route::post('/products/{id}/reviews', [ProductDetailController::class, 'storeReview'])
+        ->name('products.reviews.store')
+        ->middleware('auth');
 });
