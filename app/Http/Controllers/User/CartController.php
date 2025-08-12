@@ -177,6 +177,18 @@ class CartController extends Controller
         ]);
     }
 
+    public function getCartData()
+    {
+        $cartInfo = $this->getCartInfo();
+        
+        return response()->json([
+            'success' => true,
+            'cart_count' => $cartInfo['total_items'],
+            'cart_total' => number_format($cartInfo['total_amount'], 0, ',', '.') . ' VNĐ',
+            'cart_items' => $this->getCartItemsForDropdown()
+        ]);
+    }
+    
     private function getCartInfo()
     {
         $cart = Session::get('cart', []);
@@ -194,6 +206,27 @@ class CartController extends Controller
         ];
     }
 
+    // Thêm method mới để format dữ liệu cho dropdown
+    private function getCartItemsForDropdown()
+    {
+        $cart = Session::get('cart', []);
+        $items = [];
+        
+        foreach ($cart as $item) {
+            $items[] = [
+                'id' => $item['id'],
+                'name' => $item['name'],
+                'price' => $item['price'],
+                'quantity' => $item['quantity'],
+                'image' => $item['image'],
+                'formatted_price' => number_format($item['price'], 0, ',', '.') . ' VNĐ',
+                'item_total' => number_format($item['price'] * $item['quantity'], 0, ',', '.') . ' VNĐ'
+            ];
+        }
+        
+        return $items;
+    }
+    
     private function getJewelryImage($jewelry)
     {
         $jewelryFile = $jewelry->jewelryFiles()->with('file')->first();

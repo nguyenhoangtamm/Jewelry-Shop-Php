@@ -1,4 +1,3 @@
-
 <?php
 
 use Illuminate\Support\Facades\Route;
@@ -23,7 +22,7 @@ use App\Http\Controllers\NewsController;
 use App\Http\Controllers\User\FavoritesController;
 use App\Http\Controllers\User\PointsController;
 use App\Http\Controllers\User\NotificationsController;
-
+use App\Http\Controllers\User\ReviewController;
 // =============================
 // Public routes (khách, chưa đăng nhập)
 // =============================
@@ -53,10 +52,11 @@ Route::get('/jewelry/{id}', [JewelryController::class, 'showByCategory'])->name(
 
 // Detail product route (public)
 Route::get('/detail/{id}', [ProductDetailController::class, 'show'])->name('jewelry.detail');
-
+//Review
+Route::post('/products/{jewelry}/reviews', [ReviewController::class, 'store'])
+    ->name('products.reviews.store');
 // Products listing page (public)
 Route::get('/products', [ProductController::class, 'showAll'])->name('products.all');
-
 // =============================
 // User routes (cần đăng nhập)
 // =============================
