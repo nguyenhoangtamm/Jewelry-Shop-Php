@@ -67,10 +67,34 @@
                                 </div>
                                 <div class="form-check mb-3">
                                     <input class="form-check-input" type="radio" name="payment_method" id="bank_transfer" value="bank_transfer">
-                                    <label class="form-check-label" for="bank_transfer">
-                                        <strong>Chuyển khoản ngân hàng</strong>
-                                        <br><small class="text-muted">Chuyển khoản trực tiếp vào tài khoản ngân hàng của chúng tôi</small>
-                                    </label>
+                                    <!-- Radio chọn phương thức chuyển khoản -->
+<div class="form-check">
+ <label class="form-check-label" for="bank_transfer">
+    <strong>Chuyển khoản ngân hàng</strong>
+    <br><small class="text-muted">Chuyển khoản trực tiếp vào tài khoản ngân hàng của chúng tôi</small>
+  </label>
+</div>
+
+<!-- Thông tin chuyển khoản ẩn -->
+<div id="bank-transfer-info" class="border p-3 mt-2" style="display:none; max-width: 300px;">
+ 
+  <div>
+   <img src="https://img.vietqr.io/image/sacombank-070130092398-compact2.png?accountName=PHAM%20MY%20TIEN&amount={{ $total ?? 0 }}&addInfo=Thanh+toan+don+hang+{{ $order->id ?? 'unknown' }}"
+     alt="QR chuyển khoản" style="max-width: 200px;">
+
+  </div>
+</div>
+<script>
+    document.getElementById('bank_transfer').addEventListener('change', function() {
+  const info = document.getElementById('bank-transfer-info');
+  if (this.checked) {
+    info.style.display = 'block';
+  } else {
+    info.style.display = 'none';
+  }
+});
+</script>
+
                                 </div>
                             </div>
                         </div>
