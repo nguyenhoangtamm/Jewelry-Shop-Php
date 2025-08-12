@@ -2,6 +2,9 @@
 @section('title', 'Quản lý Trang sức')
 @section('content')
 
+<!-- CSRF Token -->
+<meta name="csrf-token" content="{{ csrf_token() }}">
+
 <!-- Quill Rich Text Editor -->
 <link href="https://cdn.quilljs.com/1.3.6/quill.snow.css" rel="stylesheet">
 <script src="https://cdn.quilljs.com/1.3.6/quill.min.js"></script>
@@ -344,6 +347,17 @@
         gap: 24px;
     }
 
+    @media (max-width: 768px) {
+        .modal-twoCol {
+            grid-template-columns: 1fr;
+            gap: 16px;
+        }
+    }
+
+    .modal-fullCol {
+        grid-column: 1 / -1;
+    }
+
     .modal-label {
         display: flex;
         flex-direction: column;
@@ -673,6 +687,234 @@
     ::-webkit-scrollbar-thumb:hover {
         background: var(--galaxy-gradient-hover);
     }
+
+    /* Images Grid Styles */
+    .images-grid {
+        display: grid;
+        grid-template-columns: repeat(2, 1fr);
+        gap: 15px;
+        margin-top: 10px;
+    }
+
+    @media (max-width: 600px) {
+        .images-grid {
+            grid-template-columns: 1fr;
+        }
+    }
+
+    .image-item {
+        position: relative;
+        border: 2px solid #e2e8f0;
+        border-radius: 12px;
+        padding: 10px;
+        background: #f8fafc;
+        transition: all 0.3s ease;
+    }
+
+    .image-item:hover {
+        border-color: #3b82f6;
+        box-shadow: 0 4px 15px rgba(59, 130, 246, 0.2);
+    }
+
+    .image-item.is-main {
+        border-color: #10b981;
+        background: #ecfdf5;
+    }
+
+    .image-item img {
+        width: 100%;
+        height: 120px;
+        object-fit: cover;
+        border-radius: 8px;
+        margin-bottom: 10px;
+    }
+
+    .image-controls {
+        display: flex;
+        gap: 8px;
+        flex-wrap: wrap;
+    }
+
+    .btn-set-main {
+        background: var(--galaxy-gradient);
+        color: white;
+        border: none;
+        padding: 6px 12px;
+        border-radius: 6px;
+        font-size: 12px;
+        cursor: pointer;
+        transition: all 0.3s ease;
+        display: flex;
+        align-items: center;
+        gap: 4px;
+    }
+
+    .btn-set-main:hover {
+        background: var(--galaxy-gradient-hover);
+        transform: translateY(-1px);
+    }
+
+    .btn-set-main:disabled {
+        background: #10b981;
+        cursor: not-allowed;
+        transform: none;
+    }
+
+    .btn-delete-image {
+        background: #ef4444;
+        color: white;
+        border: none;
+        padding: 6px 12px;
+        border-radius: 6px;
+        font-size: 12px;
+        cursor: pointer;
+        transition: all 0.3s ease;
+        display: flex;
+        align-items: center;
+        gap: 4px;
+    }
+
+    .btn-delete-image:hover {
+        background: #dc2626;
+        transform: translateY(-1px);
+    }
+
+    .btn-change-image {
+        background: #f59e0b;
+        color: white;
+        border: none;
+        padding: 6px 12px;
+        border-radius: 6px;
+        font-size: 12px;
+        cursor: pointer;
+        transition: all 0.3s ease;
+        display: flex;
+        align-items: center;
+        gap: 4px;
+    }
+
+    .btn-change-image:hover {
+        background: #d97706;
+        transform: translateY(-1px);
+    }
+
+    .main-badge {
+        position: absolute;
+        top: 5px;
+        right: 5px;
+        background: #10b981;
+        color: white;
+        padding: 4px 8px;
+        border-radius: 20px;
+        font-size: 11px;
+        font-weight: bold;
+    }
+
+    /* Image Section Header */
+    .image-section-header {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        margin-bottom: 15px;
+        padding-bottom: 10px;
+        border-bottom: 2px solid #e2e8f0;
+    }
+
+    .image-section-header span {
+        font-weight: bold;
+        color: #1e40af;
+        font-size: 16px;
+    }
+
+    .btn-add-new-image {
+        background: var(--galaxy-gradient);
+        color: white;
+        border: none;
+        padding: 10px 16px;
+        border-radius: 8px;
+        font-size: 14px;
+        cursor: pointer;
+        transition: all 0.3s ease;
+        display: flex;
+        align-items: center;
+        gap: 8px;
+        font-weight: 500;
+        box-shadow: var(--shadow-sm);
+    }
+
+    .btn-add-new-image:hover {
+        background: var(--galaxy-gradient-hover);
+        transform: translateY(-2px);
+        box-shadow: var(--shadow-md);
+    }
+
+    .btn-add-new-image i {
+        font-size: 12px;
+    }
+
+    /* No images message */
+    .no-images-message {
+        text-align: center;
+        color: #64748b;
+        font-style: italic;
+        padding: 40px 20px;
+        background: #f8fafc;
+        border-radius: 8px;
+        border: 2px dashed #cbd5e1;
+    }
+
+    /* Image upload drop zone */
+    .image-upload-zone {
+        border: 2px dashed #cbd5e1;
+        border-radius: 8px;
+        padding: 40px 20px;
+        text-align: center;
+        background: #f8fafc;
+        transition: all 0.3s ease;
+        cursor: pointer;
+        margin-top: 15px;
+    }
+
+    .image-upload-zone:hover {
+        border-color: #3b82f6;
+        background: #eff6ff;
+    }
+
+    .image-upload-zone.dragover {
+        border-color: #3b82f6;
+        background: #dbeafe;
+    }
+
+    .upload-icon {
+        font-size: 48px;
+        color: #94a3b8;
+        margin-bottom: 16px;
+    }
+
+    .upload-text {
+        font-size: 16px;
+        color: #475569;
+        margin-bottom: 8px;
+    }
+
+    .upload-hint {
+        font-size: 14px;
+        color: #64748b;
+    }
+
+    .hidden-file-input {
+        display: none;
+    }
+
+    .no-images-message {
+        color: #6b7280;
+        font-style: italic;
+        text-align: center;
+        padding: 20px;
+        border: 2px dashed #e2e8f0;
+        border-radius: 8px;
+        background: #f9fafb;
+    }
 </style>
 
 <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
@@ -762,7 +1004,15 @@
                             data-stock="{{ $jewelry->stock }}"
                             data-description="{{ $jewelry->description }}"
                             data-weight="{{ $jewelry->weight }}"
-                            data-policy="{{ $jewelry->after_sales_policy }}">
+                            data-policy="{{ $jewelry->after_sales_policy }}"
+                            data-images="{{ json_encode($jewelry->jewelryFiles->map(function($jf) {
+                                return [
+                                    'jewelry_file_id' => $jf->id,
+                                    'url' => asset('img/uploads/images/' . $jf->file->path),
+                                    'is_main' => $jf->is_main,
+                                    'file_name' => $jf->file->name
+                                ];
+                            })) }}">
                         </button>
 
                         <a href="?delete={{ $jewelry->id }}" class="fas fa-trash icon-delete js-delete-jewelry"></a>
@@ -847,35 +1097,46 @@
                         placeholder="Số lượng tồn..." min="0" required>
                     <span class="stock-addJewelry-error check-error"></span>
                 </label>
-                </label>
-                <label for="edit-jewelry-image" class="modal-label">
-                    Hình ảnh
-                    <input type="file" name="image" id="edit-jewelry-image" class="modal-input" onchange="previewImage(event)">
+                <div class="modal-label modal-fullCol">
+                    <div class="image-section-header">
+                        <span>Hình ảnh sản phẩm</span>
+                        <button type="button" class="btn-add-new-image" onclick="document.getElementById('jewelry-image-input').click()">
+                            <i class="fa-solid fa-plus"></i>
+                            Chọn ảnh
+                        </button>
+                    </div>
+                    <input type="file" name="image" id="jewelry-image-input" class="modal-input" onchange="previewAddImage(event)" accept="image/*" style="display: none;" multiple>
 
-                    {{-- Ảnh hiện tại --}}
-                    <img id="imagePreview"
-                        src="{{ \App\Helpers\ImageHelper::getMainImage($jewelry) }}"
-                        alt="Ảnh xem trước"
-                        style="max-width: 200px; margin-top: 10px; display:block;">
+                    {{-- Ảnh preview --}}
+                    <div id="addImagePreviewContainer" style="margin-top: 15px; display: none;">
+                        <img id="addImagePreview" alt="Ảnh xem trước" style="max-width: 200px; border-radius: 8px; box-shadow: 0 2px 8px rgba(0,0,0,0.1);">
+                    </div>
 
-                    <span class="image-changeJewelry-error check-error"></span>
-                </label>
+                    <span class="image-addJewelry-error check-error"></span>
+                </div>
 
                 <script>
-                    function previewImage(event) {
-                        const file = event.target.files[0];
-                        if (file) {
+                    function previewAddImage(event) {
+                        const files = event.target.files;
+                        const container = document.getElementById('addImagePreviewContainer');
+                        const preview = document.getElementById('addImagePreview');
+
+                        if (files && files.length > 0) {
+                            const file = files[0];
                             const reader = new FileReader();
                             reader.onload = function(e) {
-                                document.getElementById('imagePreview').src = e.target.result;
+                                preview.src = e.target.result;
+                                container.style.display = 'block';
                             }
                             reader.readAsDataURL(file);
+                        } else {
+                            container.style.display = 'none';
                         }
                     }
                 </script>
             </div>
 
-            <label for="jewelry-description" class="modal-label">
+            <label for="jewelry-description" class="modal-label" style="margin: 20px">
                 Mô tả
                 <div id="jewelry-description-editor" style="height: 200px; border: 2px solid #e2e8f0; border-radius: 12px;"></div>
                 <textarea id="jewelry-description" name="description" style="display: none;" class="modal-input"
@@ -985,82 +1246,92 @@
                         placeholder="Số lượng tồn..." min="0" required>
                     <span class="stock-changeJewelry-error check-error"></span>
                 </label>
-                <label for="edit-jewelry-image" class="modal-label">
-                    Hình ảnh
-                    <input type="file" name="image" id="edit-jewelry-image" class="modal-input" onchange="previewImage(event)">
-
-                    {{-- Ảnh hiện tại --}}
-                    <img id="imagePreview"
-                        src="{{ \App\Helpers\ImageHelper::getMainImage($jewelry) }}"
-                        alt="Ảnh xem trước"
-                        style="max-width: 200px; margin-top: 10px; display:block;">
-
-                    <span class="image-changeJewelry-error check-error"></span>
-                </label>
-
-                <script>
-                    function previewImage(event) {
-                        const file = event.target.files[0];
-                        if (file) {
-                            const reader = new FileReader();
-                            reader.onload = function(e) {
-                                document.getElementById('imagePreview').src = e.target.result;
-                            }
-                            reader.readAsDataURL(file);
-                        }
-                    }
-                </script>
-
             </div>
 
-            <label for="edit-jewelry-description" class="modal-label">
-                Mô tả
-                <div id="edit-jewelry-description-editor" style="height: 200px; border: 2px solid #e2e8f0; border-radius: 12px;"></div>
-                <textarea id="edit-jewelry-description" name="description" style="display: none;" class="modal-input"
-                    placeholder="Mô tả chi tiết..."></textarea>
-                <span class="description-changeJewelry-error check-error"></span>
-            </label>
-
-            <div class="modal-twoCol">
-                <label for="edit-jewelry-weight" class="modal-label">
-                    Khối lượng (gram)
-                    <input id="edit-jewelry-weight" name="weight" type="number" step="0.01" min="0" class="modal-input"
-                        placeholder="Nhập khối lượng..." required>
-                    <span class="weight-changeJewelry-error check-error"></span>
-                </label>
-                <label for="edit-jewelry-policy" class="modal-label">
-                    Chính sách bán hàng
-                    <select id="edit-jewelry-policy" name="after_sales_policy" class="modal-input">
-                        <option value="">-- Chọn chính sách --</option>
-                        <option value="Bảo hành 12 tháng">Bảo hành 12 tháng</option>
-                        <option value="Bảo hành 6 tháng">Bảo hành 6 tháng</option>
-                        <option value="Bảo hành trọn đời">Bảo hành trọn đời</option>
-                        <option value="Miễn phí vệ sinh trọn đời">Miễn phí vệ sinh trọn đời</option>
-                        <option value="Sale 20%">Sale 20%</option>
-                        <option value="Sale 50%">Sale 50%</option>
-                        <option value="Giảm 10% cho đơn hàng tiếp theo">Giảm 10% cho đơn hàng tiếp theo</option>
-                        <option value="Đổi trả trong 7 ngày">Đổi trả trong 7 ngày</option>
-                        <option value="Đổi trả trong 30 ngày">Đổi trả trong 30 ngày</option>
-                        <option value="Miễn phí vận chuyển">Miễn phí vận chuyển</option>
-                        <option value="Không áp dụng">Không áp dụng</option>
-                        <option value="custom">Khác (nhập tay)</option>
-                    </select>
-                    <span class="policy-changeJewelry-error check-error"></span>
-                </label>
-            </div>
-
-            <div class="action-form">
-                <div class="cancel-jewelry js-cancel-jewelry">
-                    <i class="fa-solid fa-xmark"></i>
-                    Hủy
+            {{-- Phần quản lý ảnh chiếm toàn bộ chiều rộng --}}
+            <div class="modal-label modal-fullCol">
+                <div class="image-section-header">
+                    <span>Quản lý hình ảnh</span>
+                    <button type="button" class="btn-add-new-image" onclick="addNewImage()">
+                        <i class="fa-solid fa-plus"></i>
+                        Thêm ảnh mới
+                    </button>
                 </div>
-                <button class="submit-jewelry js-save-changedJewelry" type="submit">
-                    <i class="fa-solid fa-save"></i>
-                    Lưu
-                </button>
+
+                {{-- danh sách Ảnh hiện tại --}}
+                <div id="currentImages" style="margin-top: 15px;">
+                    <div id="imagesList" class="images-grid"></div>
+                </div>
+
+                {{-- Input file ẩn để upload ảnh mới --}}
+                <input type="file" id="hiddenNewImageInput" accept="image/*" style="display: none;" onchange="handleNewImageUpload(event)" multiple>
+
+                <span class="image-changeJewelry-error check-error"></span>
             </div>
+
+            <script>
+                function previewImage(event) {
+                    const file = event.target.files[0];
+                    if (file) {
+                        const reader = new FileReader();
+                        reader.onload = function(e) {
+                            document.getElementById('imagePreview').src = e.target.result;
+                        }
+                        reader.readAsDataURL(file);
+                    }
+                }
+            </script>
+
         </div>
-    </form>
+
+        <label for="edit-jewelry-description" class="modal-label modal-fullCol" style="margin: 20px">
+            Mô tả
+            <div id="edit-jewelry-description-editor" style="height: 200px; border: 2px solid #e2e8f0; border-radius: 12px;"></div>
+            <textarea id="edit-jewelry-description" name="description" style="display: none;" class="modal-input"
+                placeholder="Mô tả chi tiết..."></textarea>
+            <span class="description-changeJewelry-error check-error"></span>
+        </label>
+
+        <div class="modal-twoCol">
+            <label for="edit-jewelry-weight" class="modal-label">
+                Khối lượng (gram)
+                <input id="edit-jewelry-weight" name="weight" type="number" step="0.01" min="0" class="modal-input"
+                    placeholder="Nhập khối lượng..." required>
+                <span class="weight-changeJewelry-error check-error"></span>
+            </label>
+            <label for="edit-jewelry-policy" class="modal-label">
+                Chính sách bán hàng
+                <select id="edit-jewelry-policy" name="after_sales_policy" class="modal-input">
+                    <option value="">-- Chọn chính sách --</option>
+                    <option value="Bảo hành 12 tháng">Bảo hành 12 tháng</option>
+                    <option value="Bảo hành 6 tháng">Bảo hành 6 tháng</option>
+                    <option value="Bảo hành trọn đời">Bảo hành trọn đời</option>
+                    <option value="Miễn phí vệ sinh trọn đời">Miễn phí vệ sinh trọn đời</option>
+                    <option value="Sale 20%">Sale 20%</option>
+                    <option value="Sale 50%">Sale 50%</option>
+                    <option value="Giảm 10% cho đơn hàng tiếp theo">Giảm 10% cho đơn hàng tiếp theo</option>
+                    <option value="Đổi trả trong 7 ngày">Đổi trả trong 7 ngày</option>
+                    <option value="Đổi trả trong 30 ngày">Đổi trả trong 30 ngày</option>
+                    <option value="Miễn phí vận chuyển">Miễn phí vận chuyển</option>
+                    <option value="Không áp dụng">Không áp dụng</option>
+                    <option value="custom">Khác (nhập tay)</option>
+                </select>
+                <span class="policy-changeJewelry-error check-error"></span>
+            </label>
+        </div>
+
+        <div class="action-form">
+            <div class="cancel-jewelry js-cancel-jewelry">
+                <i class="fa-solid fa-xmark"></i>
+                Hủy
+            </div>
+            <button class="submit-jewelry js-save-changedJewelry" type="submit">
+                <i class="fa-solid fa-save"></i>
+                Lưu
+            </button>
+        </div>
+</div>
+</form>
 </div>
 
 
@@ -1108,6 +1379,275 @@
         }
     }
 
+    function loadJewelryImages(imagesData) {
+        console.log('Loading jewelry images:', imagesData);
+        const imagesList = document.getElementById('imagesList');
+        imagesList.innerHTML = '';
+
+        if (imagesData && imagesData.length > 0) {
+            imagesData.forEach(imageData => {
+                const imageItem = createImageItem(imageData);
+                imagesList.appendChild(imageItem);
+            });
+        } else {
+            imagesList.innerHTML = '<div class="no-images-message">Chưa có ảnh nào</div>';
+        }
+    }
+
+    function createImageItem(imageData) {
+        const div = document.createElement('div');
+        div.className = `image-item ${imageData.is_main ? 'is-main' : ''}`;
+        div.setAttribute('data-jewelry-file-id', imageData.jewelry_file_id);
+
+        div.innerHTML = `
+            ${imageData.is_main ? '<div class="main-badge">Ảnh chính</div>' : ''}
+            <img src="${imageData.url}" alt="Ảnh sản phẩm">
+            <div class="image-controls">
+                <button type="button" class="btn-set-main" 
+                        onclick="setMainImage(${imageData.jewelry_file_id})"
+                        ${imageData.is_main ? 'disabled' : ''}>
+                    <i class="fa-solid fa-star"></i>
+                    ${imageData.is_main ? 'Ảnh chính' : 'Đặt chính'}
+                </button>
+                <button type="button" class="btn-change-image" 
+                        onclick="changeImage(${imageData.jewelry_file_id})">
+                    <i class="fa-solid fa-exchange-alt"></i>
+                    Đổi ảnh
+                </button>
+                <button type="button" class="btn-delete-image" 
+                        onclick="deleteImage(${imageData.jewelry_file_id})"
+                        ${imageData.is_main ? 'style="display:none"' : ''}>
+                    <i class="fa-solid fa-trash"></i>
+                    Xóa
+                </button>
+            </div>
+            <input type="file" class="hidden-file-input" accept="image/*" 
+                   onchange="handleImageChange(event, ${imageData.jewelry_file_id})">
+        `;
+
+        return div;
+    }
+
+    function setMainImage(jewelryFileId) {
+        if (confirm('Bạn có muốn đặt ảnh này làm ảnh chính?')) {
+            const editForm = document.querySelector('.js-modal-changeJewelry-container');
+            const jewelryId = editForm.action.split('/').pop();
+
+            fetch(`/api/jewelries/${jewelryId}/set-main-image`, {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]').getAttribute('content')
+                    },
+                    body: JSON.stringify({
+                        jewelry_file_id: jewelryFileId
+                    })
+                })
+                .then(response => response.json())
+                .then(data => {
+                    if (data.success) {
+                        showNotification('Đã đặt ảnh chính thành công!', 'success');
+                        // Reload modal sau khi cập nhật
+                        setTimeout(() => {
+                            window.location.reload();
+                        }, 1000);
+                    } else {
+                        showNotification('Có lỗi xảy ra!', 'error');
+                    }
+                })
+                .catch(error => {
+                    console.error('Error:', error);
+                    showNotification('Có lỗi xảy ra!', 'error');
+                });
+        }
+    }
+
+    function deleteImage(jewelryFileId) {
+        if (confirm('Bạn có chắc chắn muốn xóa ảnh này?')) {
+            fetch(`/api/jewelries/image/${jewelryFileId}`, {
+                    method: 'DELETE',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]').getAttribute('content')
+                    }
+                })
+                .then(response => response.json())
+                .then(data => {
+                    if (data.success) {
+                        showNotification('Đã xóa ảnh thành công!', 'success');
+                        // Reload modal sau khi xóa
+                        setTimeout(() => {
+                            window.location.reload();
+                        }, 1000);
+                    } else {
+                        showNotification('Có lỗi xảy ra!', 'error');
+                    }
+                })
+                .catch(error => {
+                    console.error('Error:', error);
+                    showNotification('Có lỗi xảy ra!', 'error');
+                });
+        }
+    }
+
+    function changeImage(jewelryFileId) {
+        const imageItem = document.querySelector(`[data-jewelry-file-id="${jewelryFileId}"]`);
+        const fileInput = imageItem.querySelector('.hidden-file-input');
+        fileInput.click();
+    }
+
+    function handleImageChange(event, jewelryFileId) {
+        const file = event.target.files[0];
+        if (!file) return;
+
+        const formData = new FormData();
+        formData.append('image', file);
+        formData.append('_token', document.querySelector('meta[name="csrf-token"]').getAttribute('content'));
+
+        fetch(`/api/jewelries/image/${jewelryFileId}/update`, {
+                method: 'POST',
+                body: formData
+            })
+            .then(response => response.json())
+            .then(data => {
+                if (data.success) {
+                    showNotification('Đã cập nhật ảnh thành công!', 'success');
+                    // Reload modal sau khi cập nhật
+                    setTimeout(() => {
+                        window.location.reload();
+                    }, 1000);
+                } else {
+                    showNotification('Có lỗi xảy ra!', 'error');
+                }
+            })
+            .catch(error => {
+                console.error('Error:', error);
+                showNotification('Có lỗi xảy ra!', 'error');
+            });
+    }
+
+    function showNotification(message, type) {
+        // Tạo thông báo đơn giản
+        const notification = document.createElement('div');
+        let backgroundColor;
+
+        switch (type) {
+            case 'success':
+                backgroundColor = '#10b981';
+                break;
+            case 'error':
+                backgroundColor = '#ef4444';
+                break;
+            case 'info':
+                backgroundColor = '#3b82f6';
+                break;
+            default:
+                backgroundColor = '#64748b';
+        }
+
+        notification.style.cssText = `
+            position: fixed;
+            top: 20px;
+            right: 20px;
+            padding: 15px 20px;
+            border-radius: 8px;
+            color: white;
+            font-weight: bold;
+            z-index: 10000;
+            transition: all 0.3s ease;
+            background: ${backgroundColor};
+            max-width: 300px;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+        `;
+        notification.textContent = message;
+        document.body.appendChild(notification);
+
+        setTimeout(() => {
+            notification.remove();
+        }, 3000);
+    }
+
+    // Hàm thêm ảnh mới với AJAX
+    function addNewImage() {
+        const editForm = document.querySelector('.js-modal-changeJewelry-container');
+        if (!editForm) {
+            showNotification('Không tìm thấy form chỉnh sửa!', 'error');
+            return;
+        }
+
+        const jewelryId = editForm.action.split('/').pop();
+        if (!jewelryId) {
+            showNotification('Không xác định được ID sản phẩm!', 'error');
+            return;
+        }
+
+        const input = document.getElementById('hiddenNewImageInput');
+        input.click();
+    }
+
+    // Xử lý upload ảnh mới
+    function handleNewImageUpload(event) {
+        const files = event.target.files;
+        if (!files || files.length === 0) return;
+
+        const editForm = document.querySelector('.js-modal-changeJewelry-container');
+        const jewelryId = editForm.action.split('/').pop();
+
+        for (let i = 0; i < files.length; i++) {
+            const file = files[i];
+            uploadSingleImage(file, jewelryId);
+        }
+
+        // Reset input
+        event.target.value = '';
+    }
+
+    // Upload ảnh đơn lẻ
+    function uploadSingleImage(file, jewelryId) {
+        const formData = new FormData();
+        formData.append('image', file);
+        formData.append('_token', document.querySelector('meta[name="csrf-token"]').getAttribute('content'));
+
+        // Hiển thị loading
+        showNotification('Đang tải ảnh lên...', 'info');
+
+        fetch(`/api/jewelries/${jewelryId}/add-image`, {
+                method: 'POST',
+                body: formData
+            })
+            .then(response => response.json())
+            .then(data => {
+                if (data.success) {
+                    showNotification('Đã thêm ảnh thành công!', 'success');
+
+                    // Cập nhật danh sách ảnh
+                    if (data.image) {
+                        addImageToList(data.image);
+                    }
+                } else {
+                    showNotification(data.message || 'Có lỗi xảy ra khi tải ảnh!', 'error');
+                }
+            })
+            .catch(error => {
+                console.error('Error:', error);
+                showNotification('Có lỗi xảy ra khi tải ảnh!', 'error');
+            });
+    }
+
+    // Thêm ảnh vào danh sách hiện tại
+    function addImageToList(imageData) {
+        const imagesList = document.getElementById('imagesList');
+
+        // Xóa thông báo "Chưa có ảnh nào" nếu có
+        const noImagesMessage = imagesList.querySelector('.no-images-message');
+        if (noImagesMessage) {
+            noImagesMessage.remove();
+        }
+
+        const imageItem = createImageItem(imageData);
+        imagesList.appendChild(imageItem);
+    }
+
     document.addEventListener('DOMContentLoaded', function() {
         // ===== OPEN ADD MODAL =====
         const openAddBtn = document.querySelector('.js-add-jewelry');
@@ -1152,6 +1692,50 @@
             });
         }
 
+        // ===== OPEN EDIT MODAL ON CLICK =====
+        if (editBtns && editModal && editForm) {
+            editBtns.forEach(btn => {
+                btn.addEventListener('click', () => {
+                    // Lấy dữ liệu từ data-attribute
+                    editForm.action = `/admin/jewelries/${btn.getAttribute('data-id')}`;
+                    document.getElementById('edit-jewelry-name').value = btn.getAttribute('data-name') || '';
+                    document.getElementById('edit-jewelry-price').value = btn.getAttribute('data-price') || '';
+                    document.getElementById('edit-jewelry-category').value = btn.getAttribute('data-category') || '';
+                    document.getElementById('edit-jewelry-main-stone').value = btn.getAttribute('data-main_stone') || '';
+                    document.getElementById('edit-jewelry-stock').value = btn.getAttribute('data-stock') || '';
+                    document.getElementById('edit-jewelry-weight').value = btn.getAttribute('data-weight') || '';
+                    document.getElementById('edit-jewelry-policy').value = btn.getAttribute('data-policy') || '';
+
+                    // Mô tả
+                    const description = btn.getAttribute('data-description') || '';
+                    document.getElementById('edit-jewelry-description').value = description;
+                    if (typeof quillEdit !== 'undefined' && quillEdit) {
+                        quillEdit.root.innerHTML = description;
+                    }
+
+                    // Ảnh
+                    const imagesData = btn.getAttribute('data-images');
+                    if (imagesData) {
+                        try {
+                            const images = JSON.parse(imagesData);
+                            loadJewelryImages(images);
+                        } catch (e) {
+                            loadJewelryImages([]);
+                        }
+                    } else {
+                        loadJewelryImages([]);
+                    }
+
+                    // Reset input file
+                    const fileInput = document.getElementById('edit-jewelry-image');
+                    if (fileInput) fileInput.value = '';
+
+                    editModal.style.display = 'flex';
+                    document.body.style.overflow = 'hidden';
+                });
+            });
+        }
+
         // ===== OPEN DELETE MODAL =====
         const deleteBtns = document.querySelectorAll('.js-delete-jewelry');
         const deleteModal = document.querySelector('.js-modal-deleteJewelry');
@@ -1162,7 +1746,7 @@
         deleteBtns.forEach(btn => {
             btn.addEventListener('click', (e) => {
                 e.preventDefault();
-                const url = '/admin/jewelries/' + btn.getAttribute('href').split('=')[1];
+                const url = '/api/jewelries/' + btn.getAttribute('href').split('=')[1];
                 deleteForm.action = url;
                 deleteModal.style.display = 'flex';
                 document.body.style.overflow = 'hidden';
@@ -1359,6 +1943,24 @@
 
                 document.getElementById('edit-jewelry-weight').value = btn.getAttribute('data-weight') || '';
                 document.getElementById('edit-jewelry-policy').value = btn.getAttribute('data-policy') || '';
+
+                // Load danh sách ảnh từ data attribute
+                const imagesData = btn.getAttribute('data-images');
+                if (imagesData) {
+                    try {
+                        const images = JSON.parse(imagesData);
+                        loadJewelryImages(images);
+                    } catch (e) {
+                        console.error('Error parsing images data:', e);
+                        loadJewelryImages([]);
+                    }
+                } else {
+                    loadJewelryImages([]);
+                }
+
+                // Reset form ảnh mới  
+                document.getElementById('edit-jewelry-image').value = '';
+
                 editModal.style.display = 'flex';
                 document.body.style.overflow = 'hidden';
             });

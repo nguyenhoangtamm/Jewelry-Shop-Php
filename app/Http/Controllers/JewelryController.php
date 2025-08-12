@@ -21,10 +21,15 @@ class JewelryController extends Controller
         $jewelries = $query->orderBy('created_at', 'desc')->paginate(5);
         $categories = Category::where('is_deleted', 0)->get();
 
-        // Thêm ảnh chính cho từng jewelry
         foreach ($jewelries as $jewelry) {
-            $jewelry->main_image = ImageHelper::getMainImage($jewelry);
+            $images = [];
+            foreach ($jewelry->jewelryFiles as $file) {
+                $images[] = $file->file;
+            }
+            $jewelry->setAttribute('images', $images);
         }
+
+
 
         // Lấy danh sách đá chính duy nhất
         $mainStones = Jewelry::select('main_stone')
@@ -93,8 +98,10 @@ class JewelryController extends Controller
         $categories = Category::where('is_deleted', 0)->get();
 
         // Lấy ảnh chính của jewelry
-        $jewelry->current_image = ImageHelper::getMainImage($jewelry);
-
+        $jewelry->images = [];
+        foreach ($jewelry->jewelryFiles as $file) {
+            $jewelry->images[] = $file->file;
+        }
         return view('admin.jewelries.edit', compact('jewelry', 'categories'));
     }
 
@@ -118,23 +125,23 @@ class JewelryController extends Controller
         $jewelry = Jewelry::findOrFail($id);
 
         // Xử lý ảnh nếu có upload mới
-       if ($request->hasFile('image')) {
-    $fileModel = ImageHelper::uploadFile($request->file('image'));
+        if ($request->hasFile('image')) {
+            $fileModel = ImageHelper::uploadFile($request->file('image'));
 
-    if ($fileModel) {
-        // Gỡ đánh dấu ảnh chính cũ
-        \App\Models\JewelryFile::where('jewelry_id', $jewelry->id)
-            ->where('is_main', 1)
-            ->update(['is_main' => 0]);
+            if ($fileModel) {
+                // Gỡ đánh dấu ảnh chính cũ
+                \App\Models\JewelryFile::where('jewelry_id', $jewelry->id)
+                    ->where('is_main', 1)
+                    ->update(['is_main' => 0]);
 
-        // Lưu ảnh mới làm ảnh chính
-        $jewelryFile = new \App\Models\JewelryFile();
-        $jewelryFile->jewelry_id = $jewelry->id;
-        $jewelryFile->file_id = $fileModel->id;
-        $jewelryFile->is_main = 1;
-        $jewelryFile->save();
-    }
-}
+                // Lưu ảnh mới làm ảnh chính
+                $jewelryFile = new \App\Models\JewelryFile();
+                $jewelryFile->jewelry_id = $jewelry->id;
+                $jewelryFile->file_id = $fileModel->id;
+                $jewelryFile->is_main = 1;
+                $jewelryFile->save();
+            }
+        }
 
 
         $jewelry->update($validated);
@@ -154,5 +161,101 @@ class JewelryController extends Controller
             $redirect = redirect()->route('admin.jewelries.index', ['page' => $page]);
         }
         return $redirect->with('success', 'Xóa trang sức thành công!');
+    }
+
+
+    // Lấy danh sách ảnh của sản phẩm
+    public function getImages($id)
+    {
+        $jewelry = Jewelry::with(['jewelryFiles.file'])->findOrFail($id);
+        $images = $jewelry->jewelryFiles->map(function ($jf) {
+            return [
+                'jewelry_file_id' => $jf->id,
+                'url' => asset('img/uploads/images/' . $jf->file->path),
+                'is_main' => $jf->is_main,
+                'file_name' => $jf->file->name
+            ];
+        });
+        return response()->json(['images' => $images]);
+    }
+
+    // Đặt ảnh chính cho sản phẩm
+    public function setMainImage(Request $request, $id)
+    {
+        $jewelryFileId = $request->input('jewelry_file_id');
+        // Gỡ đánh dấu ảnh chính cũ
+        \App\Models\JewelryFile::where('jewelry_id', $id)->where('is_main', 1)->update(['is_main' => 0]);
+        // Đặt ảnh mới làm ảnh chính
+        \App\Models\JewelryFile::where('id', $jewelryFileId)->where('jewelry_id', $id)->update(['is_main' => 1]);
+        return response()->json(['success' => true]);
+    }
+
+    // Thêm ảnh mới cho sản phẩm
+    public function addImage(Request $request, $id)
+    {
+        $request->validate([
+            'image' => 'required|image|mimes:jpeg,png,jpg,gif|max:2048'
+        ]);
+
+        $jewelry = Jewelry::findOrFail($id);
+
+        if ($request->hasFile('image')) {
+            // Upload file
+            $fileModel = ImageHelper::uploadFile($request->file('image'));
+
+            if ($fileModel) {
+                // Tạo jewelry_file record
+                $jewelryFile = new \App\Models\JewelryFile();
+                $jewelryFile->jewelry_id = $jewelry->id;
+                $jewelryFile->file_id = $fileModel->id;
+                $jewelryFile->is_main = 0; // Ảnh mới không phải ảnh chính
+                $jewelryFile->save();
+
+                // Trả về thông tin ảnh mới
+                return response()->json([
+                    'success' => true,
+                    'message' => 'Đã thêm ảnh thành công!',
+                    'image' => [
+                        'jewelry_file_id' => $jewelryFile->id,
+                        'url' => asset('img/uploads/images/' . $fileModel->path),
+                        'is_main' => false
+                    ]
+                ]);
+            }
+        }
+
+        return response()->json([
+            'success' => false,
+            'message' => 'Có lỗi xảy ra khi upload ảnh!'
+        ]);
+    }
+
+    // Xóa ảnh sản phẩm (trừ ảnh chính)
+    public function deleteImage($jewelryFileId)
+    {
+        $jewelryFile = \App\Models\JewelryFile::findOrFail($jewelryFileId);
+        if ($jewelryFile->is_main) {
+            return response()->json(['success' => false, 'message' => 'Không thể xóa ảnh chính']);
+        }
+        $jewelryFile->softDelete();
+        return response()->json(['success' => true]);
+    }
+
+    // Đổi file ảnh cho 1 ảnh sản phẩm
+    public function updateImage(Request $request, $jewelryFileId)
+    {
+        $request->validate([
+            'image' => 'required|image|mimes:jpeg,png,jpg,gif|max:2048'
+        ]);
+        $jewelryFile = \App\Models\JewelryFile::findOrFail($jewelryFileId);
+        if ($request->hasFile('image')) {
+            $fileModel = ImageHelper::uploadFile($request->file('image'));
+            if ($fileModel) {
+                $jewelryFile->file_id = $fileModel->id;
+                $jewelryFile->save();
+                return response()->json(['success' => true, 'url' => asset('img/uploads/images/' . $fileModel->path)]);
+            }
+        }
+        return response()->json(['success' => false]);
     }
 }

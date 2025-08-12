@@ -1,6 +1,7 @@
 <?php
 
 use App\Http\Controllers\Auth\AuthController;
+use App\Http\Controllers\JewelryController;
 use App\Http\Controllers\User\ReviewController;
 use App\Http\Controllers\User\CartController;
 use Illuminate\Http\Request;
@@ -34,3 +35,10 @@ Route::middleware('web')->group(function () {
     Route::get('/cart/count', [CartController::class, 'getCartCount'])->name('api.cart.count');
     Route::get('/cart/data', [CartController::class, 'getCartData'])->name('api.cart.data');
 });
+
+// Quản lý ảnh sản phẩm
+Route::get('/jewelries/{id}/images', [JewelryController::class, 'getImages'])->name('jewelries.images');
+Route::post('/jewelries/{id}/set-main-image', [JewelryController::class, 'setMainImage'])->name('jewelries.setMainImage');
+Route::post('/jewelries/{id}/add-image', [JewelryController::class, 'addImage'])->name('jewelries.addImage');
+Route::delete('/jewelries/image/{jewelryFileId}', [JewelryController::class, 'deleteImage'])->name('jewelries.deleteImage');
+Route::post('/jewelries/image/{jewelryFileId}/update', [JewelryController::class, 'updateImage'])->name('jewelries.updateImage');
