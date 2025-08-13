@@ -24,6 +24,7 @@ use App\Http\Controllers\User\PointsController;
 use App\Http\Controllers\User\NotificationsController;
 use App\Http\Controllers\User\ReviewController;
 use App\Http\Controllers\Admin\ReviewController as AdminReviewController;
+use App\Http\Controllers\User\ChatboxController;
 // =============================
 // Public routes (khách, chưa đăng nhập)
 // =============================
@@ -182,6 +183,14 @@ Route::middleware('auth')->group(function () {
     // =============================
     Route::prefix('notifications')->name('user.notifications.')->middleware('role:customer')->group(function () {
         Route::get('/', [NotificationsController::class, 'index'])->name('index');
+    });
+
+    // =============================
+    // Chatbox AI - customer
+    // =============================
+    Route::prefix('chatbox')->name('user.chatbox.')->middleware('role:customer')->group(function () {
+        Route::get('/', [ChatboxController::class, 'index'])->name('index');
+        Route::post('/send', [ChatboxController::class, 'sendMessage'])->name('send');
     });
 
     // =============================

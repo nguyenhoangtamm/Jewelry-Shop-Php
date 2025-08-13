@@ -1226,6 +1226,13 @@
                             <a href="{{ route('news.index') }}">Tin tức</a>
                         </li>
 
+                        @if(Auth::check() && Auth::user()->getRoleName() === 'customer')
+                        <li class="nav-item">
+                            <a href="{{ route('user.chatbox.index') }}">
+                                <i class="fa fa-robot"></i> Chatbox AI
+                            </a>
+                        </li>
+                        @endif
 
                         <li class="nav-item"><a href="{{ route('contact.show') }}">Liên hệ</a></li>
 
@@ -1842,6 +1849,122 @@
             Hãy khám phá bộ sưu tập trang sức mới nhất của TVT – tôn vinh vẻ đẹp và đẳng cấp của bạn!
         </p>
     </div>
+
+    <!-- Floating Chatbox Button -->
+    @if(Auth::check() && Auth::user()->getRoleName() === 'customer')
+    <div class="floating-chatbox">
+        <a href="{{ route('user.chatbox.index') }}" class="chatbox-float-btn" title="Trợ lý AI">
+            <i class="fa fa-robot"></i>
+            <span class="chat-notification">Tư vấn AI</span>
+        </a>
+    </div>
+
+    <style>
+        .floating-chatbox {
+            position: fixed;
+            bottom: 30px;
+            right: 30px;
+            z-index: 1000;
+        }
+
+        .chatbox-float-btn {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            width: 60px;
+            height: 60px;
+            background: linear-gradient(135deg, var(--galaxy-blue) 0%, var(--galaxy-blue-light) 100%);
+            color: white;
+            border-radius: 50%;
+            text-decoration: none;
+            box-shadow: 0 4px 20px rgba(26, 35, 126, 0.3);
+            transition: all 0.3s ease;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .chatbox-float-btn:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 8px 30px rgba(26, 35, 126, 0.4);
+            text-decoration: none;
+            color: white;
+            width: auto;
+            padding: 0 20px;
+            border-radius: 30px;
+        }
+
+        .chatbox-float-btn i {
+            font-size: 24px;
+            transition: all 0.3s ease;
+        }
+
+        .chatbox-float-btn:hover i {
+            margin-right: 8px;
+        }
+
+        .chat-notification {
+            opacity: 0;
+            white-space: nowrap;
+            font-size: 14px;
+            font-weight: 500;
+            transition: all 0.3s ease;
+            max-width: 0;
+            overflow: hidden;
+        }
+
+        .chatbox-float-btn:hover .chat-notification {
+            opacity: 1;
+            max-width: 100px;
+        }
+
+        /* Pulse animation */
+        .chatbox-float-btn::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            border-radius: 50%;
+            background: var(--galaxy-blue);
+            animation: pulse 2s infinite;
+        }
+
+        @keyframes pulse {
+            0% {
+                transform: scale(1);
+                opacity: 0.7;
+            }
+
+            50% {
+                transform: scale(1.1);
+                opacity: 0.3;
+            }
+
+            100% {
+                transform: scale(1);
+                opacity: 0.7;
+            }
+        }
+
+        /* Mobile adjustments */
+        @media (max-width: 768px) {
+            .floating-chatbox {
+                bottom: 20px;
+                right: 20px;
+            }
+
+            .chatbox-float-btn {
+                width: 50px;
+                height: 50px;
+            }
+
+            .chatbox-float-btn i {
+                font-size: 20px;
+            }
+        }
+    </style>
+    @endif
 </body>
 
 </html>
