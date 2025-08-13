@@ -1015,6 +1015,12 @@
                             })) }}">
                         </button>
 
+                        <a href="{{ route('admin.reviews.by-product', $jewelry->id) }}"
+                            class="fa-solid fa-star icon-change"
+                            title="Xem đánh giá sản phẩm"
+                            style="text-decoration: none; color: white; margin-left: 5px;">
+                        </a>
+
                         <a href="?delete={{ $jewelry->id }}" class="fas fa-trash icon-delete js-delete-jewelry"></a>
                     </td>
                 </tr>

@@ -23,6 +23,7 @@ use App\Http\Controllers\User\FavoritesController;
 use App\Http\Controllers\User\PointsController;
 use App\Http\Controllers\User\NotificationsController;
 use App\Http\Controllers\User\ReviewController;
+use App\Http\Controllers\Admin\ReviewController as AdminReviewController;
 // =============================
 // Public routes (khách, chưa đăng nhập)
 // =============================
@@ -118,6 +119,16 @@ Route::middleware('auth')->group(function () {
         Route::put('/orders/{id}', [OrderController::class, 'update'])->name('orders.update')->whereNumber('id');
         Route::delete('/orders/{id}', [OrderController::class, 'destroy'])->name('orders.destroy')->whereNumber('id');
         Route::post('/orders', [OrderController::class, 'store'])->name('orders.store');
+
+        // Quản lý đánh giá
+        Route::prefix('reviews')->name('reviews.')->group(function () {
+            Route::get('/', [AdminReviewController::class, 'index'])->name('index');
+            Route::get('/product/{jewelry_id}', [AdminReviewController::class, 'showByProduct'])->name('by-product')->whereNumber('jewelry_id');
+            Route::get('/{id}', [AdminReviewController::class, 'show'])->name('show')->whereNumber('id');
+            Route::delete('/{id}', [AdminReviewController::class, 'destroy'])->name('destroy')->whereNumber('id');
+            Route::patch('/{id}/restore', [AdminReviewController::class, 'restore'])->name('restore')->whereNumber('id');
+            Route::delete('/{id}/force', [AdminReviewController::class, 'forceDelete'])->name('force-delete')->whereNumber('id');
+        });
     });
 
     // =============================

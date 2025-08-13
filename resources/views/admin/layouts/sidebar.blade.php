@@ -71,6 +71,12 @@
                 <span>Duyệt đơn hàng</span>
             </a>
         </li>
+        <li class="{{ request()->is('admin/reviews*') ? 'active' : '' }}">
+            <a href="{{ route('admin.reviews.index') }}">
+                <i class="fa-solid fa-star"></i>
+                <span>Đánh giá</span>
+            </a>
+        </li>
         <li>
             <a href="#" id="admin-logout-btn" style="color: #fff;">
                 <i class="fas fa-sign-out-alt"></i>
