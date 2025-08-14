@@ -19,21 +19,31 @@ class CheckoutController extends Controller
     /**
      * Hiển thị trang checkout từ cart
      */
-    public function index()
-    {
-        if (!Auth::check()) {
-            return redirect()->route('login');
-        }
+    public function index(Request $request)
+{
+    if (!Auth::check()) {
+        return redirect()->route('login');
+    }
 
+    $selectedItems = $request->query('selected_items');
+
+    if ($selectedItems) {
+        $selectedIds = explode(',', $selectedItems);
+        $cartItems = Cart::getUserCart(Auth::id())
+            ->whereIn('jewelry_id', $selectedIds);
+        $total = $cartItems->sum('price');
+    } else {
         $cartItems = Cart::getUserCart(Auth::id());
         $total = Cart::getCartTotal(Auth::id());
-
-        if ($cartItems->isEmpty()) {
-            return redirect()->route('cart.index')->with('error', 'Giỏ hàng của bạn đang trống');
-        }
-
-        return view('user.checkout.index', compact('cartItems', 'total'));
     }
+
+    if ($cartItems->isEmpty()) {
+        return redirect()->route('cart.index')->with('error', 'Giỏ hàng của bạn đang trống');
+    }
+
+    return view('user.checkout.index', compact('cartItems', 'total'));
+}
+
 
     /**
      * Xử lý thanh toán từ giỏ hàng
