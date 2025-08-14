@@ -508,10 +508,14 @@ body {
                             <span>Tổng cộng:</span>
                             <span id="total-amount">0 VNĐ</span>
                         </div>
-                        <button class="btn btn-primary-modern w-100 mt-3" id="checkout-btn" disabled>
-                            <i class="fas fa-credit-card icon-large"></i>
-                            Thanh toán (<span id="checkout-count">0</span> sản phẩm)
-                        </button>
+                      <form id="checkout-form" action="{{ route('checkout.index') }}" method="GET">
+    <input type="hidden" name="selected_items" id="selected-items-input">
+    <button type="submit" class="btn btn-primary-modern w-100 mt-3" id="checkout-btn" disabled>
+        <i class="fas fa-credit-card icon-large"></i>
+        Thanh toán (<span id="checkout-count">0</span> sản phẩm)
+    </button>
+</form>
+
                     </div>
                 </div>
             </div>
