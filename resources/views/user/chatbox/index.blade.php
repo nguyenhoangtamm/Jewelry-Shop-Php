@@ -257,6 +257,10 @@
         <div class="chatbox-header">
             <h2><i class="fa fa-robot"></i> Trợ lý AI Trang sức</h2>
             <p>Tư vấn và hỗ trợ 24/7 về trang sức, kim cương và dịch vụ</p>
+            <div style="margin-top: 10px; padding: 5px 10px; background: rgba(255,255,255,0.2); border-radius: 15px; font-size: 12px;">
+                <i class="fa {{ $aiStatus['gemini_enabled'] ? 'fa-check-circle' : 'fa-cog' }}"></i>
+                Powered by: {{ $aiStatus['ai_model'] }}
+            </div>
         </div>
 
         <div class="chat-messages" id="chatMessages">
