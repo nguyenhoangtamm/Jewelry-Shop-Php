@@ -560,26 +560,31 @@ body {
     });
 
     function updateSummary() {
-        let selectedCount = 0;
-        let totalAmount = 0;
+    let selectedCount = 0;
+    let totalAmount = 0;
+    let selectedItems = [];
 
-        $('.product-checkbox:checked').each(function () {
-            selectedCount++;
-            totalAmount += parseFloat($(this).data('price'));
-        });
+    $('.product-checkbox:checked').each(function () {
+        selectedCount++;
+        totalAmount += parseFloat($(this).data('price'));
+        selectedItems.push($(this).data('jewelry-id'));
+    });
 
-        // Cập nhật số đã chọn
-        $('#selected-count').text(selectedCount);
-        $('#selected-items-count').text(selectedCount + ' sản phẩm');
+    // Cập nhật số đã chọn
+    $('#selected-count').text(selectedCount);
+    $('#selected-items-count').text(selectedCount + ' sản phẩm');
 
-        // Cập nhật tạm tính & tổng cộng
-        $('#subtotal').text(new Intl.NumberFormat('vi-VN').format(totalAmount) + ' VNĐ');
-        $('#total-amount').text(new Intl.NumberFormat('vi-VN').format(totalAmount) + ' VNĐ');
+    // Cập nhật tạm tính & tổng cộng
+    $('#subtotal').text(new Intl.NumberFormat('vi-VN').format(totalAmount) + ' VNĐ');
+    $('#total-amount').text(new Intl.NumberFormat('vi-VN').format(totalAmount) + ' VNĐ');
 
-        // Cập nhật nút thanh toán
-        $('#checkout-count').text(selectedCount);
-        $('#checkout-btn').prop('disabled', selectedCount === 0);
-    }
+    // Cập nhật nút thanh toán
+    $('#checkout-count').text(selectedCount);
+    $('#checkout-btn').prop('disabled', selectedCount === 0);
+
+    // Gán danh sách ID sản phẩm vào input hidden
+    $('#selected-items-input').val(selectedItems.join(','));
+}
 });
 
 
