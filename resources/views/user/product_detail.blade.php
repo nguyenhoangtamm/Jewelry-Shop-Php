@@ -400,561 +400,570 @@
                     </div>
                     @endauth
 
-            <!-- Filters -->
-            <div class="review-filters">
-                <div class="filter-buttons">
-                    <button class="filter-btn active" data-rating="all">
-                        <i class="fas fa-list"></i> Tất cả (<span id="filter-all-count">{{ $totalReviews }}</span>)
-                    </button>
-                    @for($rating = 5; $rating >= 1; $rating--)
-                    <button class="filter-btn" data-rating="{{ $rating }}">
-                        <i class="fas fa-star"></i> {{ $rating }} Sao (<span
-                            id="filter-{{ $rating }}-count">{{ $ratingCounts[$rating] }}</span>)
-                    </button>
-                    @endfor
+                    <!-- Filters -->
+                    <div class="review-filters">
+                        <div class="filter-buttons">
+                            <button class="filter-btn active" data-rating="all">
+                                <i class="fas fa-list"></i> Tất cả (<span id="filter-all-count">{{ $totalReviews }}</span>)
+                            </button>
+                            @for($rating = 5; $rating >= 1; $rating--)
+                            <button class="filter-btn" data-rating="{{ $rating }}">
+                                <i class="fas fa-star"></i> {{ $rating }} Sao (<span
+                                    id="filter-{{ $rating }}-count">{{ $ratingCounts[$rating] }}</span>)
+                            </button>
+                            @endfor
+                        </div>
+                    </div>
+
+                    <!-- Reviews List -->
+                    <div class="reviews-list" id="reviews-list">
+                        <!-- Reviews will be loaded here via JavaScript -->
+                    </div>
+
+                    <!-- Loading indicator -->
+                    <div id="review-loading" style="text-align: center; padding: 40px; display: none;">
+                        <div style="font-size: 2rem; color: #cbd5e1; margin-bottom: 10px;">
+                            <i class="fas fa-spinner fa-spin"></i>
+                        </div>
+                        <p style="color: #64748b;">Đang tải đánh giá...</p>
+                    </div>
+
+                    <!-- No reviews message -->
+                    <div id="no-reviews" class="no-reviews" style="display: none;">
+                        <div class="no-reviews-icon">
+                            <i class="fas fa-comment-slash"></i>
+                        </div>
+                        <h3>Chưa có đánh giá nào</h3>
+                        <p>Hãy trở thành người đầu tiên đánh giá sản phẩm này!</p>
+                    </div>
                 </div>
             </div>
 
-            <!-- Reviews List -->
-            <div class="reviews-list" id="reviews-list">
-                <!-- Reviews will be loaded here via JavaScript -->
+            <div class="tab-content" id="faq">
+                <div class="faq-container">
+                    <h3>Câu hỏi thường gặp</h3>
+
+                    <div class="faq-item">
+                        <button class="faq-question">
+                            <span>Sản phẩm có bảo hành không?</span>
+                            <span class="faq-icon">⌄</span>
+                        </button>
+                        <div class="faq-answer">
+                            <p>{{ !empty($jewelry->after_sales_policy) ? $jewelry->after_sales_policy : 'Sản phẩm được bảo hành theo chính sách của cửa hàng.' }}
+                            </p>
+                        </div>
+                    </div>
+
+                    <div class="faq-item">
+                        <button class="faq-question">
+                            <span>Có thể đổi trả sản phẩm không?</span>
+                            <span class="faq-icon">⌄</span>
+                        </button>
+                        <div class="faq-answer">
+                            <p>Khách hàng có thể đổi trả sản phẩm trong vòng 7 ngày kể từ ngày mua hàng với điều kiện
+                                sản phẩm còn nguyên vẹn.</p>
+                        </div>
+                    </div>
+
+                    <div class="faq-item">
+                        <button class="faq-question">
+                            <span>Thời gian giao hàng?</span>
+                            <span class="faq-icon">⌄</span>
+                        </button>
+                        <div class="faq-answer">
+                            <p>Thời gian giao hàng từ 1-3 ngày làm việc đối với nội thành và 3-7 ngày đối với các tỉnh
+                                thành khác.</p>
+                        </div>
+                    </div>
+
+                    <div class="faq-item">
+                        <button class="faq-question">
+                            <span>Mua Online có ưu đãi gì đặc biệt cho tôi?</span>
+                            <span class="faq-icon">⌄</span>
+                        </button>
+                        <div class="faq-answer">
+                            <p>PNJ mang đến nhiều trải nghiệm mua sắm hiện đại khi mua Online: Ưu đãi độc quyền Online
+                                với hình thức thanh toán đa dạng, đặt giữ hàng Online nhận tại cửa hàng, miễn phí giao
+                                hàng từ 1-7 ngày trên toàn quốc và giao hàng trong 3 giờ tại một số khu vực trung tâm.
+                            </p>
+                        </div>
+                    </div>
+                </div>
             </div>
 
-            <!-- Loading indicator -->
-            <div id="review-loading" style="text-align: center; padding: 40px; display: none;">
-                <div style="font-size: 2rem; color: #cbd5e1; margin-bottom: 10px;">
-                    <i class="fas fa-spinner fa-spin"></i>
-                </div>
-                <p style="color: #64748b;">Đang tải đánh giá...</p>
-            </div>
+            {{-- end chi tiết sản phẩm --}}
 
-            <!-- No reviews message -->
-            <div id="no-reviews" class="no-reviews" style="display: none;">
-                <div class="no-reviews-icon">
-                    <i class="fas fa-comment-slash"></i>
-                </div>
-                <h3>Chưa có đánh giá nào</h3>
-                <p>Hãy trở thành người đầu tiên đánh giá sản phẩm này!</p>
-            </div>
         </div>
-    </div>
-
-    <div class="tab-content" id="faq">
-        <div class="faq-container">
-            <h3>Câu hỏi thường gặp</h3>
-
-            <div class="faq-item">
-                <button class="faq-question">
-                    <span>Sản phẩm có bảo hành không?</span>
-                    <span class="faq-icon">⌄</span>
-                </button>
-                <div class="faq-answer">
-                    <p>{{ !empty($jewelry->after_sales_policy) ? $jewelry->after_sales_policy : 'Sản phẩm được bảo hành theo chính sách của cửa hàng.' }}
-                    </p>
-                </div>
-            </div>
-
-            <div class="faq-item">
-                <button class="faq-question">
-                    <span>Có thể đổi trả sản phẩm không?</span>
-                    <span class="faq-icon">⌄</span>
-                </button>
-                <div class="faq-answer">
-                    <p>Khách hàng có thể đổi trả sản phẩm trong vòng 7 ngày kể từ ngày mua hàng với điều kiện
-                        sản phẩm còn nguyên vẹn.</p>
-                </div>
-            </div>
-
-            <div class="faq-item">
-                <button class="faq-question">
-                    <span>Thời gian giao hàng?</span>
-                    <span class="faq-icon">⌄</span>
-                </button>
-                <div class="faq-answer">
-                    <p>Thời gian giao hàng từ 1-3 ngày làm việc đối với nội thành và 3-7 ngày đối với các tỉnh
-                        thành khác.</p>
-                </div>
-            </div>
-
-            <div class="faq-item">
-                <button class="faq-question">
-                    <span>Mua Online có ưu đãi gì đặc biệt cho tôi?</span>
-                    <span class="faq-icon">⌄</span>
-                </button>
-                <div class="faq-answer">
-                    <p>PNJ mang đến nhiều trải nghiệm mua sắm hiện đại khi mua Online: Ưu đãi độc quyền Online
-                        với hình thức thanh toán đa dạng, đặt giữ hàng Online nhận tại cửa hàng, miễn phí giao
-                        hàng từ 1-7 ngày trên toàn quốc và giao hàng trong 3 giờ tại một số khu vực trung tâm.
-                    </p>
-                </div>
-            </div>
-        </div>
-    </div>
-
-    {{-- end chi tiết sản phẩm --}}
-
-    </div>
 </section>
 <!-- DETAILS END -->
 
 <script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
 <script type="module" src="./js/details.js"></script>
 <script>
-// Gallery functionality
-function changeMainImage(imagePath, thumbnailElement) {
-    const mainImage = document.getElementById('mainImage');
+    // Gallery functionality
+    function changeMainImage(imagePath, thumbnailElement) {
+        const mainImage = document.getElementById('mainImage');
 
-    // Add fade effect
-    mainImage.style.opacity = '0.7';
+        // Add fade effect
+        mainImage.style.opacity = '0.7';
 
-    setTimeout(() => {
-        // Update main image
-        mainImage.src = imagePath;
-        mainImage.style.opacity = '1';
-        mainImage.classList.add('fade-in');
-
-        // Remove active class from all thumbnails
-        document.querySelectorAll('.thumbnail').forEach(t => t.classList.remove('active'));
-
-        // Add active class to clicked thumbnail
-        thumbnailElement.classList.add('active');
-
-        // Remove animation class after animation completes
         setTimeout(() => {
-            mainImage.classList.remove('fade-in');
-        }, 300);
-    }, 150);
-}
+            // Update main image
+            mainImage.src = imagePath;
+            mainImage.style.opacity = '1';
+            mainImage.classList.add('fade-in');
 
-// Thumbnail scroll functionality
-function scrollThumbnails(direction) {
-    const thumbnailList = document.querySelector('.thumbnail-list');
-    const scrollAmount = 90; // Thumbnail height + gap
+            // Remove active class from all thumbnails
+            document.querySelectorAll('.thumbnail').forEach(t => t.classList.remove('active'));
 
-    if (direction === 'up') {
-        thumbnailList.scrollTop -= scrollAmount;
-    } else {
-        thumbnailList.scrollTop += scrollAmount;
+            // Add active class to clicked thumbnail
+            thumbnailElement.classList.add('active');
+
+            // Remove animation class after animation completes
+            setTimeout(() => {
+                mainImage.classList.remove('fade-in');
+            }, 300);
+        }, 150);
     }
 
-    // Update navigation button states
-    updateNavigationButtons();
-}
+    // Thumbnail scroll functionality
+    function scrollThumbnails(direction) {
+        const thumbnailList = document.querySelector('.thumbnail-list');
+        const scrollAmount = 90; // Thumbnail height + gap
 
-// Update navigation button states based on scroll position
-function updateNavigationButtons() {
-    const thumbnailList = document.querySelector('.thumbnail-list');
-    const upBtn = document.querySelector('.thumbnail-nav.up');
-    const downBtn = document.querySelector('.thumbnail-nav.down');
-
-    if (thumbnailList && upBtn && downBtn) {
-        const isAtTop = thumbnailList.scrollTop <= 0;
-        const isAtBottom = thumbnailList.scrollTop >= thumbnailList.scrollHeight - thumbnailList.clientHeight;
-
-        upBtn.style.opacity = isAtTop ? '0.5' : '1';
-        downBtn.style.opacity = isAtBottom ? '0.5' : '1';
-        upBtn.style.pointerEvents = isAtTop ? 'none' : 'auto';
-        downBtn.style.pointerEvents = isAtBottom ? 'none' : 'auto';
-    }
-}
-
-// Initialize on page load
-document.addEventListener('DOMContentLoaded', function() {
-    updateNavigationButtons();
-
-    // Add scroll listener to thumbnail list
-    const thumbnailList = document.querySelector('.thumbnail-list');
-    if (thumbnailList) {
-        thumbnailList.addEventListener('scroll', updateNavigationButtons);
-    }
-});
-
-// Tab functionality
-document.querySelectorAll('.tab').forEach(tab => {
-    tab.addEventListener('click', function() {
-        const tabName = this.dataset.tab;
-
-        // Remove active class from all tabs
-        document.querySelectorAll('.tab').forEach(t => t.classList.remove('active'));
-        // Add active class to clicked tab
-        this.classList.add('active');
-
-        // Hide all tab contents
-        document.querySelectorAll('.tab-content').forEach(content => {
-            content.classList.remove('active');
-        });
-
-        // Show corresponding tab content
-        document.getElementById(tabName).classList.add('active');
-    });
-});
-
-// Review filter functionality
-document.querySelectorAll('.filter-btn').forEach(btn => {
-    btn.addEventListener('click', function() {
-        // Remove active class from all filter buttons
-        document.querySelectorAll('.filter-btn').forEach(b => b.classList.remove('active'));
-        // Add active class to clicked button
-        this.classList.add('active');
-
-        const rating = this.dataset.rating;
-        loadReviews(rating);
-    });
-});
-
-// Load reviews function
-function loadReviews(rating = 'all') {
-    const reviewsList = document.getElementById('reviews-list');
-    const loading = document.getElementById('review-loading');
-    const noReviews = document.getElementById('no-reviews');
-
-    // Show loading
-    loading.style.display = 'block';
-    reviewsList.style.display = 'none';
-    noReviews.style.display = 'none';
-
-    // AJAX request to load reviews
-    $.ajax({
-        url: '/api/reviews/{{ $jewelry->id }}',
-        method: 'GET',
-        data: {
-            rating: rating
-        },
-        success: function(response) {
-            loading.style.display = 'none';
-            if (response.reviews && response.reviews.length > 0) {
-                reviewsList.innerHTML = '';
-                response.reviews.forEach(review => {
-                    const reviewHtml = createReviewHTML(review);
-                    reviewsList.innerHTML += reviewHtml;
-                });
-                reviewsList.style.display = 'flex';
-            } else {
-                reviewsList.innerHTML = '';
-                noReviews.style.display = 'block';
-            }
-        },
-        error: function() {
-            loading.style.display = 'none';
-            reviewsList.innerHTML = '';
-            noReviews.style.display = 'block';
-            showNotification('Có lỗi khi tải đánh giá!', 'error');
+        if (direction === 'up') {
+            thumbnailList.scrollTop -= scrollAmount;
+        } else {
+            thumbnailList.scrollTop += scrollAmount;
         }
-    });
-}
 
-// Create review HTML
-function createReviewHTML(review) {
-    const stars = '★'.repeat(review.rating) + '☆'.repeat(5 - review.rating);
-    const avatar = review.user_name ? review.user_name.charAt(0).toUpperCase() : '?';
-    let date = '';
-    if (review.created_at) {
-        try {
-            const d = new Date(review.created_at);
-            if (!isNaN(d.getTime())) {
-                date = d.toLocaleDateString('vi-VN', {
-                    year: 'numeric',
-                    month: '2-digit',
-                    day: '2-digit',
-                    hour: '2-digit',
-                    minute: '2-digit'
-                });
-            }
-        } catch (e) {
-            date = '';
+        // Update navigation button states
+        updateNavigationButtons();
+    }
+
+    // Update navigation button states based on scroll position
+    function updateNavigationButtons() {
+        const thumbnailList = document.querySelector('.thumbnail-list');
+        const upBtn = document.querySelector('.thumbnail-nav.up');
+        const downBtn = document.querySelector('.thumbnail-nav.down');
+
+        if (thumbnailList && upBtn && downBtn) {
+            const isAtTop = thumbnailList.scrollTop <= 0;
+            const isAtBottom = thumbnailList.scrollTop >= thumbnailList.scrollHeight - thumbnailList.clientHeight;
+
+            upBtn.style.opacity = isAtTop ? '0.5' : '1';
+            downBtn.style.opacity = isAtBottom ? '0.5' : '1';
+            upBtn.style.pointerEvents = isAtTop ? 'none' : 'auto';
+            downBtn.style.pointerEvents = isAtBottom ? 'none' : 'auto';
         }
     }
-    return `
-            <div class="review-item" data-rating="${review.rating}">
-                <div class="reviewer-header">
-                    <div class="reviewer-avatar">${avatar}</div>
-                    <div class="reviewer-info">
-                        <div class="reviewer-name">${review.user_name || 'Ẩn danh'}</div>
-                        <div class="review-date">
-                            <i class="far fa-calendar"></i> ${date}
-                        </div>
-                    </div>
-                    <div class="review-rating">
-                        <div class="review-stars">${stars}</div>
-                    </div>
-                </div>
-                <div class="review-content">
-                    ${review.content}
-                </div>
-            </div>
-        `;
-}
 
-// Submit review form
-$('#review-form').on('submit', function(e) {
-    e.preventDefault();
+    // Initialize on page load
+    document.addEventListener('DOMContentLoaded', function() {
+        updateNavigationButtons();
 
-    const formData = {
-        _token: $('meta[name="csrf-token"]').attr('content'),
-        jewelry_id: $('input[name="jewelry_id"]').val(),
-        rating: $('input[name="rating"]:checked').val(),
-        content: $('#reviewContent').val()
-    };
-
-    if (!formData.rating) {
-        showNotification('Vui lòng chọn số sao đánh giá!', 'warning');
-        return;
-    }
-
-    if (!formData.content.trim()) {
-        showNotification('Vui lòng nhập nội dung đánh giá!', 'warning');
-        return;
-    }
-
-    const submitBtn = $('.btn-submit');
-    submitBtn.prop('disabled', true).html('<i class="fas fa-spinner fa-spin"></i> Đang gửi...');
-
-    $.ajax({
-        url: '/api/reviews',
-        method: 'POST',
-        data: formData,
-        success: function(response) {
-            if (response.success) {
-                showNotification(response.message, 'success');
-
-                // Reset form
-                $('#review-form')[0].reset();
-                $('input[name="rating"]').prop('checked', false);
-
-                // Reload reviews and update summary
-                loadReviews();
-                updateReviewSummary(response.summary);
-            } else {
-                showNotification(response.message, 'error');
-            }
-
-            submitBtn.prop('disabled', false).html(
-                '<i class="fas fa-paper-plane"></i> Gửi đánh giá');
-        },
-        error: function(xhr) {
-            let message = 'Có lỗi xảy ra, vui lòng thử lại!';
-
-            if (xhr.responseJSON && xhr.responseJSON.message) {
-                message = xhr.responseJSON.message;
-            } else if (xhr.responseJSON && xhr.responseJSON.errors) {
-                const errors = Object.values(xhr.responseJSON.errors).flat();
-                message = errors.join(', ');
-            }
-
-            showNotification(message, 'error');
-            submitBtn.prop('disabled', false).html(
-                '<i class="fas fa-paper-plane"></i> Gửi đánh giá');
+        // Add scroll listener to thumbnail list
+        const thumbnailList = document.querySelector('.thumbnail-list');
+        if (thumbnailList) {
+            thumbnailList.addEventListener('scroll', updateNavigationButtons);
         }
     });
-});
 
-// Update review summary
-function updateReviewSummary(summary) {
-    $('#average-rating').text(summary.averageRating);
-    $('#total-reviews').text(summary.totalReviews + ' đánh giá');
-    $('#filter-all-count').text(summary.totalReviews);
+    // Tab functionality
+    document.querySelectorAll('.tab').forEach(tab => {
+        tab.addEventListener('click', function() {
+            const tabName = this.dataset.tab;
 
-    // Update stars display
-    const stars = '★'.repeat(Math.floor(summary.averageRating)) + '☆'.repeat(5 - Math.floor(summary.averageRating));
-    $('#average-stars').html(stars);
+            // Remove active class from all tabs
+            document.querySelectorAll('.tab').forEach(t => t.classList.remove('active'));
+            // Add active class to clicked tab
+            this.classList.add('active');
 
-    // Update breakdown
-    for (let rating = 1; rating <= 5; rating++) {
-        const count = summary.ratingCounts[rating] || 0;
-        const percentage = summary.totalReviews > 0 ? (count / summary.totalReviews * 100) : 0;
-
-        $(`.rating-fill[data-rating="${rating}"]`).css('width', percentage + '%');
-        $(`.rating-count[data-rating="${rating}"]`).text(count);
-        $(`#filter-${rating}-count`).text(count);
-    }
-}
-
-// Load reviews when page loads
-$(document).ready(function() {
-    loadReviews();
-});
-
-//cau hoi thuong gap
-// FAQ Accordion functionality
-document.addEventListener('DOMContentLoaded', function() {
-    const faqQuestions = document.querySelectorAll('.faq-question');
-
-    faqQuestions.forEach(question => {
-        question.addEventListener('click', function() {
-            const answer = this.nextElementSibling;
-            const isActive = this.classList.contains('active');
-
-            // Đóng tất cả các FAQ khác
-            faqQuestions.forEach(q => {
-                q.classList.remove('active');
-                q.nextElementSibling.classList.remove('active');
+            // Hide all tab contents
+            document.querySelectorAll('.tab-content').forEach(content => {
+                content.classList.remove('active');
             });
 
-            // Nếu câu hỏi hiện tại chưa được mở, mở nó
-            if (!isActive) {
-                this.classList.add('active');
-                answer.classList.add('active');
+            // Show corresponding tab content
+            document.getElementById(tabName).classList.add('active');
+        });
+    });
+
+    // Review filter functionality
+    document.querySelectorAll('.filter-btn').forEach(btn => {
+        btn.addEventListener('click', function() {
+            // Remove active class from all filter buttons
+            document.querySelectorAll('.filter-btn').forEach(b => b.classList.remove('active'));
+            // Add active class to clicked button
+            this.classList.add('active');
+
+            const rating = this.dataset.rating;
+            loadReviews(rating);
+        });
+    });
+
+    // Load reviews function
+    function loadReviews(rating = 'all') {
+        const reviewsList = document.getElementById('reviews-list');
+        const loading = document.getElementById('review-loading');
+        const noReviews = document.getElementById('no-reviews');
+
+        // Show loading
+        loading.style.display = 'block';
+        reviewsList.style.display = 'none';
+        noReviews.style.display = 'none';
+
+        // AJAX request to load reviews
+        $.ajax({
+            url: '/api/reviews/{{ $jewelry->id }}',
+            method: 'GET',
+            data: {
+                rating: rating
+            },
+            success: function(response) {
+                loading.style.display = 'none';
+                if (response.reviews && response.reviews.length > 0) {
+                    reviewsList.innerHTML = '';
+                    response.reviews.forEach(review => {
+                        const reviewHtml = createReviewHTML(review);
+                        reviewsList.innerHTML += reviewHtml;
+                    });
+                    reviewsList.style.display = 'flex';
+                } else {
+                    reviewsList.innerHTML = '';
+                    noReviews.style.display = 'block';
+                }
+            },
+            error: function() {
+                loading.style.display = 'none';
+                reviewsList.innerHTML = '';
+                noReviews.style.display = 'block';
+                showNotification('Có lỗi khi tải đánh giá!', 'error');
+            }
+        });
+    }
+
+    // Create review HTML
+    function createReviewHTML(review) {
+        const stars = '★'.repeat(review.rating) + '☆'.repeat(5 - review.rating);
+
+        let avatar = '';
+        if (review.user_avatar) {
+            avatar = `<img src="${review.user_avatar}" alt="${review.user_name}" style="width: 100%; height: 100%; object-fit: cover; border-radius: 50%;">`;
+        } else {
+            const firstChar = review.user_name ? review.user_name.charAt(0).toUpperCase() : '?';
+            avatar = firstChar;
+        }
+
+        let date = '';
+        if (review.created_at) {
+            try {
+                const d = new Date(review.created_at);
+                if (!isNaN(d.getTime())) {
+                    date = d.toLocaleDateString('vi-VN', {
+                        year: 'numeric',
+                        month: '2-digit',
+                        day: '2-digit',
+                        hour: '2-digit',
+                        minute: '2-digit'
+                    });
+                }
+            } catch (e) {
+                date = '';
+            }
+        }
+
+        return `
+        <div class="review-item" data-rating="${review.rating}">
+            <div class="reviewer-header">
+                <div class="reviewer-avatar">${avatar}</div>
+                <div class="reviewer-info">
+                    <div class="reviewer-name">${review.user_name || 'Ẩn danh'}</div>
+                    <div class="review-date">
+                        <i class="far fa-calendar"></i> ${date}
+                    </div>
+                </div>
+                <div class="review-rating">
+                    <div class="review-stars">${stars}</div>
+                </div>
+            </div>
+            <div class="review-content">
+                ${review.content}
+            </div>
+        </div>
+    `;
+    }
+
+    // Submit review form
+    $('#review-form').on('submit', function(e) {
+        e.preventDefault();
+
+        const formData = {
+            _token: $('meta[name="csrf-token"]').attr('content'),
+            jewelry_id: $('input[name="jewelry_id"]').val(),
+            rating: $('input[name="rating"]:checked').val(),
+            content: $('#reviewContent').val()
+        };
+
+        if (!formData.rating) {
+            showNotification('Vui lòng chọn số sao đánh giá!', 'warning');
+            return;
+        }
+
+        if (!formData.content.trim()) {
+            showNotification('Vui lòng nhập nội dung đánh giá!', 'warning');
+            return;
+        }
+
+        const submitBtn = $('.btn-submit');
+        submitBtn.prop('disabled', true).html('<i class="fas fa-spinner fa-spin"></i> Đang gửi...');
+
+        $.ajax({
+            url: '/api/reviews',
+            method: 'POST',
+            data: formData,
+            success: function(response) {
+                if (response.success) {
+                    showNotification(response.message, 'success');
+
+                    // Reset form
+                    $('#review-form')[0].reset();
+                    $('input[name="rating"]').prop('checked', false);
+
+                    // Reload reviews and update summary
+                    loadReviews();
+                    updateReviewSummary(response.summary);
+                } else {
+                    showNotification(response.message, 'error');
+                }
+
+                submitBtn.prop('disabled', false).html(
+                    '<i class="fas fa-paper-plane"></i> Gửi đánh giá');
+            },
+            error: function(xhr) {
+                let message = 'Có lỗi xảy ra, vui lòng thử lại!';
+
+                if (xhr.responseJSON && xhr.responseJSON.message) {
+                    message = xhr.responseJSON.message;
+                } else if (xhr.responseJSON && xhr.responseJSON.errors) {
+                    const errors = Object.values(xhr.responseJSON.errors).flat();
+                    message = errors.join(', ');
+                }
+
+                showNotification(message, 'error');
+                submitBtn.prop('disabled', false).html(
+                    '<i class="fas fa-paper-plane"></i> Gửi đánh giá');
             }
         });
     });
 
-    // Sự kiện chuyển trang khi bấm 'Mua ngay'
-    const buyNowBtn = document.querySelector('.btn.buy-now');
-    if (buyNowBtn) {
-        buyNowBtn.addEventListener('click', function(e) {
-            e.preventDefault();
-            window.location.href = '/checkout?jewelry={{ $jewelry->id }}&quantity=' + (document
-                .querySelector('.quantity')?.value || 1);
-        });
+    // Update review summary
+    function updateReviewSummary(summary) {
+        $('#average-rating').text(summary.averageRating);
+        $('#total-reviews').text(summary.totalReviews + ' đánh giá');
+        $('#filter-all-count').text(summary.totalReviews);
+
+        // Update stars display
+        const stars = '★'.repeat(Math.floor(summary.averageRating)) + '☆'.repeat(5 - Math.floor(summary.averageRating));
+        $('#average-stars').html(stars);
+
+        // Update breakdown
+        for (let rating = 1; rating <= 5; rating++) {
+            const count = summary.ratingCounts[rating] || 0;
+            const percentage = summary.totalReviews > 0 ? (count / summary.totalReviews * 100) : 0;
+
+            $(`.rating-fill[data-rating="${rating}"]`).css('width', percentage + '%');
+            $(`.rating-count[data-rating="${rating}"]`).text(count);
+            $(`#filter-${rating}-count`).text(count);
+        }
     }
-});
-//Thêm vao giỏ hàng và mua ngay
-// Xử lý thêm vào giỏ hàng
-$('.add-to-cart').on('click', function(e) {
-    e.preventDefault();
 
-    const jewelryId = $(this).data('id');
-    const quantity = parseInt($('.quantity').val()) || 1;
-    const button = $(this);
+    // Load reviews when page loads
+    $(document).ready(function() {
+        loadReviews();
+    });
 
-    // Hiển thị loading
-    button.prop('disabled', true).text('Đang thêm...');
+    //cau hoi thuong gap
+    // FAQ Accordion functionality
+    document.addEventListener('DOMContentLoaded', function() {
+        const faqQuestions = document.querySelectorAll('.faq-question');
 
-    $.ajax({
-        url: '/cart/add',
-        method: 'POST',
-        data: {
-            _token: $('meta[name="csrf-token"]').attr('content'),
-            jewelry_id: jewelryId,
-            quantity: quantity
-        },
-        success: function(response) {
-            if (response.success) {
-                // Hiển thị thông báo thành công
-                showNotification(response.message, 'success');
+        faqQuestions.forEach(question => {
+            question.addEventListener('click', function() {
+                const answer = this.nextElementSibling;
+                const isActive = this.classList.contains('active');
 
-                // Cập nhật số lượng giỏ hàng trên header
-                updateCartBadge(response.cart_count);
+                // Đóng tất cả các FAQ khác
+                faqQuestions.forEach(q => {
+                    q.classList.remove('active');
+                    q.nextElementSibling.classList.remove('active');
+                });
 
-                // Reset button
-                button.prop('disabled', false).html(
-                    '<i class="fas fa-shopping-cart"></i> Thêm vào giỏ hàng');
+                // Nếu câu hỏi hiện tại chưa được mở, mở nó
+                if (!isActive) {
+                    this.classList.add('active');
+                    answer.classList.add('active');
+                }
+            });
+        });
 
-                // Reset quantity về 1
-                $('.quantity').val(1);
-            } else {
-                showNotification(response.message, 'error');
-                button.prop('disabled', false).html(
-                    '<i class="fas fa-shopping-cart"></i> Thêm vào giỏ hàng');
-            }
-        },
-        error: function(xhr) {
-            let message = 'Có lỗi xảy ra, vui lòng thử lại!';
-
-            if (xhr.responseJSON && xhr.responseJSON.message) {
-                message = xhr.responseJSON.message;
-            }
-
-            showNotification(message, 'error');
-            button.prop('disabled', false).html(
-                '<i class="fas fa-shopping-cart"></i> Thêm vào giỏ hàng');
+        // Sự kiện chuyển trang khi bấm 'Mua ngay'
+        const buyNowBtn = document.querySelector('.btn.buy-now');
+        if (buyNowBtn) {
+            buyNowBtn.addEventListener('click', function(e) {
+                e.preventDefault();
+                window.location.href = '/checkout?jewelry={{ $jewelry->id }}&quantity=' + (document
+                    .querySelector('.quantity')?.value || 1);
+            });
         }
     });
-});
+    //Thêm vao giỏ hàng và mua ngay
+    // Xử lý thêm vào giỏ hàng
+    $('.add-to-cart').on('click', function(e) {
+        e.preventDefault();
 
-// Tăng/giảm số lượng
-$('.quantity-btn').on('click', function() {
-    const action = $(this).data('action');
-    const quantityInput = $('.quantity');
-    let currentQuantity = parseInt(quantityInput.val()) || 1;
-    const maxStock = parseInt(quantityInput.attr('max')) || 999;
+        const jewelryId = $(this).data('id');
+        const quantity = parseInt($('.quantity').val()) || 1;
+        const button = $(this);
 
-    if (action === 'increase' && currentQuantity < maxStock) {
-        quantityInput.val(currentQuantity + 1);
-    } else if (action === 'decrease' && currentQuantity > 1) {
-        quantityInput.val(currentQuantity - 1);
-    }
-});
+        // Hiển thị loading
+        button.prop('disabled', true).text('Đang thêm...');
 
-// Kiểm tra số lượng nhập vào
-$('.quantity').on('change', function() {
-    const maxStock = parseInt($(this).attr('max')) || 999;
-    let quantity = parseInt($(this).val()) || 1;
+        $.ajax({
+            url: '/cart/add',
+            method: 'POST',
+            data: {
+                _token: $('meta[name="csrf-token"]').attr('content'),
+                jewelry_id: jewelryId,
+                quantity: quantity
+            },
+            success: function(response) {
+                if (response.success) {
+                    // Hiển thị thông báo thành công
+                    showNotification(response.message, 'success');
 
-    if (quantity < 1) {
-        $(this).val(1);
-    } else if (quantity > maxStock) {
-        $(this).val(maxStock);
-        showNotification('Số lượng không được vượt quá ' + maxStock, 'warning');
-    }
-});
+                    // Cập nhật số lượng giỏ hàng trên header
+                    updateCartBadge(response.cart_count);
 
-// Mua ngay
-$('.buy-now').on('click', function(e) {
-    e.preventDefault();
+                    // Reset button
+                    button.prop('disabled', false).html(
+                        '<i class="fas fa-shopping-cart"></i> Thêm vào giỏ hàng');
 
-    const jewelryId = $(this).data('id');
-    const quantity = parseInt($('.quantity').val()) || 1;
-    const button = $(this);
+                    // Reset quantity về 1
+                    $('.quantity').val(1);
+                } else {
+                    showNotification(response.message, 'error');
+                    button.prop('disabled', false).html(
+                        '<i class="fas fa-shopping-cart"></i> Thêm vào giỏ hàng');
+                }
+            },
+            error: function(xhr) {
+                let message = 'Có lỗi xảy ra, vui lòng thử lại!';
 
-    button.prop('disabled', true).text('Đang xử lý...');
+                if (xhr.responseJSON && xhr.responseJSON.message) {
+                    message = xhr.responseJSON.message;
+                }
 
-    // Thêm vào giỏ hàng trước
-    $.ajax({
-        url: '/cart/add',
-        method: 'POST',
-        data: {
-            _token: $('meta[name="csrf-token"]').attr('content'),
-            jewelry_id: jewelryId,
-            quantity: quantity
-        },
-        success: function(response) {
-            if (response.success) {
-                // Chuyển đến trang giỏ hàng
-                window.location.href = '/cart';
-            } else {
-                showNotification(response.message, 'error');
+                showNotification(message, 'error');
+                button.prop('disabled', false).html(
+                    '<i class="fas fa-shopping-cart"></i> Thêm vào giỏ hàng');
+            }
+        });
+    });
+
+    // Tăng/giảm số lượng
+    $('.quantity-btn').on('click', function() {
+        const action = $(this).data('action');
+        const quantityInput = $('.quantity');
+        let currentQuantity = parseInt(quantityInput.val()) || 1;
+        const maxStock = parseInt(quantityInput.attr('max')) || 999;
+
+        if (action === 'increase' && currentQuantity < maxStock) {
+            quantityInput.val(currentQuantity + 1);
+        } else if (action === 'decrease' && currentQuantity > 1) {
+            quantityInput.val(currentQuantity - 1);
+        }
+    });
+
+    // Kiểm tra số lượng nhập vào
+    $('.quantity').on('change', function() {
+        const maxStock = parseInt($(this).attr('max')) || 999;
+        let quantity = parseInt($(this).val()) || 1;
+
+        if (quantity < 1) {
+            $(this).val(1);
+        } else if (quantity > maxStock) {
+            $(this).val(maxStock);
+            showNotification('Số lượng không được vượt quá ' + maxStock, 'warning');
+        }
+    });
+
+    // Mua ngay
+    $('.buy-now').on('click', function(e) {
+        e.preventDefault();
+
+        const jewelryId = $(this).data('id');
+        const quantity = parseInt($('.quantity').val()) || 1;
+        const button = $(this);
+
+        button.prop('disabled', true).text('Đang xử lý...');
+
+        // Thêm vào giỏ hàng trước
+        $.ajax({
+            url: '/cart/add',
+            method: 'POST',
+            data: {
+                _token: $('meta[name="csrf-token"]').attr('content'),
+                jewelry_id: jewelryId,
+                quantity: quantity
+            },
+            success: function(response) {
+                if (response.success) {
+                    // Chuyển đến trang giỏ hàng
+                    window.location.href = '/cart';
+                } else {
+                    showNotification(response.message, 'error');
+                    button.prop('disabled', false).html('<i class="fas fa-bolt"></i> Mua ngay');
+                }
+            },
+            error: function() {
+                showNotification('Có lỗi xảy ra, vui lòng thử lại!', 'error');
                 button.prop('disabled', false).html('<i class="fas fa-bolt"></i> Mua ngay');
             }
-        },
-        error: function() {
-            showNotification('Có lỗi xảy ra, vui lòng thử lại!', 'error');
-            button.prop('disabled', false).html('<i class="fas fa-bolt"></i> Mua ngay');
-        }
+        });
     });
-});
 
-// Hàm hiển thị thông báo đơn giản (không cần Bootstrap JS)
-function showNotification(message, type = 'info') {
-    // Xóa thông báo cũ nếu có
-    $('.custom-notification').remove();
+    // Hàm hiển thị thông báo đơn giản (không cần Bootstrap JS)
+    function showNotification(message, type = 'info') {
+        // Xóa thông báo cũ nếu có
+        $('.custom-notification').remove();
 
-    // Xác định màu sắc và icon theo loại thông báo
-    let bgColor, textColor, icon;
-    switch (type) {
-        case 'success':
-            bgColor = '#28a745';
-            textColor = '#fff';
-            icon = '✓';
-            break;
-        case 'error':
-            bgColor = '#dc3545';
-            textColor = '#fff';
-            icon = '✗';
-            break;
-        case 'warning':
-            bgColor = '#ffc107';
-            textColor = '#000';
-            icon = '⚠';
-            break;
-        default:
-            bgColor = '#17a2b8';
-            textColor = '#fff';
-            icon = 'ℹ';
-    }
+        // Xác định màu sắc và icon theo loại thông báo
+        let bgColor, textColor, icon;
+        switch (type) {
+            case 'success':
+                bgColor = '#28a745';
+                textColor = '#fff';
+                icon = '✓';
+                break;
+            case 'error':
+                bgColor = '#dc3545';
+                textColor = '#fff';
+                icon = '✗';
+                break;
+            case 'warning':
+                bgColor = '#ffc107';
+                textColor = '#000';
+                icon = '⚠';
+                break;
+            default:
+                bgColor = '#17a2b8';
+                textColor = '#fff';
+                icon = 'ℹ';
+        }
 
-    // Tạo HTML thông báo
-    const notificationHtml = `
+        // Tạo HTML thông báo
+        const notificationHtml = `
         <div class="custom-notification" style="
             position: fixed;
             top: 20px;
@@ -984,9 +993,9 @@ function showNotification(message, type = 'info') {
         </div>
     `;
 
-    // Thêm CSS animation nếu chưa có
-    if ($('#notification-styles').length === 0) {
-        $('head').append(`
+        // Thêm CSS animation nếu chưa có
+        if ($('#notification-styles').length === 0) {
+            $('head').append(`
             <style id="notification-styles">
                 @keyframes slideInRight {
                     from {
@@ -1011,37 +1020,37 @@ function showNotification(message, type = 'info') {
                 }
             </style>
         `);
-    }
-
-    // Thêm thông báo vào DOM
-    $('body').append(notificationHtml);
-
-    // Tự động ẩn sau 4 giây
-    setTimeout(function() {
-        $('.custom-notification').fadeOut(300, function() {
-            $(this).remove();
-        });
-    }, 4000);
-}
-
-// Cập nhật badge số lượng giỏ hàng
-function updateCartBadge(count) {
-    const badge = $('.cart-badge');
-    if (badge.length > 0) {
-        badge.text(count).show();
-    }
-}
-
-// Load số lượng giỏ hàng khi tải trang
-$(document).ready(function() {
-    $.ajax({
-        url: '/cart/count',
-        method: 'GET',
-        success: function(response) {
-            updateCartBadge(response.cart_count);
         }
+
+        // Thêm thông báo vào DOM
+        $('body').append(notificationHtml);
+
+        // Tự động ẩn sau 4 giây
+        setTimeout(function() {
+            $('.custom-notification').fadeOut(300, function() {
+                $(this).remove();
+            });
+        }, 4000);
+    }
+
+    // Cập nhật badge số lượng giỏ hàng
+    function updateCartBadge(count) {
+        const badge = $('.cart-badge');
+        if (badge.length > 0) {
+            badge.text(count).show();
+        }
+    }
+
+    // Load số lượng giỏ hàng khi tải trang
+    $(document).ready(function() {
+        $.ajax({
+            url: '/cart/count',
+            method: 'GET',
+            success: function(response) {
+                updateCartBadge(response.cart_count);
+            }
+        });
     });
-});
 </script>
 
 

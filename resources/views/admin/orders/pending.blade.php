@@ -197,6 +197,7 @@
     </div>
 </div>
 
+<meta name="csrf-token" content="{{ csrf_token() }}">
 <style>
     :root {
         --galaxy-primary: #1e3a8a;
@@ -788,6 +789,13 @@
 </style>
 
 <script>
+    // Thiết lập CSRF cho mọi request AJAX
+    $.ajaxSetup({
+        headers: {
+            'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
+        }
+    });
+
     let currentOrderId = null;
     let currentCustomerName = null;
 
@@ -883,12 +891,27 @@
 
         if (orderIds.length === 0) return;
 
-        // Here you would typically make an AJAX request to approve multiple orders
-        // For now, we'll approve them one by one
-        alert(`Đang xử lý duyệt ${orderIds.length} đơn hàng...`);
-
-        // You can implement bulk approval logic here
-        closeBulkModal();
+        // Duyệt hàng loạt bằng AJAX
+        $.ajax({
+            url: '{{ route("api.orders.bulkApprove") }}',
+            method: 'POST',
+            data: {
+                order_ids: orderIds
+            },
+            success: function(response) {
+                closeBulkModal();
+                if (response.success || response.status === 'success') {
+                    alert(response.message || 'Đã duyệt thành công!');
+                    window.location.reload();
+                } else {
+                    alert(response.error || 'Có lỗi xảy ra!');
+                }
+            },
+            error: function(xhr) {
+                closeBulkModal();
+                alert('Có lỗi xảy ra khi duyệt đơn hàng!');
+            }
+        });
     }
 
     function showOrderPreview(orderId) {

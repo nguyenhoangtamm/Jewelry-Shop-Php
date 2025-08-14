@@ -957,6 +957,114 @@
         .empty-cart-text {
             font-size: 14px;
         }
+
+        /* Search Suggestions Dropdown */
+        .search-suggestions {
+            position: absolute;
+            top: 100%;
+            left: 0;
+            right: 50px;
+            /* Leave space for search button */
+            background: white;
+            border: 1px solid #ddd;
+            border-top: none;
+            border-radius: 0 0 12px 12px;
+            box-shadow: 0 8px 25px rgba(0, 0, 0, 0.1);
+            z-index: 1000;
+            max-height: 400px;
+            overflow-y: auto;
+            display: none;
+        }
+
+        .search-suggestions::-webkit-scrollbar {
+            width: 6px;
+        }
+
+        .search-suggestions::-webkit-scrollbar-track {
+            background: #f1f1f1;
+            border-radius: 3px;
+        }
+
+        .search-suggestions::-webkit-scrollbar-thumb {
+            background: #c1c1c1;
+            border-radius: 3px;
+        }
+
+        .suggestion-item {
+            display: flex;
+            align-items: center;
+            padding: 12px 16px;
+            border-bottom: 1px solid #f1f3f4;
+            cursor: pointer;
+            transition: background 0.2s ease;
+            text-decoration: none;
+            color: inherit;
+        }
+
+        .suggestion-item:hover {
+            background: #f8f9fa;
+            text-decoration: none;
+            color: inherit;
+        }
+
+        .suggestion-item:last-child {
+            border-bottom: none;
+        }
+
+        .suggestion-image {
+            width: 50px;
+            height: 50px;
+            border-radius: 8px;
+            overflow: hidden;
+            margin-right: 12px;
+            flex-shrink: 0;
+        }
+
+        .suggestion-image img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+        }
+
+        .suggestion-details {
+            flex: 1;
+            min-width: 0;
+        }
+
+        .suggestion-name {
+            font-weight: 500;
+            color: #2c3e50;
+            margin-bottom: 4px;
+            font-size: 14px;
+            display: -webkit-box;
+            -webkit-line-clamp: 2;
+            line-clamp: 2;
+            -webkit-box-orient: vertical;
+            overflow: hidden;
+        }
+
+        .suggestion-price {
+            color: #e74c3c;
+            font-weight: 600;
+            font-size: 13px;
+        }
+
+        .no-suggestions {
+            padding: 20px;
+            text-align: center;
+            color: #666;
+            font-style: italic;
+        }
+
+        .search-loading {
+            padding: 20px;
+            text-align: center;
+            color: #666;
+        }
+
+        .search-loading i {
+            animation: spin 1s linear infinite;
+        }
     </style>
     @stack('head')
 </head>
@@ -1130,11 +1238,17 @@
                         <div class="search-box">
                             <form class="search form-inline" method="GET" action="{{ route('products.all') }}"
                                 style="position: relative;">
-                                <input type="text" name="search" placeholder="Tìm kiếm trang sức, nhẫn, dây chuyền..."
-                                    value="{{ request('search') }}">
+                                <input type="text" name="search" id="search-input"
+                                    placeholder="Tìm kiếm trang sức, nhẫn, dây chuyền..."
+                                    value="{{ request('search') }}" autocomplete="off">
                                 <button type="submit">
                                     <i class="fa fa-search"></i>
                                 </button>
+
+                                <!-- Dropdown suggestions -->
+                                <div id="search-suggestions" class="search-suggestions">
+                                    <!-- Suggestions will be loaded here -->
+                                </div>
                             </form>
                         </div>
                     </div>
@@ -1816,6 +1930,156 @@
         $(document).on('cartUpdated', function(event, data) {
             updateCartUI(data);
         });
+
+        // ================== SEARCH SUGGESTIONS (AUTOCOMPLETE) ==================
+        (function() {
+            const searchInput = document.getElementById('search-input');
+            const suggestionsDiv = document.getElementById('search-suggestions');
+            let searchTimeout;
+            let currentRequest;
+
+            if (!searchInput || !suggestionsDiv) return;
+
+            function showSuggestions() {
+                suggestionsDiv.style.display = 'block';
+            }
+
+            function hideSuggestions() {
+                suggestionsDiv.style.display = 'none';
+            }
+
+            function showLoading() {
+                suggestionsDiv.innerHTML = '<div class="search-loading"><i class="fa fa-spinner"></i> Đang tìm kiếm...</div>';
+                showSuggestions();
+            }
+
+            function showNoResults() {
+                suggestionsDiv.innerHTML = '<div class="no-suggestions">Không tìm thấy sản phẩm nào</div>';
+                showSuggestions();
+            }
+
+            function renderSuggestions(suggestions) {
+                if (suggestions.length === 0) {
+                    showNoResults();
+                    return;
+                }
+
+                let html = '';
+                suggestions.forEach(function(item) {
+                    html += `
+                        <a href="${item.url}" class="suggestion-item">
+                            <div class="suggestion-image">
+                                <img src="${item.image}" alt="${item.name}">
+                            </div>
+                            <div class="suggestion-details">
+                                <div class="suggestion-name">${item.name}</div>
+                                <div class="suggestion-price">${item.price}</div>
+                            </div>
+                        </a>
+                    `;
+                });
+
+                suggestionsDiv.innerHTML = html;
+                showSuggestions();
+            }
+
+            function fetchSuggestions(query) {
+                // Cancel previous request
+                if (currentRequest) {
+                    currentRequest.abort();
+                }
+
+                if (query.length < 2) {
+                    hideSuggestions();
+                    return;
+                }
+
+                showLoading();
+
+                currentRequest = $.ajax({
+                    url: '{{ route("api.products.suggestions") }}',
+                    method: 'GET',
+                    data: {
+                        q: query
+                    },
+                    success: function(response) {
+                        renderSuggestions(response);
+                    },
+                    error: function(xhr) {
+                        if (xhr.statusText !== 'abort') {
+                            hideSuggestions();
+                        }
+                    }
+                });
+            }
+
+            // Input event with debouncing
+            searchInput.addEventListener('input', function() {
+                clearTimeout(searchTimeout);
+                const query = this.value.trim();
+
+                searchTimeout = setTimeout(function() {
+                    fetchSuggestions(query);
+                }, 300);
+            });
+
+            // Focus event
+            searchInput.addEventListener('focus', function() {
+                const query = this.value.trim();
+                if (query.length >= 2) {
+                    fetchSuggestions(query);
+                }
+            });
+
+            // Click outside to hide
+            document.addEventListener('click', function(e) {
+                if (!searchInput.contains(e.target) && !suggestionsDiv.contains(e.target)) {
+                    hideSuggestions();
+                }
+            });
+
+            // Prevent form submission when clicking suggestions
+            suggestionsDiv.addEventListener('click', function(e) {
+                e.stopPropagation();
+            });
+
+            // Hide suggestions when form is submitted
+            searchInput.closest('form').addEventListener('submit', function() {
+                hideSuggestions();
+            });
+
+            // Keyboard navigation (optional enhancement)
+            let selectedIndex = -1;
+            searchInput.addEventListener('keydown', function(e) {
+                const suggestions = suggestionsDiv.querySelectorAll('.suggestion-item');
+
+                if (e.key === 'ArrowDown') {
+                    e.preventDefault();
+                    selectedIndex = Math.min(selectedIndex + 1, suggestions.length - 1);
+                    updateSelection(suggestions);
+                } else if (e.key === 'ArrowUp') {
+                    e.preventDefault();
+                    selectedIndex = Math.max(selectedIndex - 1, -1);
+                    updateSelection(suggestions);
+                } else if (e.key === 'Enter' && selectedIndex >= 0) {
+                    e.preventDefault();
+                    suggestions[selectedIndex].click();
+                } else if (e.key === 'Escape') {
+                    hideSuggestions();
+                    selectedIndex = -1;
+                }
+            });
+
+            function updateSelection(suggestions) {
+                suggestions.forEach(function(item, index) {
+                    if (index === selectedIndex) {
+                        item.style.background = '#e9ecef';
+                    } else {
+                        item.style.background = '';
+                    }
+                });
+            }
+        })();
     </script>
 
     <!-- Enhanced Popup container -->

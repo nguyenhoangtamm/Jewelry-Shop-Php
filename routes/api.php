@@ -2,6 +2,7 @@
 
 use App\Http\Controllers\Auth\AuthController;
 use App\Http\Controllers\JewelryController;
+use App\Http\Controllers\OrderController;
 use App\Http\Controllers\User\ReviewController;
 use App\Http\Controllers\User\CartController;
 use Illuminate\Http\Request;
@@ -42,3 +43,5 @@ Route::post('/jewelries/{id}/set-main-image', [JewelryController::class, 'setMai
 Route::post('/jewelries/{id}/add-image', [JewelryController::class, 'addImage'])->name('jewelries.addImage');
 Route::delete('/jewelries/image/{jewelryFileId}', [JewelryController::class, 'deleteImage'])->name('jewelries.deleteImage');
 Route::post('/jewelries/image/{jewelryFileId}/update', [JewelryController::class, 'updateImage'])->name('jewelries.updateImage');
+
+Route::post('/orders/bulk-approve', [OrderController::class, 'bulkApprove'])->name('api.orders.bulkApprove');

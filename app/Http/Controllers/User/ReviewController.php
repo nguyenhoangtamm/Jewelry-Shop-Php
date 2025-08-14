@@ -30,11 +30,20 @@ class ReviewController extends Controller
             $reviews = $query->get();
 
             $reviewsData = $reviews->map(function ($review) {
+                $user = $review->user;
+                $userAvatar = null;
+
+                // Lấy avatar của user nếu có
+                if ($user && $user->avatar) {
+                    $userAvatar = \App\Helpers\ImageHelper::getImageUrl($user->avatar);
+                }
+
                 return [
                     'id' => $review->id,
                     'rating' => $review->rating,
                     'content' => $review->content,
-                    'user_name' => $review->user ? $review->user->name : 'Người dùng ẩn danh',
+                    'user_name' => $user ? $user->fullname : 'Người dùng ẩn danh',
+                    'user_avatar' => $userAvatar,
                     'created_at' => $review->created_at ? $review->created_at->toISOString() : '',
                 ];
             });

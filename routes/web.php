@@ -59,6 +59,10 @@ Route::post('/products/{jewelry}/reviews', [ReviewController::class, 'store'])
     ->name('products.reviews.store');
 // Products listing page (public)
 Route::get('/products', [ProductController::class, 'showAll'])->name('products.all');
+
+// API for product suggestions (AJAX)
+Route::get('/api/products/suggestions', [SearchController::class, 'suggestions'])->name('api.products.suggestions');
+
 // =============================
 // User routes (cần đăng nhập)
 // =============================
@@ -120,7 +124,6 @@ Route::middleware('auth')->group(function () {
         Route::put('/orders/{id}', [OrderController::class, 'update'])->name('orders.update')->whereNumber('id');
         Route::delete('/orders/{id}', [OrderController::class, 'destroy'])->name('orders.destroy')->whereNumber('id');
         Route::post('/orders', [OrderController::class, 'store'])->name('orders.store');
-
         // Quản lý đánh giá
         Route::prefix('reviews')->name('reviews.')->group(function () {
             Route::get('/', [AdminReviewController::class, 'index'])->name('index');

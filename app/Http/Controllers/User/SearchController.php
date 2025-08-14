@@ -85,9 +85,23 @@ class SearchController extends Controller
         }
 
         $suggestions = Jewelry::where('name', 'LIKE', '%' . $query . '%')
-            ->select('id', 'name')
-            ->limit(5)
-            ->get();
+            ->select('id', 'name', 'price')
+            ->with(['jewelryFiles:jewelry_id,file_id', 'jewelryFiles.file:id,path'])
+            ->limit(8)
+            ->get()
+            ->map(function ($jewelry) {
+                $imageUrl = $jewelry->jewelryFiles->isNotEmpty() && $jewelry->jewelryFiles->first()->file
+                    ? \App\Helpers\ImageHelper::getImageUrl($jewelry->jewelryFiles->first()->file->path)
+                    : asset('img/no-image.png');
+
+                return [
+                    'id' => $jewelry->id,
+                    'name' => $jewelry->name,
+                    'price' => number_format($jewelry->price, 0, ',', '.') . ' ₫',
+                    'image' => $imageUrl,
+                    'url' => "/detail/{$jewelry->id}"
+                ];
+            });
 
         return response()->json($suggestions);
     }

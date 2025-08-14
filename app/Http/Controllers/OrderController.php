@@ -84,30 +84,34 @@ class OrderController extends Controller
         return view('admin.orders.show', compact('order'));
     }
     public function cancel($id)
-{
-   $order = Order::where('id', $id)
-    ->where('user_id', Auth::id())
-    ->where('status', 'pending')
-    ->firstOrFail();
+    {
+        $order = Order::where('id', $id)
+            ->where('user_id', Auth::id())
+            ->where('status', 'pending')
+            ->firstOrFail();
 
-    $order->status = 'cancelled';
-    $order->save();
+        $order->status = 'cancelled';
+        $order->save();
 
-    return redirect()->route('user.orders.index')
-        ->with('success', 'Đơn hàng đã được hủy thành công.');
-}
-public function bulkApprove(Request $request)
-{
-    $orderIds = $request->input('order_ids', []);
-
-    if (empty($orderIds)) {
-        return redirect()->back()->with('error', 'Không có đơn hàng nào được chọn.');
+        return redirect()->route('user.orders.index')
+            ->with('success', 'Đơn hàng đã được hủy thành công.');
     }
+    public function bulkApprove(Request $request)
+    {
+        $orderIds = $request->input('order_ids', []);
 
-    // Cập nhật sang trạng thái "hoàn thành" giống như approve() đơn lẻ
-    Order::whereIn('id', $orderIds)->update(['status' => 'hoàn thành']);
+        if (empty($orderIds)) {
+            return response()->json([
+                'success' => false,
+                'error' => 'Không có đơn hàng nào được chọn.'
+            ], 400);
+        }
 
-    return redirect()->route('admin.orders.index')
-        ->with('success', 'Đã duyệt ' . count($orderIds) . ' đơn hàng.');
-}
+        $count = Order::whereIn('id', $orderIds)->update(['status' => 'hoàn thành']);
+
+        return response()->json([
+            'success' => true,
+            'message' => 'Đã duyệt ' . $count . ' đơn hàng.'
+        ]);
+    }
 }
