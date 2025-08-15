@@ -17,120 +17,128 @@
         {{-- Hiển thị chi tiết sản phẩm --}}
         <div class="product-section">
             <div class="product-layout">
-                <!-- Left column: Thumbnails -->
-                <div class="product-thumbnails">
-                    @if($images && count($images) > 0)
-                    <button class="thumbnail-nav up" onclick="scrollThumbnails('up')">
-                        <i class="bi bi-chevron-up"></i>
-                    </button>
-                    <div class="thumbnail-list">
-                        @foreach($images as $index => $img)
-                        <img src="{{ $img['path'] }}" alt="Ảnh sản phẩm {{ $index + 1 }}"
-                            class="thumbnail {{ $index === 0 ? 'active' : '' }}" data-main="{{ $img['path'] }}"
-                            onclick="changeMainImage('{{ $img['path'] }}', this)">
-                        @endforeach
+                <div class="product-main-column">
+                    <div class="images-row">
+                        <!-- Left column: Thumbnails -->
+                        <div class="product-thumbnails">
+                            @if($images && count($images) > 0)
+                            <button class="thumbnail-nav up" onclick="scrollThumbnails('up')">
+                                <i class="bi bi-chevron-up"></i>
+                            </button>
+                            <div class="thumbnail-list">
+                                @foreach($images as $index => $img)
+                                <img src="{{ $img['path'] }}" alt="Ảnh sản phẩm {{ $index + 1 }}"
+                                    class="thumbnail {{ $index === 0 ? 'active' : '' }}" data-main="{{ $img['path'] }}"
+                                    onclick="changeMainImage('{{ $img['path'] }}', this)">
+                                @endforeach
+                            </div>
+                            <button class="thumbnail-nav down" onclick="scrollThumbnails('down')">
+                                <i class="bi bi-chevron-down"></i>
+                            </button>
+                            @endif
+                        </div>
+
+                        <!-- Middle column: Main image -->
+                        <div class="product-main-image">
+                            @if($main_image)
+                            <div class="main-image-container">
+                                <img id="mainImage" src="{{ $main_image['path'] }}" alt="{{ $jewelry->name }}">
+                                <div class="new-badge">NEW</div>
+                            </div>
+                            @else
+                            <div class="main-image-container">
+                                <img src="../images/default-product.jpg" alt="{{ $jewelry->name }}" class="main-image"
+                                    id="mainImage">
+                                <div class="new-badge">NEW</div>
+                            </div>
+                            @endif
+                        </div>
                     </div>
-                    <button class="thumbnail-nav down" onclick="scrollThumbnails('down')">
-                        <i class="bi bi-chevron-down"></i>
-                    </button>
-                    @endif
-                </div>
 
-                <!-- Middle column: Main image -->
-                <div class="product-main-image">
-                    @if($main_image)
-                    <div class="main-image-container">
-                        <img id="mainImage" src="{{ $main_image['path'] }}" alt="{{ $jewelry->name }}">
-                        <div class="new-badge">NEW</div>
-                    </div>
-                    <!-- Phần mô tả sản phẩm và chính sách hậu mãi -->
-                    <div class="product-description-section">
-                        <div class="container">
-                            <div class="description-policy-wrapper">
+                    <!-- Second row: descriptions and policies -->
+                    <div class="details-row">
+                        <div class="product-description-section">
+                            <div class="container">
+                                <div class="description-policy-wrapper">
 
-                                <!-- Mô tả sản phẩm -->
-                                <div class="description-block">
-                                    <h3 class="section-title">Mô tả sản phẩm</h3>
-                                    <div class="description-content">
-                                        @if($jewelry->description)
-                                        <div class="product-description">
-                                            {!! $jewelry->description !!}
-                                        </div>
-                                        @else
-                                        <div class="product__features">
-                                            <h4>Đặc điểm nổi bật:</h4>
-                                            <ul>
-                                                <li>Chất liệu cao cấp với thiết kế tinh tế</li>
-                                                <li>Thiết kế tinh tế, sang trọng</li>
-                                                <li>Phù hợp với nhiều dịp khác nhau</li>
-                                                <li>Được chế tác bởi thợ kim hoàn có tay nghề cao</li>
-                                                <li>Bảo hành chính hãng</li>
-                                            </ul>
-                                        </div>
-                                        @endif
+                                    <!-- Mô tả sản phẩm -->
+                                    <div class="description-block">
+                                        <h3 class="section-title">Mô tả sản phẩm</h3>
+                                        <div class="description-content">
+                                            @if($jewelry->description)
+                                            <div class="product-description">
+                                                {!! $jewelry->description !!}
+                                            </div>
+                                            @else
+                                            <div class="product__features">
+                                                <h4>Đặc điểm nổi bật:</h4>
+                                                <ul>
+                                                    <li>Chất liệu cao cấp với thiết kế tinh tế</li>
+                                                    <li>Thiết kế tinh tế, sang trọng</li>
+                                                    <li>Phù hợp với nhiều dịp khác nhau</li>
+                                                    <li>Được chế tác bởi thợ kim hoàn có tay nghề cao</li>
+                                                    <li>Bảo hành chính hãng</li>
+                                                </ul>
+                                            </div>
+                                            @endif
 
-                                        <div class="care__instructions">
-                                            <h4>Hướng dẫn bảo quản:</h4>
-                                            <ul>
-                                                <li>Tránh tiếp xúc với nước và hóa chất</li>
-                                                <li>Bảo quản trong hộp riêng biệt</li>
-                                                <li>Vệ sinh nhẹ nhàng bằng khăn mềm</li>
-                                                <li>Tránh va đập mạnh</li>
-                                            </ul>
+                                            <div class="care__instructions">
+                                                <h4>Hướng dẫn bảo quản:</h4>
+                                                <ul>
+                                                    <li>Tránh tiếp xúc với nước và hóa chất</li>
+                                                    <li>Bảo quản trong hộp riêng biệt</li>
+                                                    <li>Vệ sinh nhẹ nhàng bằng khăn mềm</li>
+                                                    <li>Tránh va đập mạnh</li>
+                                                </ul>
+                                            </div>
                                         </div>
                                     </div>
-                                </div>
 
-                                <!-- Chính sách hậu mãi -->
-                                <div class="policy-block">
-                                    <h3 class="section-title">Thông tin sản phẩm</h3>
-                                    <div class="product-specs">
-                                        <div class="spec-item">
-                                            <span class="spec-label">Trọng lượng:</span>
-                                            <span class="spec-value">{{ $jewelry->weight }}g</span>
-                                        </div>
-                                        <div class="spec-item">
-                                            <span class="spec-label">Loại đá chính:</span>
-                                            <span class="spec-value">{{ $jewelry->main_stone }}</span>
-                                        </div>
-                                        <div class="spec-item">
-                                            <span class="spec-label">Loại đá phụ:</span>
-                                            <span class="spec-value">{{ $jewelry->sub_stone }}</span>
-                                        </div>
-                                        <div class="spec-item">
-                                            <span class="spec-label">Trang sức dành cho: </span>
-                                            <span class="spec-value">
-                                                @if($jewelry->gender == 'male') Nam
-                                                @elseif($jewelry->gender == 'female') Nữ
-                                                @else Unisex
-                                                @endif
-                                            </span>
-                                        </div>
-                                        <div class="spec-item">
-                                            <span class="spec-label">Thương hiệu:</span>
-                                            <span class="spec-value">{{ $jewelry->brand }}</span>
-                                        </div>
-                                        <div class="spec-item">
-                                            <span class="spec-label">Còn lại:</span>
-                                            <span
-                                                class="spec-value {{ $jewelry->stock == 0 ? 'out-of-stock' : 'in-stock' }}">
-                                                {{ $jewelry->stock == 0 ? 'Hết hàng' : $jewelry->stock . ' sản phẩm' }}
-                                            </span>
+                                    <!-- Chính sách hậu mãi -->
+                                    <div class="policy-block">
+                                        <h3 class="section-title">Thông tin sản phẩm</h3>
+                                        <div class="product-specs">
+                                            <div class="spec-item">
+                                                <span class="spec-label">Trọng lượng:</span>
+                                                <span class="spec-value">{{ $jewelry->weight }}g</span>
+                                            </div>
+                                            <div class="spec-item">
+                                                <span class="spec-label">Loại đá chính:</span>
+                                                <span class="spec-value">{{ $jewelry->main_stone }}</span>
+                                            </div>
+                                            <div class="spec-item">
+                                                <span class="spec-label">Loại đá phụ:</span>
+                                                <span class="spec-value">{{ $jewelry->sub_stone }}</span>
+                                            </div>
+                                            <div class="spec-item">
+                                                <span class="spec-label">Trang sức dành cho: </span>
+                                                <span class="spec-value">
+                                                    @if($jewelry->gender == 'male') Nam
+                                                    @elseif($jewelry->gender == 'female') Nữ
+                                                    @else Unisex
+                                                    @endif
+                                                </span>
+                                            </div>
+                                            <div class="spec-item">
+                                                <span class="spec-label">Thương hiệu:</span>
+                                                <span class="spec-value">{{ $jewelry->brand }}</span>
+                                            </div>
+                                            <div class="spec-item">
+                                                <span class="spec-label">Còn lại:</span>
+                                                <span
+                                                    class="spec-value {{ $jewelry->stock == 0 ? 'out-of-stock' : 'in-stock' }}">
+                                                    {{ $jewelry->stock == 0 ? 'Hết hàng' : $jewelry->stock . ' sản phẩm' }}
+                                                </span>
+                                            </div>
                                         </div>
                                     </div>
-                                </div>
 
+                                </div>
                             </div>
                         </div>
                     </div>
-                    @else
-                    <div class="main-image-container">
-                        <img src="../images/default-product.jpg" alt="{{ $jewelry->name }}" class="main-image"
-                            id="mainImage">
-                        <div class="new-badge">NEW</div>
-                    </div>
-                    @endif
-                </div>
+
+                </div><!-- End product layout -->
                 <!-- Right column: Product info -->
                 <div class="product-info">
                     <h1 class="product-title">{{ $jewelry->name }}</h1>
@@ -161,11 +169,107 @@
                                 <input type="number" class="quantity" name="quantity" min="1"
                                     max="{{ $jewelry->stock }}" value="1">
                             </div>
+                            <div class="size-guide-section" style="margin-top: 10px;">
+                                <button type="button" class="size-guide-btn" onclick="openSizeGuideModal()">
+                                    <i class="fas fa-ruler"></i> Cách đo size nhẫn
+                                </button>
+                            </div>
                             <div style="font-size: 14px; color: #666;">
                                 Ưu đãi dành riêng cho bạn - Tư vấn ngay tại <span style="color: #e74c3c;">FREE</span>
                             </div>
                         </div>
+                        <div id="sizeGuideModal" class="size-guide-modal" style="display: none;">
+                            <div class="size-guide-overlay" onclick="closeSizeGuideModal()"></div>
+                            <div class="size-guide-content">
+                                <!-- Header -->
+                                <div class="size-guide-header">
+                                    <h3>Cách đo size nhẫn</h3>
+                                    <button type="button" class="close-btn" onclick="closeSizeGuideModal()">
+                                        <i class="fas fa-times"></i>
+                                    </button>
+                                </div>
 
+                                <!-- Content -->
+                                <div class="size-guide-body">
+                                    <!-- Bước 1 -->
+                                    <div class="guide-step">
+                                        <div class="step-number">1.</div>
+                                        <div class="step-content">
+                                            <h4>Dùng chỉ hoặc giấy bấn nhỏ đo quanh quan khớp tay, đánh dấu vị trí cắt
+                                                nhau</h4>
+                                            <div class="step-image">
+                                                <div class="hand-illustration">
+                                                    <div class="hand-shape"></div>
+                                                    <div class="thread-wrap"></div>
+                                                </div>
+                                                <div class="coin-icon">
+                                                    <div class="coin"></div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+
+                                    <!-- Bước 2 -->
+                                    <div class="guide-step">
+                                        <div class="step-number">2.</div>
+                                        <div class="step-content">
+                                            <h4>Dùng thước đo chiều dài đoạn dây vừa đo được (đơn vị cm)</h4>
+                                            <div class="step-image">
+                                                <div class="ruler-illustration">
+                                                    <div class="ruler"></div>
+                                                    <div class="measurement-line"></div>
+                                                </div>
+                                                <div class="coin-icon">
+                                                    <div class="coin"></div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+
+                                    <!-- Kết quả -->
+                                    <div class="size-result">
+                                        <h4>Kết quả bạn đo được là:</h4>
+                                        <div class="size-options-modal">
+                                            <div class="size-option">
+                                                <input type="radio" name="measured_size" id="size_46" value="4.6">
+                                                <label for="size_46">4.6</label>
+                                            </div>
+                                            <div class="size-option">
+                                                <input type="radio" name="measured_size" id="size_47" value="4.7">
+                                                <label for="size_47">4.7</label>
+                                            </div>
+                                            <div class="size-option">
+                                                <input type="radio" name="measured_size" id="size_49" value="4.9">
+                                                <label for="size_49">4.9</label>
+                                            </div>
+                                        </div>
+
+                                        <!-- Size chart -->
+                                        <div class="size-chart">
+                                            <div class="chart-ruler">
+                                                <div class="ruler-marks">
+                                                    <span>9</span><span>10</span><span>11</span><span>12</span><span>13</span><span>14</span><span>15</span><span>16</span><span>17</span><span>18</span><span>19</span><span>20</span>
+                                                </div>
+                                                <div class="ruler-labels">
+                                                    <span>XS</span><span>S</span><span>M</span><span>L</span><span>XL</span><span>Nem</span>
+                                                </div>
+                                            </div>
+                                            <div class="size-recommendation">
+                                                <strong>Size nhẫn của bạn là: <span
+                                                        id="recommended-size">6</span></strong>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <!-- Footer -->
+                                <div class="size-guide-footer">
+                                    <button type="button" class="btn-confirm" onclick="applySizeGuide()">
+                                        Xác nhận
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
                         <div class="benefits">
                             <div class="benefit-item">
                                 <div class="benefit-icon">✓</div>
@@ -226,9 +330,8 @@
                         </div>
                     </div>
                 </div>
-            </div><!-- End product layout -->
+            </div>
         </div>
-    </div>
     </div>
     </div>
 
@@ -242,7 +345,7 @@
             </div>
         </div>
 
-        <div class="tab-content active" id="description">
+        <div class="tab-content" id="description">
             <div style="padding: 20px;">
                 <h3>Mô tả sản phẩm</h3>
 
@@ -312,7 +415,7 @@
         </div>
 
         <!-- Tab đánh giá sản phẩm -->
-        <div class="tab-content" id="reviews">
+        <div class="tab-content active" id="reviews">
             <div class="review-section">
                 <!-- Header -->
                 <div class="review-header">
@@ -325,10 +428,7 @@
                     <div class="rating-overview">
                         <div class="rating-score" id="average-rating">{{ $averageRating }}</div>
                         <div class="rating-stars" id="average-stars">
-                            @for($i = 1; $i <= 5; $i++)
-                                {!! $i <=$averageRating ? '★' : '☆' !!}
-                                @endfor
-                                </div>
+                            @for($i = 1; $i <= 5; $i++) {!! $i <=$averageRating ? '★' : '☆' !!} @endfor </div>
                                 <div class="total-reviews" id="total-reviews">{{ $totalReviews }} đánh giá</div>
                         </div>
 
@@ -339,7 +439,9 @@
                                     <i class="fas fa-star"></i> {{ $rating }}
                                 </div>
                                 <div class="rating-progress">
-                                    <div class="rating-fill" style="width: {{ $totalReviews > 0 ? ($ratingCounts[$rating] / $totalReviews * 100) : 0 }}%" data-rating="{{ $rating }}"></div>
+                                    <div class="rating-fill"
+                                        style="width: {{ $totalReviews > 0 ? ($ratingCounts[$rating] / $totalReviews * 100) : 0 }}%"
+                                        data-rating="{{ $rating }}"></div>
                                 </div>
                                 <div class="rating-count" data-rating="{{ $rating }}">{{ $ratingCounts[$rating] }}</div>
                             </div>
@@ -375,12 +477,9 @@
                                 <label for="reviewContent">
                                     <i class="fas fa-comment"></i> Nhận xét của bạn:
                                 </label>
-                                <textarea
-                                    id="reviewContent"
-                                    name="content"
+                                <textarea id="reviewContent" name="content"
                                     placeholder="Chia sẻ trải nghiệm của bạn về sản phẩm này. Điều gì làm bạn hài lòng? Có điều gì cần cải thiện không?"
-                                    rows="5"
-                                    required></textarea>
+                                    rows="5" required></textarea>
                             </div>
                             <button type="submit" class="btn-submit">
                                 <i class="fas fa-paper-plane"></i> Gửi đánh giá
@@ -393,7 +492,8 @@
                             <i class="fas fa-sign-in-alt"></i> Đăng nhập để viết đánh giá
                         </h3>
                         <p style="text-align: center; margin: 0;">
-                            <a href="{{ route('login') }}" class="btn-submit" style="display: inline-block; text-decoration: none;">
+                            <a href="{{ route('login') }}" class="btn-submit"
+                                style="display: inline-block; text-decoration: none;">
                                 <i class="fas fa-sign-in-alt"></i> Đăng nhập ngay
                             </a>
                         </p>
@@ -404,7 +504,8 @@
                     <div class="review-filters">
                         <div class="filter-buttons">
                             <button class="filter-btn active" data-rating="all">
-                                <i class="fas fa-list"></i> Tất cả (<span id="filter-all-count">{{ $totalReviews }}</span>)
+                                <i class="fas fa-list"></i> Tất cả (<span
+                                    id="filter-all-count">{{ $totalReviews }}</span>)
                             </button>
                             @for($rating = 5; $rating >= 1; $rating--)
                             <button class="filter-btn" data-rating="{{ $rating }}">
@@ -646,15 +747,7 @@
     // Create review HTML
     function createReviewHTML(review) {
         const stars = '★'.repeat(review.rating) + '☆'.repeat(5 - review.rating);
-
-        let avatar = '';
-        if (review.user_avatar) {
-            avatar = `<img src="${review.user_avatar}" alt="${review.user_name}" style="width: 100%; height: 100%; object-fit: cover; border-radius: 50%;">`;
-        } else {
-            const firstChar = review.user_name ? review.user_name.charAt(0).toUpperCase() : '?';
-            avatar = firstChar;
-        }
-
+        const avatar = review.user_name ? review.user_name.charAt(0).toUpperCase() : '?';
         let date = '';
         if (review.created_at) {
             try {
@@ -672,26 +765,25 @@
                 date = '';
             }
         }
-
         return `
-        <div class="review-item" data-rating="${review.rating}">
-            <div class="reviewer-header">
-                <div class="reviewer-avatar">${avatar}</div>
-                <div class="reviewer-info">
-                    <div class="reviewer-name">${review.user_name || 'Ẩn danh'}</div>
-                    <div class="review-date">
-                        <i class="far fa-calendar"></i> ${date}
+            <div class="review-item" data-rating="${review.rating}">
+                <div class="reviewer-header">
+                    <div class="reviewer-avatar">${avatar}</div>
+                    <div class="reviewer-info">
+                        <div class="reviewer-name">${review.user_name || 'Ẩn danh'}</div>
+                        <div class="review-date">
+                            <i class="far fa-calendar"></i> ${date}
+                        </div>
+                    </div>
+                    <div class="review-rating">
+                        <div class="review-stars">${stars}</div>
                     </div>
                 </div>
-                <div class="review-rating">
-                    <div class="review-stars">${stars}</div>
+                <div class="review-content">
+                    ${review.content}
                 </div>
             </div>
-            <div class="review-content">
-                ${review.content}
-            </div>
-        </div>
-    `;
+        `;
     }
 
     // Submit review form
@@ -1051,7 +1143,44 @@
             }
         });
     });
-</script>
+    // Thêm sự kiện click cho nút "Đặt đơn tại cửa hàng"
+    function openSizeGuideModal() {
+        document.getElementById('sizeGuideModal').style.display = 'flex';
+        document.body.style.overflow = 'hidden';
+    }
 
+    function closeSizeGuideModal() {
+        document.getElementById('sizeGuideModal').style.display = 'none';
+        document.body.style.overflow = 'auto';
+    }
+
+    function applySizeGuide() {
+        const selectedSize = document.querySelector('input[name="measured_size"]:checked');
+        if (selectedSize) {
+            // Có thể thêm logic để áp dụng size đã chọn
+            showNotification('Đã chọn size: ' + selectedSize.value, 'success');
+        }
+        closeSizeGuideModal();
+    }
+
+    // Đóng modal khi nhấn ESC
+    document.addEventListener('keydown', function(e) {
+        if (e.key === 'Escape') {
+            closeSizeGuideModal();
+        }
+    });
+
+    // Xử lý khi chọn size trong modal
+    document.querySelectorAll('input[name="measured_size"]').forEach(radio => {
+        radio.addEventListener('change', function() {
+            const sizeMap = {
+                '4.6': '6',
+                '4.7': '7',
+                '4.9': '8'
+            };
+            document.getElementById('recommended-size').textContent = sizeMap[this.value] || '6';
+        });
+    });
+</script>
 
 @endsection
