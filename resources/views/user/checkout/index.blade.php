@@ -221,7 +221,7 @@
         left: -100%;
         width: 100%;
         height: 100%;
-        background: linear-gradient(90deg, transparent, rgba(255,255,255,0.2), transparent);
+        background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.2), transparent);
         transition: left 0.5s;
     }
 
@@ -375,6 +375,7 @@
             opacity: 0;
             transform: translate(-50%, -50%) scale(0.8) rotateX(90deg);
         }
+
         100% {
             opacity: 1;
             transform: translate(-50%, -50%) scale(1) rotateX(0deg);
@@ -382,31 +383,44 @@
     }
 
     @keyframes fadeIn {
-        0% { opacity: 0; }
-        100% { opacity: 1; }
+        0% {
+            opacity: 0;
+        }
+
+        100% {
+            opacity: 1;
+        }
     }
 
     @keyframes successIconPulse {
-        0% { transform: scale(0); }
-        50% { transform: scale(1.1); }
-        100% { transform: scale(1); }
+        0% {
+            transform: scale(0);
+        }
+
+        50% {
+            transform: scale(1.1);
+        }
+
+        100% {
+            transform: scale(1);
+        }
     }
 
     @media (max-width: 768px) {
         .page-title {
             font-size: 2rem;
         }
-        
+
         .card-body-modern {
             padding: 1.5rem;
         }
-        
+
         .success-notification {
             min-width: 320px;
             margin: 1rem;
             padding: 2rem;
         }
-        
+
         .success-title {
             font-size: 1.5rem;
         }
@@ -440,36 +454,36 @@
                                         <div class="col-md-6">
                                             <div class="form-group mb-4">
                                                 <label for="fullname" class="form-label-modern">Họ và tên *</label>
-                                                <input type="text" class="form-control form-control-modern" 
-                                                       id="fullname" name="fullname"
-                                                       value="{{ Auth::user()->fullname }}" required>
+                                                <input type="text" class="form-control form-control-modern"
+                                                    id="fullname" name="fullname"
+                                                    value="{{ Auth::user()->fullname }}" required>
                                             </div>
                                         </div>
                                         <div class="col-md-6">
                                             <div class="form-group mb-4">
                                                 <label for="phone" class="form-label-modern">Số điện thoại *</label>
-                                                <input type="tel" class="form-control form-control-modern" 
-                                                       id="phone" name="phone"
-                                                       value="{{ Auth::user()->phone_number }}" required>
+                                                <input type="tel" class="form-control form-control-modern"
+                                                    id="phone" name="phone"
+                                                    value="{{ Auth::user()->phone_number }}" required>
                                             </div>
                                         </div>
                                     </div>
                                     <div class="form-group mb-4">
                                         <label for="email" class="form-label-modern">Email</label>
-                                        <input type="email" class="form-control form-control-modern" 
-                                               id="email" name="email"
-                                               value="{{ Auth::user()->email }}">
+                                        <input type="email" class="form-control form-control-modern"
+                                            id="email" name="email"
+                                            value="{{ Auth::user()->email }}">
                                     </div>
                                     <div class="form-group mb-4">
                                         <label for="address" class="form-label-modern">Địa chỉ giao hàng *</label>
-                                        <textarea class="form-control form-control-modern" 
-                                                  id="address" name="address" rows="3" required>{{ Auth::user()->address }}</textarea>
+                                        <textarea class="form-control form-control-modern"
+                                            id="address" name="address" rows="3" required>{{ Auth::user()->address }}</textarea>
                                     </div>
                                     <div class="form-group mb-3">
                                         <label for="note" class="form-label-modern">Ghi chú đơn hàng</label>
-                                        <textarea class="form-control form-control-modern" 
-                                                  id="note" name="note" rows="3"
-                                                  placeholder="Ghi chú về đơn hàng của bạn, ví dụ: thời gian hay chỉ dẫn địa điểm giao hàng chi tiết hơn."></textarea>
+                                        <textarea class="form-control form-control-modern"
+                                            id="note" name="note" rows="3"
+                                            placeholder="Ghi chú về đơn hàng của bạn, ví dụ: thời gian hay chỉ dẫn địa điểm giao hàng chi tiết hơn."></textarea>
                                     </div>
                                 </div>
                             </div>
@@ -484,8 +498,8 @@
                                 </div>
                                 <div class="card-body-modern">
                                     <div class="form-check-modern" onclick="selectPayment('cod')">
-                                        <input class="form-check-input form-check-input-modern" 
-                                               type="radio" name="payment_method" id="cod" value="cod" checked>
+                                        <input class="form-check-input form-check-input-modern"
+                                            type="radio" name="payment_method" id="cod" value="cod" checked>
                                         <div>
                                             <div class="payment-label">
                                                 <i class="fas fa-money-bill-wave"></i>
@@ -498,8 +512,8 @@
                                     </div>
 
                                     <div class="form-check-modern" onclick="selectPayment('bank_transfer')">
-                                        <input class="form-check-input form-check-input-modern" 
-                                               type="radio" name="payment_method" id="bank_transfer" value="bank_transfer">
+                                        <input class="form-check-input form-check-input-modern"
+                                            type="radio" name="payment_method" id="bank_transfer" value="bank_transfer">
                                         <div>
                                             <div class="payment-label">
                                                 <i class="fas fa-university"></i>
@@ -518,7 +532,7 @@
                                             Quét mã QR để thanh toán
                                         </h6>
                                         <img src="https://img.vietqr.io/image/sacombank-070130092398-compact2.png?accountName=PHAM%20MY%20TIEN&amount={{ $total ?? 0 }}&addInfo=Thanh+toan+don+hang+{{ $order->id ?? 'unknown' }}"
-                                             alt="QR chuyển khoản" class="qr-code">
+                                            alt="QR chuyển khoản" class="qr-code">
                                         <p class="mt-3 mb-0" style="font-size: 0.9rem; color: #6b7280;">
                                             Vui lòng chuyển khoản chính xác số tiền và nội dung chuyển khoản
                                         </p>
@@ -548,6 +562,11 @@
                                         <div class="item-price">
                                             {{ number_format($item->total, 0, ',', '.') }} VNĐ
                                         </div>
+
+                                        {{-- Hidden inputs to send each item's id, quantity and item total with the form --}}
+                                        <input type="hidden" name="items[{{ $loop->index }}][jewelry_id]" value="{{ $item->jewelry->id }}">
+                                        <input type="hidden" name="items[{{ $loop->index }}][quantity]" value="{{ $item->quantity }}">
+                                        <input type="hidden" name="items[{{ $loop->index }}][item_total]" value="{{ $item->total }}">
                                     </div>
                                     @endforeach
 
@@ -575,6 +594,9 @@
                                         </div>
                                     </div>
 
+                                    {{-- Hidden input to send order total amount --}}
+                                    <input type="hidden" name="total_amount" value="{{ $total }}">
+
                                     <button type="submit" class="btn-order-modern" id="place-order-btn">
                                         <i class="fas fa-lock"></i>
                                         Đặt hàng ngay
@@ -585,7 +607,7 @@
 
                                     <div class="privacy-notice">
                                         <i class="fas fa-shield-alt" style="color: var(--galaxy-blue);"></i>
-                                        Thông tin cá nhân của bạn sẽ được bảo mật và chỉ sử dụng để xử lý đơn hàng, 
+                                        Thông tin cá nhân của bạn sẽ được bảo mật và chỉ sử dụng để xử lý đơn hàng,
                                         hỗ trợ trải nghiệm mua sắm tại cửa hàng của chúng tôi.
                                     </div>
                                 </div>
@@ -620,7 +642,7 @@
     </div>
     <div class="success-title">Đặt hàng thành công!</div>
     <div class="success-message">
-        Cảm ơn bạn đã tin tưởng và mua sắm tại cửa hàng của chúng tôi. 
+        Cảm ơn bạn đã tin tưởng và mua sắm tại cửa hàng của chúng tôi.
         Đơn hàng của bạn đang được xử lý và sẽ được giao sớm nhất có thể.
     </div>
     <button class="notification-close-btn" onclick="closeSuccessNotification()">
@@ -635,13 +657,13 @@
         document.querySelectorAll('.form-check-modern').forEach(el => {
             el.classList.remove('active');
         });
-        
+
         // Add active class to selected method
         event.currentTarget.classList.add('active');
-        
+
         // Handle radio selection
         document.getElementById(method).checked = true;
-        
+
         // Show/hide bank transfer info
         const bankInfo = document.getElementById('bank-transfer-info');
         if (method === 'bank_transfer') {
@@ -661,7 +683,7 @@
         document.getElementById('notification-overlay').classList.remove('show');
         document.getElementById('success-notification').classList.remove('show');
         document.body.style.overflow = 'auto';
-        
+
         // Redirect after closing
         setTimeout(() => {
             window.location.href = '{{ route("user.orders.index") }}';

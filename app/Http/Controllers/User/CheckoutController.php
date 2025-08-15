@@ -20,29 +20,29 @@ class CheckoutController extends Controller
      * Hiển thị trang checkout từ cart
      */
     public function index(Request $request)
-{
-    if (!Auth::check()) {
-        return redirect()->route('login');
+    {
+        if (!Auth::check()) {
+            return redirect()->route('login');
+        }
+
+        $selectedItems = $request->query('selected_items');
+
+        if ($selectedItems) {
+            $selectedIds = explode(',', $selectedItems);
+            $cartItems = Cart::getUserCart(Auth::id())
+                ->whereIn('jewelry_id', $selectedIds);
+            $total = $cartItems->sum('price');
+        } else {
+            $cartItems = Cart::getUserCart(Auth::id());
+            $total = Cart::getCartTotal(Auth::id());
+        }
+
+        if ($cartItems->isEmpty()) {
+            return redirect()->route('cart.index')->with('error', 'Giỏ hàng của bạn đang trống');
+        }
+
+        return view('user.checkout.index', compact('cartItems', 'total'));
     }
-
-    $selectedItems = $request->query('selected_items');
-
-    if ($selectedItems) {
-        $selectedIds = explode(',', $selectedItems);
-        $cartItems = Cart::getUserCart(Auth::id())
-            ->whereIn('jewelry_id', $selectedIds);
-        $total = $cartItems->sum('price');
-    } else {
-        $cartItems = Cart::getUserCart(Auth::id());
-        $total = Cart::getCartTotal(Auth::id());
-    }
-
-    if ($cartItems->isEmpty()) {
-        return redirect()->route('cart.index')->with('error', 'Giỏ hàng của bạn đang trống');
-    }
-
-    return view('user.checkout.index', compact('cartItems', 'total'));
-}
 
 
     /**
@@ -83,19 +83,61 @@ class CheckoutController extends Controller
         }
 
         $user = Auth::user();
-        $cartItems = Cart::getUserCart($user->id);
 
-        if ($cartItems->isEmpty()) {
-            if ($request->ajax()) {
-                return response()->json([
-                    'success' => false,
-                    'message' => 'Giỏ hàng của bạn đang trống'
-                ]);
+        // If the client sent a list of selected items, use those. Otherwise use full cart.
+        $selectedItemsInput = $request->input('items');
+
+        if ($selectedItemsInput && is_array($selectedItemsInput) && count($selectedItemsInput) > 0) {
+            // Normalize selected items into map jewelry_id => quantity
+            $selectedMap = [];
+            $selectedIds = [];
+            foreach ($selectedItemsInput as $it) {
+                if (!isset($it['jewelry_id'])) continue;
+                $jid = (int) $it['jewelry_id'];
+                $qty = isset($it['quantity']) ? max(0, (int)$it['quantity']) : 1;
+                if ($qty <= 0) continue;
+                $selectedMap[$jid] = $qty;
+                $selectedIds[] = $jid;
             }
-            return redirect()->route('cart.index')->with('error', 'Giỏ hàng của bạn đang trống');
-        }
 
-        $totalAmount = Cart::getCartTotal($user->id);
+            if (empty($selectedIds)) {
+                if ($request->ajax()) {
+                    return response()->json(['success' => false, 'message' => 'Không có sản phẩm hợp lệ được chọn.']);
+                }
+                return redirect()->route('cart.index')->with('error', 'Không có sản phẩm hợp lệ được chọn.');
+            }
+
+            // Load only the cart items that match selected ids
+            $cartItems = Cart::getUserCart($user->id)->whereIn('jewelry_id', $selectedIds);
+
+            if ($cartItems->isEmpty()) {
+                if ($request->ajax()) {
+                    return response()->json(['success' => false, 'message' => 'Các sản phẩm đã chọn không còn trong giỏ hàng.']);
+                }
+                return redirect()->route('cart.index')->with('error', 'Các sản phẩm đã chọn không còn trong giỏ hàng.');
+            }
+
+            // Recompute total server-side using cart price and requested quantity
+            $totalAmount = 0;
+            foreach ($cartItems as $ci) {
+                $reqQty = $selectedMap[$ci->jewelry_id] ?? $ci->quantity;
+                $totalAmount += ($ci->price * $reqQty);
+            }
+        } else {
+            $cartItems = Cart::getUserCart($user->id);
+
+            if ($cartItems->isEmpty()) {
+                if ($request->ajax()) {
+                    return response()->json([
+                        'success' => false,
+                        'message' => 'Giỏ hàng của bạn đang trống'
+                    ]);
+                }
+                return redirect()->route('cart.index')->with('error', 'Giỏ hàng của bạn đang trống');
+            }
+
+            $totalAmount = Cart::getCartTotal($user->id);
+        }
 
         DB::beginTransaction();
         try {
@@ -108,24 +150,42 @@ class CheckoutController extends Controller
             ]);
 
             // Tạo chi tiết đơn hàng
+            // If selectedMap exists, use requested quantities; otherwise use cart item quantities.
+            $selectedMap = isset($selectedMap) ? $selectedMap : null;
+            $removedIds = [];
+
             foreach ($cartItems as $item) {
+                $qty = $item->quantity;
+                if ($selectedMap !== null) {
+                    $qty = $selectedMap[$item->jewelry_id] ?? $item->quantity;
+                }
+
                 OrderDetail::create([
                     'order_id' => $order->id,
                     'jewelry_id' => $item->jewelry_id,
-                    'quantity' => $item->quantity,
+                    'quantity' => $qty,
                     'unit_price' => $item->price,
                 ]);
 
                 // Giảm số lượng tồn kho (nếu có field stock)
                 $jewelry = Jewelry::find($item->jewelry_id);
                 if ($jewelry && isset($jewelry->stock)) {
-                    $jewelry->stock = max(0, $jewelry->stock - $item->quantity);
+                    $jewelry->stock = max(0, $jewelry->stock - $qty);
                     $jewelry->save();
                 }
+
+                // Track removed ids to delete only selected items from cart
+                $removedIds[] = $item->jewelry_id;
             }
 
-            // Xóa toàn bộ giỏ hàng sau khi đặt hàng thành công
-            Cart::clearCart($user->id);
+            // Nếu có selectedMap, chỉ xóa các sản phẩm đã chọn; nếu không, xóa toàn bộ giỏ hàng
+            if (isset($selectedMap) && is_array($removedIds) && count($removedIds) > 0) {
+                foreach ($removedIds as $rid) {
+                    Cart::removeItem($user->id, $rid);
+                }
+            } else {
+                Cart::clearCart($user->id);
+            }
 
             DB::commit();
 
