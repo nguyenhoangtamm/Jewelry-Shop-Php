@@ -41,14 +41,18 @@
         border: none;
         color: white;
         cursor: pointer;
-        padding: 8px 12px;
-        border-radius: 8px;
-        transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+        padding: 0;
+        /* use fixed width/height */
+        width: 40px;
+        height: 40px;
+        border-radius: 10px;
+        transition: all 0.18s ease;
         box-shadow: var(--shadow-sm);
         display: inline-flex;
         align-items: center;
         justify-content: center;
-        font-size: 14px;
+        font-size: 15px;
+        /* icon size */
     }
 
     .icon-change:hover {
@@ -60,15 +64,17 @@
     .icon-delete {
         background: linear-gradient(135deg, #dc2626 0%, #ef4444 100%);
         color: white;
-        padding: 8px 12px;
-        border-radius: 8px;
+        padding: 0;
+        width: 40px;
+        height: 40px;
+        border-radius: 10px;
         text-decoration: none;
-        transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+        transition: all 0.18s ease;
         box-shadow: var(--shadow-sm);
         display: inline-flex;
         align-items: center;
         justify-content: center;
-        font-size: 14px;
+        font-size: 15px;
         margin-left: 8px;
     }
 
@@ -78,6 +84,15 @@
         box-shadow: var(--shadow-md);
         text-decoration: none;
         color: white;
+    }
+
+    /* container to keep action icons inline and compact */
+    .action-buttons {
+        display: inline-flex;
+        gap: 8px;
+        align-items: center;
+        justify-content: center;
+        flex-wrap: nowrap;
     }
 
     /* Table Wrapper */
@@ -995,17 +1010,18 @@
                         {{ $short }}
                     </td>
                     <td>
-                        <button type="button" class="fa-solid fa-pen icon-change js-changeJewelry"
-                            data-id="{{ $jewelry->id }}"
-                            data-name="{{ $jewelry->name }}"
-                            data-price="{{ $jewelry->price }}"
-                            data-category="{{ $jewelry->category_id }}"
-                            data-main_stone="{{ $jewelry->main_stone }}"
-                            data-stock="{{ $jewelry->stock }}"
-                            data-description="{{ $jewelry->description }}"
-                            data-weight="{{ $jewelry->weight }}"
-                            data-policy="{{ $jewelry->after_sales_policy }}"
-                            data-images="{{ json_encode($jewelry->jewelryFiles->map(function($jf) {
+                        <div class="action-buttons">
+                            <button type="button" class="fa-solid fa-pen icon-change js-changeJewelry"
+                                data-id="{{ $jewelry->id }}"
+                                data-name="{{ $jewelry->name }}"
+                                data-price="{{ $jewelry->price }}"
+                                data-category="{{ $jewelry->category_id }}"
+                                data-main_stone="{{ $jewelry->main_stone }}"
+                                data-stock="{{ $jewelry->stock }}"
+                                data-description="{{ $jewelry->description }}"
+                                data-weight="{{ $jewelry->weight }}"
+                                data-policy="{{ $jewelry->after_sales_policy }}"
+                                data-images="{{ json_encode($jewelry->jewelryFiles->map(function($jf) {
                                 return [
                                     'jewelry_file_id' => $jf->id,
                                     'url' => asset('img/uploads/images/' . $jf->file->path),
@@ -1013,15 +1029,16 @@
                                     'file_name' => $jf->file->name
                                 ];
                             })) }}">
-                        </button>
+                            </button>
 
-                        <a href="{{ route('admin.reviews.by-product', $jewelry->id) }}"
-                            class="fa-solid fa-star icon-change"
-                            title="Xem đánh giá sản phẩm"
-                            style="text-decoration: none; color: white; margin-left: 5px;">
-                        </a>
+                            <a href="{{ route('admin.reviews.by-product', $jewelry->id) }}"
+                                class="fa-solid fa-star icon-change"
+                                title="Xem đánh giá sản phẩm"
+                                style="text-decoration: none; color: white;">
+                            </a>
 
-                        <a href="?delete={{ $jewelry->id }}" class="fas fa-trash icon-delete js-delete-jewelry"></a>
+                            <a href="?delete={{ $jewelry->id }}" data-id="{{ $jewelry->id }}" class="fas fa-trash icon-delete js-delete-jewelry"></a>
+                        </div>
                     </td>
                 </tr>
                 @endforeach
@@ -1749,10 +1766,16 @@
         const deleteCloseBtn = document.querySelector('.js-modal-deleteJewelry-close');
         const deleteCancelBtn = document.querySelector('.js-jewelry-btn-no');
 
+        // Prepare a route template for the named route 'jewelries.destroy'.
+        // We'll replace the placeholder __ID__ with the real id in JS when opening the modal.
+        const destroyRouteTemplate = "{{ route('admin.jewelries.destroy', ['id' => '__ID__']) }}";
+
         deleteBtns.forEach(btn => {
             btn.addEventListener('click', (e) => {
                 e.preventDefault();
-                const url = '/api/jewelries/' + btn.getAttribute('href').split('=')[1];
+                // prefer data-id if present, fallback to parsing href
+                const id = btn.getAttribute('data-id') || (btn.getAttribute('href') || '').split('=')[1];
+                const url = destroyRouteTemplate.replace('__ID__', id);
                 deleteForm.action = url;
                 deleteModal.style.display = 'flex';
                 document.body.style.overflow = 'hidden';

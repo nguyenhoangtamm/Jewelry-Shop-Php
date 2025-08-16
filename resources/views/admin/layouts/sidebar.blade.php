@@ -27,14 +27,14 @@
 </script>
 @endif
 
-<div style="width: 100%; display: flex; flex-direction: column; align-items: center; margin-top: 18px; margin-bottom: 30px;">
+<div style="width: 100%; display: flex; flex-direction: column; align-items: center; margin-top: 18px; margin-bottom: 10px;">
     <div style="background: #fff; border-radius: 18px; box-shadow: 0 2px 12px rgba(26,35,126,0.08); padding: 18px 12px 10px 12px; display: flex; flex-direction: column; align-items: center; width: 90%; max-width: 180px;">
         <img src="{{ asset('img/logo_2.png') }}" alt="Logo" style="max-width: 90px; max-height: 60px; object-fit: contain; display: block; margin: 0 auto 6px auto;">
         <div style="font-size: 18px; color: #bfa76a; font-weight: 600; letter-spacing: 2px; text-align: center;">TVT</div>
     </div>
 </div>
 <div class="menu-wrapper d-flex flex-column justify-between">
-    <ul class="menu">
+    <ul class="menu" style="margin-top: 40px;">
         <li class="{{ request()->routeIs('admin.dashboard') ? 'active' : '' }}">
             <a href="{{ route('admin.dashboard') }}">
                 <i class="fas fa-tachometer-alt"></i>

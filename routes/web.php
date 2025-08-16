@@ -53,16 +53,15 @@ Route::post('/lien-he', [ContactController::class, 'submit'])->name('contact.sub
 Route::get('/jewelry/{id}', [JewelryController::class, 'showByCategory'])->name('jewelry.category');
 
 // Detail product route (public)
-Route::get('/detail/{id}', [ProductDetailController::class, 'show'])->name('jewelry.detail');
-//Review
-Route::post('/products/{jewelry}/reviews', [ReviewController::class, 'store'])
-    ->name('products.reviews.store');
+Route::get('/detail/{id}', [ProductDetailController::class, 'show'])->name('jewelry.detail')->whereNumber('id');
 // Products listing page (public)
 Route::get('/products', [ProductController::class, 'showAll'])->name('products.all');
 
 // API for product suggestions (AJAX)
 Route::get('/api/products/suggestions', [SearchController::class, 'suggestions'])->name('api.products.suggestions');
 
+// Trang chủ user
+Route::get('/home', [UserHomeController::class, 'index'])->name('home');
 // =============================
 // User routes (cần đăng nhập)
 // =============================
@@ -70,11 +69,8 @@ Route::middleware('auth')->group(function () {
     // Đăng xuất
     Route::post('/logout', [AuthController::class, 'logout'])->name('auth.logout');
 
-    // Trang chủ user
-    Route::get('/home', [UserHomeController::class, 'index'])->name('home');
 
-    // Chi tiết sản phẩm
-    Route::get('/detail/{id}', [ProductDetailController::class, 'show'])->name('product.detail');
+    // (removed duplicate public detail route)
 
     // Thanh toán - chỉ customer
     Route::middleware('role:customer')->group(function () {
@@ -93,26 +89,26 @@ Route::middleware('auth')->group(function () {
         // Quản lý sản phẩm (Jewelries)
         Route::get('/jewelries', [JewelryController::class, 'index'])->name('jewelries.index');
         Route::post('/jewelries', [JewelryController::class, 'store'])->name('jewelries.store');
-        Route::get('/jewelries/{id}/edit', [JewelryController::class, 'edit'])->name('jewelries.edit');
-        Route::put('/jewelries/{id}', [JewelryController::class, 'update'])->name('jewelries.update');
-        Route::delete('/jewelries/{id}', [JewelryController::class, 'destroy'])->name('jewelries.destroy');
+        Route::get('/jewelries/{id}/edit', [JewelryController::class, 'edit'])->name('jewelries.edit')->whereNumber('id');
+        Route::put('/jewelries/{id}', [JewelryController::class, 'update'])->name('jewelries.update')->whereNumber('id');
+        Route::delete('/jewelries/{id}', [JewelryController::class, 'destroy'])->name('jewelries.destroy')->whereNumber('id');
 
         // Quản lý người dùng
         Route::get('/users', [UserController::class, 'index'])->name('users.index');
         Route::post('/users', [UserController::class, 'store'])->name('users.store');
-        Route::get('/users/{id}/edit', [UserController::class, 'edit'])->name('users.edit');
-        Route::put('/users/{id}', [UserController::class, 'update'])->name('users.update');
-        Route::delete('/users/{id}', [UserController::class, 'destroy'])->name('users.destroy');
-        Route::put('/users/{id}/lock', [UserController::class, 'lock'])->name('admin.users.lock');
-        Route::put('/users/{id}/toggle-lock', [UserController::class, 'toggleLock'])->name('admin.users.toggleLock');
+        Route::get('/users/{id}/edit', [UserController::class, 'edit'])->name('users.edit')->whereNumber('id');
+        Route::put('/users/{id}', [UserController::class, 'update'])->name('users.update')->whereNumber('id');
+        Route::delete('/users/{id}', [UserController::class, 'destroy'])->name('users.destroy')->whereNumber('id');
+        Route::put('/users/{id}/lock', [UserController::class, 'lock'])->name('admin.users.lock')->whereNumber('id');
+        Route::put('/users/{id}/toggle-lock', [UserController::class, 'toggleLock'])->name('admin.users.toggleLock')->whereNumber('id');
 
 
         // Quản lý danh mục
         Route::get('/categories', [CategoryController::class, 'index'])->name('categories.index');
         Route::post('/categories', [CategoryController::class, 'store'])->name('categories.store');
-        Route::get('/categories/{id}/edit', [CategoryController::class, 'edit'])->name('categories.edit');
-        Route::put('/categories/{id}', [CategoryController::class, 'update'])->name('categories.update');
-        Route::delete('/categories/{id}', [CategoryController::class, 'destroy'])->name('categories.destroy');
+        Route::get('/categories/{id}/edit', [CategoryController::class, 'edit'])->name('categories.edit')->whereNumber('id');
+        Route::put('/categories/{id}', [CategoryController::class, 'update'])->name('categories.update')->whereNumber('id');
+        Route::delete('/categories/{id}', [CategoryController::class, 'destroy'])->name('categories.destroy')->whereNumber('id');
 
         // Quản lý đơn hàng
         // Đặt các route tĩnh (pending, approve) trước route có tham số {id}
@@ -203,9 +199,11 @@ Route::middleware('auth')->group(function () {
     Route::get('/tin-tuc', [NewsController::class, 'index'])->middleware('role:customer,admin')->name('news.index');
 
     Route::put('/orders/{order}/cancel', [OrderController::class, 'cancel'])
-        ->name('user.orders.cancel');
+        ->name('user.orders.cancel')->whereNumber('order');
 
+    // Reviews by authenticated users (customer/admin) - ensure auth and numeric id
     Route::post('/products/{id}/reviews', [ProductDetailController::class, 'storeReview'])
         ->name('products.reviews.store')
-        ->middleware('auth');
+        ->whereNumber('id')
+        ->middleware(['auth', 'role:customer,admin']);
 });

@@ -73,7 +73,7 @@ class OrderController extends Controller
     public function destroy(Request $request, $id)
     {
         $order = Order::findOrFail($id);
-        $order->delete();
+        $order->softDelete();
 
         return response()->json(['message' => 'Xóa đơn hàng thành công']);
     }
