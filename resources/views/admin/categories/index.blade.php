@@ -296,90 +296,94 @@
         margin-top: 25px;
     }
 
-    .cancel-book,
-    .submit-book {
-        padding: 12px 25px;
-        border: none;
-        border-radius: 8px;
-        cursor: pointer;
-        font-size: 14px;
-        font-weight: 500;
-        transition: all 0.3s ease;
-    }
+.cancel-book,
+.submit-book {
+    display: flex;
+    align-items: center;
+    justify-content: center; /* Giúp chữ luôn ở giữa */
+    min-width: 80px;         /* Đảm bảo các nút rộng đều nhau */
+    padding: 12px 25px;
+    border: none;
+    border-radius: 8px;
+    cursor: pointer;
+    font-size: 14px;
+    font-weight: 500;
+    transition: all 0.3s ease;
+}
 
-    .cancel-book {
-        background: rgba(255, 255, 255, 0.1);
-        color: #ffffff00;
-        border: 1px solid rgba(255, 255, 255, 0.3);
-    }
+.cancel-book {
+    background: rgba(255, 255, 255, 0.1);
+    color: #000; /* Hiện lại chữ */
+    border: 1px solid rgba(255, 255, 255, 0.3);
+}
 
-    .cancel-book:hover {
-        background: rgba(7, 81, 133, 0);
-        transform: translateY(-2px);
-    }
+.cancel-book:hover {
+    background: rgba(7, 81, 133, 0.1);
+    transform: translateY(-2px);
+}
 
-    .submit-book {
-        background: linear-gradient(135deg, #28a745 0%, #20c997 100%);
-        color: rgb(0, 0, 0);
-        border: 1px solid rgba(255, 255, 255, 0.2);
-    }
+.submit-book {
+    background: linear-gradient(135deg, #28a745 0%, #20c997 100%);
+    color: #fff; /* Chữ trắng nổi bật hơn */
+    border: 1px solid rgba(255, 255, 255, 0.2);
+}
 
-    .submit-book:hover {
-        background: linear-gradient(135deg, #20c997 0%, #17a2b8 100%);
-        transform: translateY(-2px);
-        box-shadow: 0 4px 15px rgba(40, 167, 69, 0.4);
-    }
+.submit-book:hover {
+    background: linear-gradient(135deg, #20c997 0%, #17a2b8 100%);
+    transform: translateY(-2px);
+    box-shadow: 0 4px 15px rgba(40, 167, 69, 0.4);
+}
 
-    /* Delete Modal */
-    .modal-delete-body {
-        padding: 30px;
-        text-align: center;
-    }
+.button-group {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+}
 
-    .modal-delete-body p {
-        font-size: 18px;
-        margin-bottom: 25px;
-        color: #2227c1;
-    }
 
-    .btn-delete-choose {
-        display: flex;
-        justify-content: center;
-        gap: 15px;
-    }
+   .btn-delete-choose {
+    display: flex;
+    justify-content: center;
+    align-items: center; /* Căn giữa theo chiều dọc */
+    gap: 15px;
+}
 
-    .btn-yes,
-    .btn-no {
-        padding: 12px 25px;
-        border: none;
-        border-radius: 8px;
-        cursor: pointer;
-        font-size: 14px;
-        font-weight: 500;
-        transition: all 0.3s ease;
-    }
+.btn-yes,
+.btn-no {
+    min-width: 80px;       /* Chiều rộng tối thiểu để đều nhau */
+    padding: 12px 25px;
+    border: none;
+    border-radius: 8px;
+    cursor: pointer;
+    font-size: 14px;
+    font-weight: 500;
+    transition: all 0.3s ease;
+    display: flex;
+    align-items: center;
+    justify-content: center; /* Căn giữa chữ */
+}
 
-    .btn-yes {
-        background: linear-gradient(135deg, #dc3545 0%, #ff6b6b 100%);
-        color: white;
-    }
+.btn-yes {
+    background: linear-gradient(135deg, #dc3545 0%, #ff6b6b 100%);
+    color: white;
+}
 
-    .btn-yes:hover {
-        background: linear-gradient(135deg, #ff6b6b 0%, #ff8e8e 100%);
-        transform: translateY(-2px);
-        box-shadow: 0 4px 15px rgba(220, 53, 69, 0.4);
-    }
+.btn-yes:hover {
+    background: linear-gradient(135deg, #ff6b6b 0%, #ff8e8e 100%);
+    transform: translateY(-2px);
+    box-shadow: 0 4px 15px rgba(220, 53, 69, 0.4);
+}
 
-    .btn-no {
-        background: rgba(255, 255, 255, 0.1);
-        color: #ffffff;
-        border: 1px solid rgba(255, 255, 255, 0.3);
-    }
+.btn-no {
+    background: rgba(255, 255, 255, 0.1);
+    color: black; /* Đổi sang màu đen để dễ đọc */
+    border: 1px solid rgba(0, 0, 0, 0.3);
+}
 
-    .btn-no:hover {
-        background: rgba(255, 255, 255, 0.2);
-        transform: translateY(-2px);
-    }
+.btn-no:hover {
+    background: rgba(255, 255, 255, 0.2);
+    transform: translateY(-2px);
+}
 
     /* Responsive */
     @media (max-width: 768px) {
