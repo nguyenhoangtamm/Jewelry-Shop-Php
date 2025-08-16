@@ -87,7 +87,7 @@ class OrderController extends Controller
     {
         $order = Order::where('id', $id)
             ->where('user_id', Auth::id())
-            ->where('status', 'pending')
+            ->where('status', 'chờ xử lý')
             ->firstOrFail();
 
         $order->status = 'cancelled';
