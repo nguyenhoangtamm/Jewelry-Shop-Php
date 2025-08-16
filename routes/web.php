@@ -201,7 +201,7 @@ Route::middleware('auth')->group(function () {
     Route::get('/tin-tuc', [NewsController::class, 'index'])->middleware('role:customer,admin')->name('news.index');
 
     Route::put('/orders/{order}/cancel', [OrderController::class, 'cancel'])
-        ->name('user.orders.cancel')->whereNumber('order');
+        ->name('user.orders.cancel');
 
     // Reviews by authenticated users (customer/admin) - ensure auth and numeric id
     Route::post('/products/{id}/reviews', [ProductDetailController::class, 'storeReview'])
