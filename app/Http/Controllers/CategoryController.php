@@ -54,7 +54,7 @@ class CategoryController extends Controller
         if ($page) {
             $redirect = redirect()->route('admin.categories.index', ['page' => $page]);
         }
-        return $redirect->with('success', 'Category created successfully.');
+        return $redirect->with('success', 'Thêm danh mục thành công.');
     }
 
     public function edit($id)
@@ -91,7 +91,7 @@ class CategoryController extends Controller
         if ($page) {
             $redirect = redirect()->route('admin.categories.index', ['page' => $page]);
         }
-        return $redirect->with('success', 'Category updated successfully.');
+        return $redirect->with('success', 'Cập nhật danh mục thành công.');
     }
 
     public function destroy(Request $request, $id)
@@ -104,6 +104,6 @@ class CategoryController extends Controller
         if ($page) {
             $redirect = redirect()->route('admin.categories.index', ['page' => $page]);
         }
-        return $redirect->with('success', 'Category deleted successfully.');
+        return $redirect->with('success', 'Xóa danh mục thành công.');
     }
 }
