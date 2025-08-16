@@ -2,6 +2,7 @@
 @section('title', 'Đơn hàng của tôi')
 
 @section('content')
+<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
 
 
 <div class="container mt-4">
@@ -107,16 +108,13 @@
                         Xem chi tiết
                     </a>
                   @if($order->status === 'chờ xử lý')
-<form action="{{ route('user.orders.cancel', $order->id) }}" method="POST" style="display:inline;">
-    @csrf
-    @method('PUT')
-    <button type="submit" class="btn btn-outline-danger btn-sm" 
-            onclick="return confirm('Bạn có chắc chắn muốn hủy đơn hàng này?')">
-        <i class="fas fa-times me-1"></i>
-        Hủy đơn
+    <button type="button" 
+            class="btn btn-outline-danger btn-sm btn-cancel-order" 
+            data-action="{{ route('user.orders.cancel', $order->id) }}">
+        <i class="fas fa-times me-1"></i> Hủy đơn
     </button>
-</form>
 @endif
+
 
 
                 </div>
@@ -131,6 +129,62 @@
     </div>
     @endif
 </div>
+<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+
+<script>
+document.addEventListener("DOMContentLoaded", function () {
+    document.querySelectorAll(".btn-cancel-order").forEach(function (btn) {
+        btn.addEventListener("click", function () {
+            let actionUrl = this.dataset.action;
+
+            Swal.fire({
+                title: "Bạn có chắc chắn?",
+                text: "Bạn muốn hủy đơn hàng này?",
+                icon: "warning",
+                showCancelButton: true,
+                confirmButtonColor: "#d33",
+                cancelButtonColor: "#3085d6",
+                confirmButtonText: "Hủy đơn",
+                cancelButtonText: "Không"
+            }).then((result) => {
+                if (result.isConfirmed) {
+                    let form = document.createElement("form");
+                    form.method = "POST";
+                    form.action = actionUrl;
+                    form.innerHTML = `
+                        @csrf
+                        @method('PUT')
+                    `;
+                    document.body.appendChild(form);
+                    form.submit();
+                }
+            });
+        });
+    });
+
+    // Thông báo thành công
+    @if(session('success'))
+        Swal.fire({
+            icon: "success",
+            title: "Thành công",
+            text: "{{ session('success') }}",
+            confirmButtonText: "OK"
+        });
+    @endif
+
+    // Thông báo lỗi
+    @if(session('error'))
+        Swal.fire({
+            icon: "error",
+            title: "Lỗi",
+            text: "{{ session('error') }}",
+            confirmButtonText: "OK"
+        });
+    @endif
+});
+</script>
+
+
 <style>
     @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&display=swap');
 
