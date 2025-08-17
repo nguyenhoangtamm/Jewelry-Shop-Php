@@ -990,40 +990,6 @@
         }
     });
 
-    // Mua ngay
-    $('.buy-now').on('click', function(e) {
-        e.preventDefault();
-
-        const jewelryId = $(this).data('id');
-        const quantity = parseInt($('.quantity').val()) || 1;
-        const button = $(this);
-
-        button.prop('disabled', true).text('Đang xử lý...');
-
-        // Thêm vào giỏ hàng trước
-        $.ajax({
-            url: '/cart/add',
-            method: 'POST',
-            data: {
-                _token: $('meta[name="csrf-token"]').attr('content'),
-                jewelry_id: jewelryId,
-                quantity: quantity
-            },
-            success: function(response) {
-                if (response.success) {
-                    // Chuyển đến trang giỏ hàng
-                    window.location.href = '/cart';
-                } else {
-                    showNotification(response.message, 'error');
-                    button.prop('disabled', false).html('<i class="fas fa-bolt"></i> Mua ngay');
-                }
-            },
-            error: function() {
-                showNotification('Có lỗi xảy ra, vui lòng thử lại!', 'error');
-                button.prop('disabled', false).html('<i class="fas fa-bolt"></i> Mua ngay');
-            }
-        });
-    });
 
     // Hàm hiển thị thông báo đơn giản (không cần Bootstrap JS)
     function showNotification(message, type = 'info') {

@@ -196,8 +196,8 @@ Route::middleware('auth')->group(function () {
     // Sản phẩm, tin tức - cho phép customer và admin
     // =============================
     Route::get('/products/all', [ProductController::class, 'showAll'])->middleware('role:customer,admin')->name('products.all');
-    Route::get('/product/{id}', [ProductController::class, 'show'])
-    ->name('product.detail');
+    Route::get('/product/{id}', [ProductDetailController::class, 'show'])
+        ->name('product.detail');
     Route::get('/tin-tuc', [NewsController::class, 'index'])->middleware('role:customer,admin')->name('news.index');
 
     Route::put('/orders/{order}/cancel', [OrderController::class, 'cancel'])

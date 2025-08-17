@@ -150,13 +150,13 @@
                 </div>
                 <div class="card-body">
                     <div class="timeline">
-                        <div class="timeline-item {{ $order->status === 'pending' ? 'active' : 'completed' }}">
-                            <div class="timeline-marker">
-                                <i class="fas fa-shopping-cart"></i>
-                            </div>
-                            <div class="timeline-content">
-                                <h6>Đơn hàng đã được đặt</h6>
-                                <small>{{ $order->created_at->format('d/m/Y H:i') }}</small>
+                        <div class="d-flex flex-column">
+                            <div class="timeline-item {{ $order->status === 'pending' ? 'active' : 'completed' }}">
+                                
+                                <div class="timeline-content">
+                                    <h6>Đơn hàng đã được đặt</h6>
+                                    <small>{{ $order->created_at->format('d/m/Y H:i') }}</small>
+                                </div>
                             </div>
                         </div>
 

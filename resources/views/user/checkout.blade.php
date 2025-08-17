@@ -304,8 +304,8 @@
                         </div>
                         <div class="form-group">
                             <label for="phone">Số điện thoại *</label>
-                            <input type="tel" id="phone" name="phone_number"
-                                value="{{ old('phone_number', $user->phone_number ?? '') }}" required>
+                            <input type="tel" id="phone" name="phone"
+                                value="{{ old('phone', $user->phone ?? '') }}" required>
                         </div>
                     </div>
                     <div class="form-group">
@@ -503,8 +503,11 @@ $('input[name="shipping_method"]').on('change', function() {
                     }
                 })
                 .done(function(res) {
-                    if (res.status === 'success') {
+                    if (res.success === true) {
                         renderSuccess(res.message || 'Đặt hàng thành công');
+                        setTimeout(function() {
+                            window.location.href = '/home';
+                        }, 1800);
                         if (res.redirect_url) {
                             setTimeout(function() {
                                 window.location.href = res.redirect_url;

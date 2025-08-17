@@ -144,14 +144,16 @@
 
         <!-- Modern Pagination -->
         @if($orders->hasPages())
-        <div class="pagination-wrapper">
-            <div class="pagination-info">
-                Hiển thị {{ $orders->firstItem() ?? 0 }} - {{ $orders->lastItem() ?? 0 }}
-                trong tổng số {{ $orders->total() }} đơn hàng
-            </div>
-            <div class="pagination-controls">
-                {{ $orders->links('custom.pagination') }}
-            </div>
+        <div class="pagination" style="justify-content:center;">
+            @php
+            $currentPage = $orders->currentPage();
+            $lastPage = $orders->lastPage();
+            @endphp
+            <a href="{{ $orders->url(max($currentPage-1,1)) }}" class="prev">Trước</a>
+            @for ($i = 1; $i <= $lastPage; $i++)
+                <a href="{{ $orders->url($i) }}" class="{{ $currentPage == $i ? 'page-current' : '' }}">{{ $i }}</a>
+                @endfor
+                <a href="{{ $orders->url(min($currentPage+1,$lastPage)) }}" class="next">Tiếp</a>
         </div>
         @endif
     </div>
@@ -594,18 +596,40 @@
         color: var(--galaxy-dark);
     }
 
-    .pagination-wrapper {
-        padding: 1.5rem 2rem;
-        background: #f9fafb;
-        border-top: 1px solid #e5e7eb;
+    /* Pagination Styles */
+    .pagination {
         display: flex;
-        justify-content: space-between;
-        align-items: center;
+        justify-content: center;
+        gap: 10px;
+        padding: 20px;
+        background: rgba(255, 255, 255, 0.05);
+        margin-top: 20px;
+        border-radius: 10px;
+        border-top: 1px solid #e5e7eb;
     }
 
-    .pagination-info {
-        color: #6b7280;
-        font-size: 0.875rem;
+    .pagination a {
+        padding: 10px 15px;
+        background: var(--galaxy-gradient);
+        color: white;
+        text-decoration: none;
+        border-radius: 8px;
+        transition: all 0.3s ease;
+        border: 1px solid rgba(255, 255, 255, 0.2);
+        font-weight: 500;
+    }
+
+    .pagination a:hover,
+    .pagination a.page-current {
+        background: var(--galaxy-gradient-hover);
+        color: white;
+        transform: translateY(-2px);
+        box-shadow: var(--shadow-md);
+    }
+
+    .pagination a.page-current {
+        background: var(--success-color);
+        box-shadow: var(--shadow-sm);
     }
 
     /* Modal Styles */

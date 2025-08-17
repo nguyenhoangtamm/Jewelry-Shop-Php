@@ -119,16 +119,66 @@
         color: #000000;
     }
 
-    /* Action Buttons */
+    /* Cố định kích thước cột Hành động */
+    #category-table th:nth-child(5),
+    #category-table td:nth-child(5) {
+        width: 150px;
+        min-width: 150px;
+        max-width: 150px;
+        text-align: center;
+        white-space: nowrap;
+    }
+
+    /* Đảm bảo các nút trong cột Hành động được căn giữa */
+    #category-table td:nth-child(5) {
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        gap: 10px;
+        padding: 15px 10px;
+    }
+
+    /* Đảm bảo bảng không bị vỡ layout */
+    #category-table {
+        table-layout: fixed;
+    }
+
+    /* Tự động điều chỉnh độ rộng các cột khác */
+    #category-table th:nth-child(1),
+    #category-table td:nth-child(1) {
+        width: 60px;
+    }
+
+    #category-table th:nth-child(2),
+    #category-table td:nth-child(2) {
+        width: 25%;
+    }
+
+    #category-table th:nth-child(3),
+    #category-table td:nth-child(3) {
+        width: 35%;
+    }
+
+    #category-table th:nth-child(4),
+    #category-table td:nth-child(4) {
+        width: 120px;
+    }
+
+    /* Action Buttons - Cải thiện cho cột Hành động */
     .icon-change,
     .icon-delete {
-        padding: 8px 12px;
-        margin: 0 5px;
+        padding: 8px 10px;
+        margin: 0;
         border: none;
-        border-radius: 8px;
+        border-radius: 6px;
         cursor: pointer;
         transition: all 0.3s ease;
         font-size: 14px;
+        min-width: 35px;
+        height: 35px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
     }
 
     .icon-change {
@@ -296,94 +346,102 @@
         margin-top: 25px;
     }
 
-.cancel-book,
-.submit-book {
-    display: flex;
-    align-items: center;
-    justify-content: center; /* Giúp chữ luôn ở giữa */
-    min-width: 80px;         /* Đảm bảo các nút rộng đều nhau */
-    padding: 12px 25px;
-    border: none;
-    border-radius: 8px;
-    cursor: pointer;
-    font-size: 14px;
-    font-weight: 500;
-    transition: all 0.3s ease;
-}
+    .cancel-book,
+    .submit-book {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        /* Giúp chữ luôn ở giữa */
+        min-width: 80px;
+        /* Đảm bảo các nút rộng đều nhau */
+        padding: 12px 25px;
+        border: none;
+        border-radius: 8px;
+        cursor: pointer;
+        font-size: 14px;
+        font-weight: 500;
+        transition: all 0.3s ease;
+    }
 
-.cancel-book {
-    background: rgba(255, 255, 255, 0.1);
-    color: #000; /* Hiện lại chữ */
-    border: 1px solid rgba(255, 255, 255, 0.3);
-}
+    .cancel-book {
+        background: rgba(255, 255, 255, 0.1);
+        color: #000;
+        /* Hiện lại chữ */
+        border: 1px solid rgba(255, 255, 255, 0.3);
+    }
 
-.cancel-book:hover {
-    background: rgba(7, 81, 133, 0.1);
-    transform: translateY(-2px);
-}
+    .cancel-book:hover {
+        background: rgba(7, 81, 133, 0.1);
+        transform: translateY(-2px);
+    }
 
-.submit-book {
-    background: linear-gradient(135deg, #28a745 0%, #20c997 100%);
-    color: #fff; /* Chữ trắng nổi bật hơn */
-    border: 1px solid rgba(255, 255, 255, 0.2);
-}
+    .submit-book {
+        background: linear-gradient(135deg, #28a745 0%, #20c997 100%);
+        color: #fff;
+        /* Chữ trắng nổi bật hơn */
+        border: 1px solid rgba(255, 255, 255, 0.2);
+    }
 
-.submit-book:hover {
-    background: linear-gradient(135deg, #20c997 0%, #17a2b8 100%);
-    transform: translateY(-2px);
-    box-shadow: 0 4px 15px rgba(40, 167, 69, 0.4);
-}
+    .submit-book:hover {
+        background: linear-gradient(135deg, #20c997 0%, #17a2b8 100%);
+        transform: translateY(-2px);
+        box-shadow: 0 4px 15px rgba(40, 167, 69, 0.4);
+    }
 
-.button-group {
-    display: flex;
-    align-items: center;
-    gap: 10px;
-}
+    .button-group {
+        display: flex;
+        align-items: center;
+        gap: 10px;
+    }
 
 
-   .btn-delete-choose {
-    display: flex;
-    justify-content: center;
-    align-items: center; /* Căn giữa theo chiều dọc */
-    gap: 15px;
-}
+    .btn-delete-choose {
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        /* Căn giữa theo chiều dọc */
+        gap: 15px;
+    }
 
-.btn-yes,
-.btn-no {
-    min-width: 80px;       /* Chiều rộng tối thiểu để đều nhau */
-    padding: 12px 25px;
-    border: none;
-    border-radius: 8px;
-    cursor: pointer;
-    font-size: 14px;
-    font-weight: 500;
-    transition: all 0.3s ease;
-    display: flex;
-    align-items: center;
-    justify-content: center; /* Căn giữa chữ */
-}
+    .btn-yes,
+    .btn-no {
+        min-width: 80px;
+        /* Chiều rộng tối thiểu để đều nhau */
+        padding: 12px 25px;
+        border: none;
+        border-radius: 8px;
+        cursor: pointer;
+        font-size: 14px;
+        font-weight: 500;
+        transition: all 0.3s ease;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        /* Căn giữa chữ */
+    }
 
-.btn-yes {
-    background: linear-gradient(135deg, #dc3545 0%, #ff6b6b 100%);
-    color: white;
-}
+    .btn-yes {
+        background: linear-gradient(135deg, #dc3545 0%, #ff6b6b 100%);
+        color: white;
+    }
 
-.btn-yes:hover {
-    background: linear-gradient(135deg, #ff6b6b 0%, #ff8e8e 100%);
-    transform: translateY(-2px);
-    box-shadow: 0 4px 15px rgba(220, 53, 69, 0.4);
-}
+    .btn-yes:hover {
+        background: linear-gradient(135deg, #ff6b6b 0%, #ff8e8e 100%);
+        transform: translateY(-2px);
+        box-shadow: 0 4px 15px rgba(220, 53, 69, 0.4);
+    }
 
-.btn-no {
-    background: rgba(255, 255, 255, 0.1);
-    color: black; /* Đổi sang màu đen để dễ đọc */
-    border: 1px solid rgba(0, 0, 0, 0.3);
-}
+    .btn-no {
+        background: rgba(255, 255, 255, 0.1);
+        color: black;
+        /* Đổi sang màu đen để dễ đọc */
+        border: 1px solid rgba(0, 0, 0, 0.3);
+    }
 
-.btn-no:hover {
-    background: rgba(255, 255, 255, 0.2);
-    transform: translateY(-2px);
-}
+    .btn-no:hover {
+        background: rgba(255, 255, 255, 0.2);
+        transform: translateY(-2px);
+    }
 
     /* Responsive */
     @media (max-width: 768px) {
@@ -424,6 +482,51 @@
         .cancel-book,
         .submit-book {
             width: 100%;
+        }
+    }
+
+    /* Responsive cho mobile */
+    @media (max-width: 768px) {
+
+        #category-table th:nth-child(5),
+        #category-table td:nth-child(5) {
+            width: 120px;
+            min-width: 120px;
+            max-width: 120px;
+        }
+
+        .icon-change,
+        .icon-delete {
+            min-width: 30px;
+            height: 30px;
+            font-size: 12px;
+            padding: 6px;
+        }
+
+        #category-table td:nth-child(5) {
+            gap: 8px;
+            padding: 10px 5px;
+        }
+    }
+
+    @media (max-width: 480px) {
+
+        #category-table th:nth-child(5),
+        #category-table td:nth-child(5) {
+            width: 100px;
+            min-width: 100px;
+            max-width: 100px;
+        }
+
+        .icon-change,
+        .icon-delete {
+            min-width: 28px;
+            height: 28px;
+            font-size: 11px;
+        }
+
+        #category-table td:nth-child(5) {
+            gap: 5px;
         }
     }
 </style>

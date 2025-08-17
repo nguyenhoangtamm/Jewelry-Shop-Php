@@ -295,28 +295,28 @@
 
                         <!-- Product Image -->
                         <div class="relative overflow-hidden aspect-square bg-gradient-to-br from-gray-50 to-gray-100">
-                            <a href="{{ route('product.detail', $product->id) }}" class="absolute inset-0 z-10" aria-label="{{ $product->name }}">
-                            <img src="{{ $product->image }}" alt="{{ $product->name }}"
-                                class="w-full h-full object-cover group-hover:scale-110 transition-transform duration-700 select-none pointer-events-none">
+                            <a href="{{ route('jewelry.detail', $product->id) }}" class="absolute inset-0 z-10" aria-label="{{ $product->name }}">
+                                <img src="{{ $product->image }}" alt="{{ $product->name }}"
+                                    class="w-full h-full object-cover group-hover:scale-110 transition-transform duration-700 select-none pointer-events-none">
 
-                            <!-- Gradient overlay -->
-                            <div class="absolute inset-0 bg-gradient-to-t from-black/20 via-transparent to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300"></div>
+                                <!-- Gradient overlay -->
+                                <div class="absolute inset-0 bg-gradient-to-t from-black/20 via-transparent to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300"></div>
 
-                            <!-- Quick Action Buttons -->
-                            <div class="absolute inset-0 flex items-center justify-center opacity-0 group-hover:opacity-100 transition-all duration-300 z-20">
-                                <div class="flex space-x-3">
-                                   
+                                <!-- Quick Action Buttons -->
+                                <div class="absolute inset-0 flex items-center justify-center opacity-0 group-hover:opacity-100 transition-all duration-300 z-20">
+                                    <div class="flex space-x-3">
+
+                                    </div>
                                 </div>
-                            </div>
 
-                            <!-- Material indicators -->
-                            <div class="absolute bottom-4 left-4 opacity-0 group-hover:opacity-100 transition-opacity duration-300">
-                                <div class="flex space-x-2">
-                                    <div class="w-4 h-4 rounded-full bg-gradient-to-br from-yellow-300 to-yellow-600 border-2 border-white shadow-sm"></div>
-                                    <div class="w-4 h-4 rounded-full bg-gradient-to-br from-gray-300 to-gray-500 border-2 border-white shadow-sm"></div>
-                                    <div class="w-4 h-4 rounded-full bg-gradient-to-br from-blue-300 to-blue-600 border-2 border-white shadow-sm"></div>
+                                <!-- Material indicators -->
+                                <div class="absolute bottom-4 left-4 opacity-0 group-hover:opacity-100 transition-opacity duration-300">
+                                    <div class="flex space-x-2">
+                                        <div class="w-4 h-4 rounded-full bg-gradient-to-br from-yellow-300 to-yellow-600 border-2 border-white shadow-sm"></div>
+                                        <div class="w-4 h-4 rounded-full bg-gradient-to-br from-gray-300 to-gray-500 border-2 border-white shadow-sm"></div>
+                                        <div class="w-4 h-4 rounded-full bg-gradient-to-br from-blue-300 to-blue-600 border-2 border-white shadow-sm"></div>
+                                    </div>
                                 </div>
-                            </div>
                             </a>
                         </div>
 
