@@ -26,24 +26,46 @@
         </div>
     </div>
 
-    <div class="table-card">
-        <div class="table-header">
-            <h3 class="table-title">Danh sách đơn hàng chờ xử lý</h3>
-            <div class="table-actions">
+  <div class="table-card">
+    <div class="table-header">
+        <h3 class="table-title">Danh sách đơn hàng chờ xử lý</h3>
+        <div class="table-actions">
+            <form method="GET" action="{{ route('admin.orders.pending') }}" class="flex items-center gap-3">
+
+                {{-- Bộ lọc thời gian --}}
                 <div class="filter-group">
-                    <select class="filter-select">
+                    <select name="filter" class="filter-select" onchange="this.form.submit()">
                         <option value="">Tất cả đơn hàng</option>
-                        <option value="today">Hôm nay</option>
-                        <option value="week">Tuần này</option>
-                        <option value="month">Tháng này</option>
+                        <option value="today" {{ request('filter') == 'today' ? 'selected' : '' }}>Hôm nay</option>
+                        <option value="week" {{ request('filter') == 'week' ? 'selected' : '' }}>Tuần này</option>
+                        <option value="month" {{ request('filter') == 'month' ? 'selected' : '' }}>Tháng này</option>
                     </select>
                 </div>
-                <div class="search-box">
-                    <i class="fas fa-search"></i>
-                    <input type="text" placeholder="Tìm kiếm đơn hàng...">
+
+                {{-- Ô tìm kiếm --}}
+                <div class="search-box flex items-center border rounded px-2">
+                    <i class="fas fa-search mr-2"></i>
+                    <input type="text"
+                           name="search"
+                           placeholder="Tìm kiếm theo mã, khách hàng, email, SĐT, địa chỉ..."
+                           value="{{ request('search') }}"
+                           class="border-none focus:ring-0">
                 </div>
-            </div>
+
+                {{-- Nút lọc --}}
+                <button type="submit" class="btn btn-primary">Lọc</button>
+
+                {{-- Nút reset --}}
+                @if(request('filter') || request('search'))
+                    <a href="{{ route('admin.orders.pending') }}" class="btn btn-secondary">Reset</a>
+                @endif
+
+            </form>
         </div>
+    </div>
+</div>
+
+
 
         <div class="table-container">
             <table class="modern-table">
@@ -218,6 +240,40 @@
         --warning-color: #f59e0b;
         --warning-light: #fef3c7;
     }
+
+/* Nút chính (Lọc) */
+.btn-primary {
+    background-color: #2563eb; /* xanh dương */
+    color: #fff;
+    padding: 6px 16px;
+    border-radius: 8px;
+    font-weight: 500;
+    transition: all 0.2s ease-in-out;
+}
+.btn-primary:hover {
+    background-color: #1d4ed8;
+    transform: translateY(-1px);
+}
+
+/* Nút phụ (Reset) */
+.btn-secondary {
+    background-color: #e5e7eb; /* xám nhạt */
+    color: #374151; /* xám đậm */
+    padding: 6px 16px;
+    border-radius: 8px;
+    font-weight: 500;
+    transition: all 0.2s ease-in-out;
+}
+.btn-secondary:hover {
+    background-color: #d1d5db;
+    transform: translateY(-1px);
+}
+
+/* Nhóm nút */
+.table-actions .btn {
+    display: inline-block;
+    cursor: pointer;
+}
 
     .order-approval-container {
         padding: 2rem;

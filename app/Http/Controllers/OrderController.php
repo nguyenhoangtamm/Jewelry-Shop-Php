@@ -49,25 +49,61 @@ class OrderController extends Controller
         }
         return $redirect->with('success', 'Duyệt đơn hàng thành công!');
     }
+public function pending(Request $request)
+{
+    $query = Order::with(['user', 'orderDetails'])
+        ->where('status', 'chờ xử lý')
+        ->where('is_deleted', 0); // tránh lấy đơn bị xóa mềm nếu có cột này
 
-    public function pending()
-    {
-        // Lấy orders cùng user và orderDetails để không phát sinh N+1 query
-        $orders = Order::with(['user', 'orderDetails'])->where('status', 'chờ xử lý')->paginate(10);
-
-        // Tính computed_total cho từng order dựa trên orderDetails
-        foreach ($orders as $order) {
-            $order->computed_total = $order->orderDetails->sum(function ($detail) {
-                // Một số project đặt tên cột giá khác nhau (price, unit_price, don_gia, etc.)
-                // Thử lấy theo thứ tự ưu tiên; nếu không có thì xem như 0.
-                $price = $detail->price ?? $detail->unit_price ?? $detail->don_gia ?? $detail->gia ?? 0;
-                $quantity = $detail->quantity ?? 0;
-                return $quantity * $price;
-            });
-        }
-
-        return view('admin.orders.pending', compact('orders'));
+    // --- Lọc theo thời gian ---
+    $filter = $request->input('filter');
+    if ($filter === 'today') {
+        $query->whereDate('created_at', today());
+    } elseif ($filter === 'week') {
+        $query->whereBetween('created_at', [
+            now()->startOfWeek(),
+            now()->endOfWeek()
+        ]);
+    } elseif ($filter === 'month') {
+        $query->whereMonth('created_at', now()->month)
+              ->whereYear('created_at', now()->year);
     }
+
+
+// --- Tìm kiếm ---
+if ($search = $request->input('search')) {
+    $query->where(function ($q) use ($search) {
+        $q->where('id', 'like', "%$search%") // tìm theo mã đơn
+          ->orWhereHas('user', function ($sub) use ($search) {
+              $sub->where('username', 'like', "%$search%")
+                  ->orWhere('fullname', 'like', "%$search%")   // ✅ tìm theo tên khách hàng
+                  ->orWhere('email', 'like', "%$search%")
+                  ->orWhere('phone_number', 'like', "%$search%")
+                  ->orWhere('address', 'like', "%$search%");
+              
+              // Nếu search là ngày hợp lệ thì so với ngày sinh
+              if (strtotime($search)) {
+                  $sub->orWhereDate('date_of_birth', $search);
+              }
+          });
+    });
+}
+
+
+    // --- Phân trang ---
+    $orders = $query->orderBy('created_at', 'desc')->paginate(10);
+
+    // --- Tính computed_total ---
+    foreach ($orders as $order) {
+        $order->computed_total = $order->orderDetails->sum(function ($detail) {
+            $price = $detail->price ?? $detail->unit_price ?? $detail->don_gia ?? $detail->gia ?? 0;
+            $quantity = $detail->quantity ?? 0;
+            return $quantity * $price;
+        });
+    }
+
+    return view('admin.orders.pending', compact('orders'));
+}
 
 
     public function destroy(Request $request, $id)
