@@ -957,22 +957,7 @@
         }
     }
 
-    // Add CSS classes for animations
-    const style = document.createElement('style');
-    style.textContent = `
-    .fade-in {
-        animation: fadeIn 0.5s ease-in;
-    }
-    
-    @keyframes fadeIn {
-        from { opacity: 0; transform: translateY(20px); }
-        to { opacity: 1; transform: translateY(0); }
-    }
-    
-    .scale-105 {
-        transform: scale(1.05);
-    }
-`;
+   
     document.head.appendChild(style);
 
     // Reset all filters and search
